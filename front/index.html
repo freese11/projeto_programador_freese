@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Freese Store</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/front/style.css">
+</head>
+<body>
+
+
+<div class="top-bar">
+  <div class="scroll-container">
+    <span>Envio grátis para todo Brasil • 3% OFF no PIX • Parcele em até 3x sem juros • Envio grátis para todo Brasil • 3% OFF no PIX • Parcele em até 3x sem juros</span>
+  </div>
+</div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1 class="logo">FREESE STORE</h1>
+
+    <input
+      type="text"
+      class="search"
+      placeholder="O que você está buscando?"
+    />
+
+    <div class="acoes">
+      <span>Login</span>
+      <span class="carrinho">
+        🛒 <span id="contador-carrinho">0</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- MENU -->
+  <nav class="menu">
+    <a href="#">Início</a>
+    <a href="#">Catálogo</a>
+    <a href="#">Contato</a>
+    <a href="#">Pronta Entrega</a>
+  </nav>
+
+
+<section class="banner">
+  <div class="banner-overlay">
+    <div class="banner-texto">
+      <h2>TÊNIS NIKE<br><span>AIR MAX</span></h2>
+      <p>Estilo, conforto e atitude para o seu corre.</p>
+      <button class="btn-banner">COMPRE AGORA</button>
+    </div>
+  </div>
+</section>
+
+  <!-- PRODUTOS -->
+  <main class="conteudo">
+    <h2 class="titulo-secao">Destaques </h2>
+
+    <!-- JS VAI INJETAR OS PRODUTOS AQUI -->
+    <div id="lista-produtos"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    © 2026 Freese Store - Todos os direitos reservados
+  </footer>
+
+  <!-- JS -->
+  <script src="/front/index.js" defer></script>
+</body>
+</html>

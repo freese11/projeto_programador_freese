@@ -18,12 +18,12 @@ router.get('/', async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho } = req.body;
-    if (!nome || !marca || !valor || !estoque || !tipo || !cor || !ativoInativo || !tamanho) return res.status(400).json({ error: "Campos obrigatórios: nome, marca, valor, estoque, tipo, cor, ativoInativo e tamanho" });
+    const { nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho,img } = req.body;
+    if (!nome || !marca || !valor || !estoque || !tipo || !cor || !ativoInativo || !tamanho || !img) return res.status(400).json({ error: "Campos obrigatórios: nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho e img" });
 
     const result = await pool.query(
-      "INSERT INTO produtos (nome, marca, valor, estoque, tipo, cor, ativoinativo, tamanho) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-      [nome, marca, valor, estoque, tipo, cor, ativoInativo,tamanho]
+      "INSERT INTO produtos (nome, marca, valor, estoque, tipo, cor, ativoinativo, tamanho,img) VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9) RETURNING *",
+      [nome, marca, valor, estoque, tipo, cor, ativoInativo,tamanho,img]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -60,10 +60,10 @@ router.get('/:codproduto', async (req, res) => {
 router.put("/:codproduto", async (req, res) => {
     try {
         const { codproduto } = req.params;
-        const { nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho } = req.body;
+        const { nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho, img } = req.body;
         const result = await pool.query(
-          "UPDATE produtos SET nome = $1, marca = $2, valor = $3, estoque = $4, tipo = $5, cor = $6, ativoinativo = $7, tamanho = $8 WHERE codproduto = $9 RETURNING *",
-          [nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho, codproduto]
+          "UPDATE produtos SET nome = $1, marca = $2, valor = $3, estoque = $4, tipo = $5, cor = $6, ativoinativo = $7, tamanho = $8,img=$9 WHERE codproduto = $10 RETURNING *",
+          [nome, marca, valor, estoque, tipo, cor, ativoInativo, tamanho,img,codproduto]
         );
         if (result.rows.length === 0) {
           return res.status(404).json({ error: "Produto não encontrado" });

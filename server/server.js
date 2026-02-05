@@ -13,13 +13,13 @@ const vendasRouter = require("./routes/vendasDB");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use("/produtos", produtosRouter);
 
 
 // =====================
 // Rotas principais
 // =====================
 app.use(autenticarAPIkey)
-app.use("/produtos", produtosRouter);
 app.use("/clientes", clientesRouter);
 app.use("/usuarios", usuariosRouter);
 app.use("/vendas", vendasRouter);
