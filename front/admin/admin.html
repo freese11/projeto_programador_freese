@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Controle - Freese Store</title>
+    <link rel="stylesheet" href="/front/admin/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="hub-header">
+        <div class="logo">FREESE <span>STORE</span> ADMIN</div>
+        <button onclick="logout()" class="btn-sair">Sair do Sistema</button>
+    </header>
+
+    <main class="hub-container">
+        <div class="hub-intro">
+            <h1>Bem-vindo, Administrador</h1>
+            <p>Selecione o módulo que deseja gerenciar hoje:</p>
+        </div>
+
+        <div class="hub-grid">
+            <a href="vendas/vendas.html" class="hub-card">
+                <i class="fas fa-chart-line"></i>
+                <div class="hub-info">
+                    <h3>Vendas</h3>
+                    <p>Relatórios e histórico de pedidos</p>
+                </div>
+            </a>
+
+            <a href="produtos/produtos.html" class="hub-card">
+                <i class="fas fa-box-open"></i>
+                <div class="hub-info">
+                    <h3>Produtos</h3>
+                    <p>Cadastrar, editar e excluir itens</p>
+                </div>
+            </a>
+
+            <a href="clientes/clientes.html" class="hub-card">
+                <i class="fas fa-users"></i>
+                <div class="hub-info">
+                    <h3>Clientes</h3>
+                    <p>Gerenciar dados dos compradores</p>
+                </div>
+            </a>
+
+            <a href="usuarios/usuarios.html" class="hub-card">
+                <i class="fas fa-user-shield"></i>
+                <div class="hub-info">
+                    <h3>Usuários</h3>
+                    <p>Controle de acessos ao sistema</p>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer class="hub-footer">
+        © 2026 Freese Store - Ambiente Seguro
+    </footer>
+
+</body>
+</html>
