@@ -12,6 +12,7 @@ const vendasRouter = require("./routes/vendasDB");
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(autenticarAPIkey);
 
 // Rota raiz
 app.get("/", (req, res) => {
@@ -22,14 +23,17 @@ app.get("/", (req, res) => {
 // Rota de Login Unificada
 // =====================
 app.post("/login", async (req, res) => {
-    const { email, senha, tipo } = req.body;
+    const { email, senha, tipoLoginEscolhido } = req.body;
 
     try {
         let result;
         // O seu banco usa a tabela 'usuarios' para Admin e 'cliente' para Clientes
-        if (tipo === 'admin') {
+        if (tipoLoginEscolhido === 'admin') {
+            console.log("Tentando login como ADMIN");
             result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2 AND perfil = $3', [email, senha, 'admin']);
         } else {
+console.log("Tipo de login escolhido no servidor:", tipoLoginEscolhido);
+            console.log("Tentando login como CLIENTE");
             result = await pool.query('SELECT * FROM usuarios WHERE email = $1 AND senha = $2 AND perfil = $3', [email, senha, 'cliente']);
         }
 
@@ -58,7 +62,6 @@ app.post("/login", async (req, res) => {
 app.use("/produtos", produtosRouter);
 
 // As outras rotas precisam de API KEY (autenticarAPIkey)
-app.use(autenticarAPIkey);
 app.use("/clientes", clientesRouter);
 app.use("/usuarios", usuariosRouter);
 app.use("/vendas", vendasRouter);

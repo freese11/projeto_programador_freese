@@ -10,170 +10,206 @@ const modal = document.getElementById("modal-login");
 
 let todosProdutos = []; 
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
+window.tipoLoginEscolhido = "";
 
-// --- INICIALIZAÇÃO ---
+// --- 1. INICIALIZAÇÃO ---
 atualizarContador();
 carregarCatalago();
+verificarStatusUsuario(); // Mantém o nome do usuário no topo ao navegar
 
 async function carregarCatalago() {
     try {
-        const resposta = await fetch(API_URL, { headers: { "minha-chave": API_KEY } });
+        const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
         renderizarProdutos(todosProdutos);
     } catch (err) {
         console.error("Erro ao carregar catálogo", err);
-        listaProdutosGeral.innerHTML = "<p>Erro ao carregar produtos. Verifique se o servidor está rodando.</p>";
+        listaProdutosGeral.innerHTML = "<p>Erro ao carregar produtos. Verifique o servidor.</p>";
     }
 }
 
-function renderizarProdutos(produtos) {
-    listaProdutosGeral.innerHTML = "";
-    
-    produtos.forEach(produto => {
-        const div = document.createElement("div");
-        div.className = "produto";
-        div.innerHTML = `
-            <img src="${produto.img}" alt="${produto.nome}" onerror="this.src='https://via.placeholder.com/300x200?text=Sem+Imagem'">
-            <h3>${produto.nome}</h3>
-            <p class="preco">R$ ${Number(produto.valor).toFixed(2)}</p>
-            <button onclick="adicionarCarrinho(${produto.codproduto})">ADICIONAR AO CARRINHO</button>
-        `;
-        listaProdutosGeral.appendChild(div);
-    });
+// --- 2. LÓGICA DE USUÁRIO E LOGIN (IGUAL À INDEX) ---
+function verificarStatusUsuario() {
+    const usuarioJson = localStorage.getItem("usuarioAtivo");
+    const btnLogin = document.getElementById("btn-login-abrir");
 
-    if (produtos.length === 0) {
-        listaProdutosGeral.innerHTML = "<p style='grid-column: 1/-1;'>Nenhum produto encontrado para os filtros selecionados.</p>";
-    }
-}
-
-// --- LÓGICA DE FILTRAGEM COMBINADA ---
-function filtrarProdutos() {
-    const termo = inputBusca.value.toLowerCase();
-    const categoria = filtroCategoria.value.toLowerCase();
-    const marca = filtroMarca.value.toLowerCase();
-
-    const produtosFiltrados = todosProdutos.filter(produto => {
-        const nomeProduto = produto.nome.toLowerCase();
+    if (usuarioJson && usuarioJson !== "undefined") {
+        const usuario = JSON.parse(usuarioJson);
+        btnLogin.innerHTML = `👤 ${usuario.nome.split(' ')[0]} (Sair)`;
         
-        // Regra 1: Nome bate com a busca?
-        const bateBusca = nomeProduto.includes(termo);
-        
-        // Regra 2: Categoria bate? (ex: "tenis" está no nome?)
-        const bateCategoria = categoria === "todos" || nomeProduto.includes(categoria);
-        
-        // Regra 3: Marca bate? (ex: "nike" está no nome?)
-        const bateMarca = marca === "todos" || nomeProduto.includes(marca);
-
-        return bateBusca && bateCategoria && bateMarca;
-    });
-
-    renderizarProdutos(produtosFiltrados);
-}
-
-// Ouvintes de eventos para filtros
-inputBusca.addEventListener("input", filtrarProdutos);
-filtroCategoria.addEventListener("change", filtrarProdutos);
-filtroMarca.addEventListener("change", filtrarProdutos);
-
-// --- CARRINHO ---
-function adicionarCarrinho(codproduto) {
-    const item = carrinho.find(p => p.codproduto === codproduto);
-    if (item) {
-        item.qtd++;
+        btnLogin.onclick = () => {
+            if(confirm("Deseja sair da conta?")) {
+                localStorage.removeItem("usuarioAtivo");
+                localStorage.removeItem("carrinho");
+                location.reload(); 
+            }
+        };
     } else {
-        carrinho.push({ codproduto, qtd: 1 });
+        btnLogin.innerText = "Login";
+        btnLogin.onclick = () => {
+            modal.style.display = "block";
+            voltarSelecao();
+        };
     }
+}
+
+async function efetuarLogin(event) {
+    event.preventDefault();
+    const email = document.getElementById("email").value;
+    const senha = document.getElementById("senha").value;
+    const tipo = window.tipoLoginEscolhido || 'cliente';
+
+    try {
+        const response = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha, tipo })
+        });
+        
+        const dados = await response.json();
+
+        if (dados.sucesso) {
+            localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
+            verificarStatusUsuario(); 
+            modal.style.display = "none";
+
+            // Se clicou em comprar antes de logar
+            const pendente = sessionStorage.getItem("produtoPendente");
+            if (pendente) {
+                executarAdicaoCarrinho(parseInt(pendente));
+                sessionStorage.removeItem("produtoPendente");
+            }
+            alert(`Bem-vindo, ${dados.nome}!`);
+        } else {
+            alert(dados.message);
+        }
+    } catch (err) {
+        alert("Erro ao conectar ao servidor.");
+    }
+}
+
+// --- 3. LÓGICA DO CARRINHO COM PROTEÇÃO ---
+function adicionarCarrinho(codproduto) {
+    const usuario = localStorage.getItem("usuarioAtivo");
+
+    if (!usuario) {
+        sessionStorage.setItem("produtoPendente", codproduto);
+        alert("Acesse sua conta para adicionar ao carrinho.");
+        modal.style.display = "block";
+        voltarSelecao();
+        return;
+    }
+    executarAdicaoCarrinho(codproduto);
+}
+
+function executarAdicaoCarrinho(codproduto) {
+    const item = carrinho.find(p => p.codproduto === codproduto);
+    item ? item.qtd++ : carrinho.push({ codproduto, qtd: 1 });
+    
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
-    alert("Produto adicionado ao carrinho!");
+    toggleCarrinho(true); // Abre o carrinho lateral automaticamente
 }
 
 function atualizarContador() {
     contadorCarrinho.innerText = carrinho.reduce((soma, p) => soma + p.qtd, 0);
 }
 
-// --- MODAL & LOGIN ---
-document.getElementById("btn-login-abrir").onclick = () => {
-    modal.style.display = "block";
-    voltarSelecao();
-};
-
-document.querySelector(".close-modal").onclick = () => modal.style.display = "none";
-window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; };
-
-function configurarLogin(tipo) {
-    window.tipoLoginEscolhido = tipo;
-    document.getElementById("selecao-tipo").classList.add("hidden");
-    document.getElementById("form-login").classList.remove("hidden");
-    document.getElementById("modal-titulo").innerText = tipo === 'admin' ? 'Login Admin' : 'Login Cliente';
-}
-
-function configurarRegistro() {
-    document.getElementById("selecao-tipo").classList.add("hidden");
-    document.getElementById("form-registro").classList.remove("hidden");
-}
-
-function voltarSelecao() {
-    document.getElementById("selecao-tipo").classList.remove("hidden");
-    document.getElementById("form-login").classList.add("hidden");
-    document.getElementById("form-registro").classList.add("hidden");
-}
-
-// 1. Abrir/Fechar Carrinho
-function toggleCarrinho() {
-    document.getElementById("carrinho-lateral").classList.toggle("ativo");
+function toggleCarrinho(abrir = false) {
+    const side = document.getElementById("carrinho-lateral");
     const overlay = document.getElementById("carrinho-overlay");
-    overlay.style.display = overlay.style.display === "block" ? "none" : "block";
-    renderizarItensCarrinho();
+    
+    if (abrir) { 
+        side.classList.add("ativo"); 
+        overlay.style.display = "block"; 
+    } else { 
+        side.classList.toggle("ativo"); 
+        overlay.style.display = side.classList.contains("ativo") ? "block" : "none"; 
+    }
+    
+    if (side.classList.contains("ativo")) renderizarItensCarrinho();
 }
 
-// 2. Mudar o clique do ícone no Header
-document.querySelector(".carrinho").onclick = toggleCarrinho;
+// Vincula o clique do ícone de carrinho no header
+document.querySelector(".carrinho").onclick = () => toggleCarrinho();
 
-// 3. Renderizar itens dentro do painel
 async function renderizarItensCarrinho() {
     const container = document.getElementById("itens-carrinho");
     const totalElement = document.getElementById("valor-total-carrinho");
     container.innerHTML = "";
     let totalGeral = 0;
 
-    // Pegamos todos os produtos da API para saber o preço e nome
-    const resposta = await fetch(API_URL);
-    const produtosBD = await resposta.json();
+    try {
+        const resposta = await fetch(API_URL);
+        const produtosBD = await resposta.json();
 
-    carrinho.forEach(itemNoCarrinho => {
-        const produto = produtosBD.find(p => p.codproduto === itemNoCarrinho.codproduto);
-        if (produto) {
-            totalGeral += produto.valor * itemNoCarrinho.qtd;
-            container.innerHTML += `
-                <div class="item-no-carrinho">
-                    <img src="${produto.img}">
-                    <div>
-                        <p><strong>${produto.nome}</strong></p>
-                        <p>${itemNoCarrinho.qtd}x R$ ${produto.valor}</p>
-                    </div>
-                </div>
-            `;
-        }
+        carrinho.forEach(item => {
+            const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
+            if (p) {
+                totalGeral += p.valor * item.qtd;
+                container.innerHTML += `
+                    <div class="item-no-carrinho">
+                        <img src="${p.img}">
+                        <div>
+                            <p><strong>${p.nome}</strong></p>
+                            <p>${item.qtd}x R$ ${Number(p.valor).toFixed(2)}</p>
+                        </div>
+                    </div>`;
+            }
+        });
+        totalElement.innerText = `R$ ${totalGeral.toFixed(2)}`;
+    } catch (e) { console.error(e); }
+}
+
+// --- 4. FILTROS E RENDERIZAÇÃO ---
+function renderizarProdutos(produtos) {
+    listaProdutosGeral.innerHTML = "";
+    produtos.forEach(produto => {
+        const div = document.createElement("div");
+        div.className = "produto";
+        div.innerHTML = `
+            <img src="${produto.img}" alt="${produto.nome}">
+            <h3>${produto.nome}</h3>
+            <p class="preco">R$ ${Number(produto.valor).toFixed(2)}</p>
+            <button onclick="adicionarCarrinho(${produto.codproduto})">ADICIONAR AO CARRINHO</button>
+        `;
+        listaProdutosGeral.appendChild(div);
     });
-
-    totalElement.innerText = `R$ ${totalGeral.toFixed(2)}`;
 }
 
-// 4. Finalizar Compra (Chama a sua rota de vendas)
-async function finalizarCompra() {
-    const usuario = JSON.parse(localStorage.getItem("usuarioAtivo"));
-    
-    if (!usuario) {
-        alert("Faça login para finalizar a compra!");
-        toggleCarrinho(); // Fecha carrinho
-        modal.style.display = "block"; // Abre login
-        return;
-    }
+function filtrarProdutos() {
+    const termo = inputBusca.value.toLowerCase();
+    const categoria = filtroCategoria.value.toLowerCase();
+    const marca = filtroMarca.value.toLowerCase();
 
-    if (carrinho.length === 0) return alert("Carrinho vazio!");
-
-    // Aqui você faz o fetch para a sua vendasDB.js
-    alert("Processando sua venda...");
-    // ... lógica do fetch aqui ...
+    const filtrados = todosProdutos.filter(p => {
+        const nome = p.nome.toLowerCase();
+        return nome.includes(termo) && 
+               (categoria === "todos" || nome.includes(categoria)) &&
+               (marca === "todos" || nome.includes(marca));
+    });
+    renderizarProdutos(filtrados);
 }
+
+inputBusca.addEventListener("input", filtrarProdutos);
+filtroCategoria.addEventListener("change", filtrarProdutos);
+filtroMarca.addEventListener("change", filtrarProdutos);
+
+// --- 5. AUXILIARES MODAL ---
+function configurarLogin(tipo) {
+    window.tipoLoginEscolhido = tipo;
+    document.getElementById("selecao-tipo").classList.add("hidden");
+    document.getElementById("form-login").classList.remove("hidden");
+    document.getElementById("modal-titulo").innerText = tipo === 'admin' ? 'Login Admin' : 'Login Cliente';
+}
+function configurarRegistro() {
+    document.getElementById("selecao-tipo").classList.add("hidden");
+    document.getElementById("form-registro").classList.remove("hidden");
+}
+function voltarSelecao() {
+    document.getElementById("selecao-tipo").classList.remove("hidden");
+    document.getElementById("form-login").classList.add("hidden");
+    document.getElementById("form-registro").classList.add("hidden");
+    document.getElementById("modal-titulo").innerText = 'Acessar Conta';
+}
+document.querySelector(".close-modal").onclick = () => modal.style.display = "none";

@@ -22,33 +22,151 @@ body {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
-
-/* --- MODAL --- */
+/* ============================================================
+   --- MODAL E LOGIN (ATUALIZADO PREMIUM) ---
+   ============================================================ */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
+    display: none;
+    position: fixed;
+    z-index: 2500; /* Aumentado para ficar acima de tudo */
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); /* Fundo mais escuro para foco total */
+    backdrop-filter: blur(8px); /* Efeito de desfoque profissional */
+    animation: fadeIn 0.3s ease;
 }
-.modal-content {
-  background: #fff;
-  margin: 10% auto;
-  padding: 30px;
-  width: 350px;
-  border-radius: 8px;
-  text-align: center;
-  position: relative;
-}
-.close-modal { position: absolute; right: 15px; top: 10px; font-size: 24px; cursor: pointer; }
-.login-options { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-.btn-opt { padding: 12px; border: 1px solid #000; background: #fff; cursor: pointer; font-weight: bold; }
-.btn-admin { border-color: #a70101; color: #a70101; }
-.hidden { display: none !important; }
-.btn-voltar { font-size: 12px; margin-top: 10px; cursor: pointer; text-decoration: underline; color: #666; }
 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: #fff;
+    margin: 6% auto; /* Um pouco mais para cima para telas menores */
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 20px; /* Bordas mais modernas */
+    text-align: center;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.close-modal { 
+    position: absolute; 
+    right: 20px; 
+    top: 15px; 
+    font-size: 28px; 
+    cursor: pointer; 
+    color: #999;
+    transition: 0.3s;
+}
+.close-modal:hover { color: #000; }
+
+#modal-titulo {
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+    margin-bottom: 25px;
+}
+
+/* --- BOTÕES DE SELEÇÃO (CLIENTE/ADMIN) --- */
+.login-options { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 12px; 
+    margin-top: 10px; 
+}
+
+.btn-opt { 
+    padding: 15px; 
+    border: 2px solid #e0e0e0; 
+    background: #fff; 
+    cursor: pointer; 
+    font-weight: bold; 
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-opt:hover { 
+    border-color: #000; 
+    background: #f9f9f9;
+    transform: translateY(-2px);
+}
+
+.btn-admin { 
+    border-color: #fceaea; 
+    color: #a70101; 
+}
+.btn-admin:hover {
+    background: #fceaea;
+    border-color: #a70101;
+}
+
+/* --- FORMULÁRIOS E INPUTS --- */
+#form-login, #form-registro {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #f9f9f9;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: #a70101;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.1);
+}
+
+/* --- BOTÃO DE AÇÃO (ENTRAR/CADASTRAR) --- */
+/* Usei a classe do seu banner para manter o estilo que você gosta */
+#form-login button, #form-registro button {
+    padding: 16px;
+    background: #000;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#form-login button:hover, #form-registro button:hover {
+    background: #a70101;
+    transform: translateY(-2px);
+}
+
+.btn-voltar { 
+    font-size: 12px; 
+    margin-top: 20px; 
+    cursor: pointer; 
+    text-decoration: underline; 
+    color: #888; 
+    transition: 0.3s;
+}
+.btn-voltar:hover { color: #000; }
+
+.hidden { display: none !important; }
 /* --- GRID PRODUTOS CENTRALIZADO --- */
 #lista-produtos {
   display: grid;
