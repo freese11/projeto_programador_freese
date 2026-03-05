@@ -100,9 +100,9 @@ function verificarStatusUsuario() {
 
             // salva usuário
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
-
+console.log(dados.tipo);
             // 🔥 VERIFICA ADMIN CORRETAMENTE
-            if (dados.tipo && dados.tipo.toLowerCase() === "admin") {
+            if (dados.tipo && dados.tipo.toLowerCase() === "adm") {
                 console.log("REDIRECIONANDO PARA ADMIN...");
                 window.location.href = "/front/admin/admin.html";
                 return;

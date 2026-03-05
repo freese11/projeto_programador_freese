@@ -69,7 +69,7 @@
 
         const usuario = JSON.parse(localStorage.getItem("usuarioAtivo"));
 
-        if (!usuario || usuario.tipo !== "admin") {
+        if (!usuario || usuario.tipo !== "adm") {
             window.location.href = "/front/index.html";
         }
     </script>

@@ -55,7 +55,7 @@ function verificarStatusUsuario() {
         };
 
         // 🔥 Se for admin redireciona
-        if (usuario.tipo && usuario.tipo.toLowerCase() === "admin") {
+        if (usuario.tipo && usuario.tipo.toLowerCase() === "adm") {
             window.location.href = "/front/admin/admin.html";
         }
 
@@ -98,7 +98,7 @@ async function efetuarLogin(event) {
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
 
             // 🔥 Redireciona admin
-            if (dados.tipo && dados.tipo.toLowerCase() === "admin") {
+            if (dados.tipo && dados.tipo.toLowerCase() === "adm") {
                 window.location.href = "/front/admin/admin.html";
                 return;
             }

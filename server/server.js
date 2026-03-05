@@ -27,11 +27,12 @@ app.post("/login", async (req, res) => {
 
     try {
         let result;
-
-        if (tipoLoginEscolhido === 'admin') {
+console.log("TIPO DE LOGIN SOLICITADO:", tipoLoginEscolhido);
+        if (tipoLoginEscolhido === 'admin') 
+            {
             result = await pool.query(
                 'SELECT * FROM usuarios WHERE email = $1 AND senha = $2 AND perfil = $3',
-                [email, senha, 'admin']
+                [email, senha, 'adm']
             );
         } else {
             result = await pool.query(
