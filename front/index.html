@@ -5,59 +5,101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Freese Store | Urban Style</title>
   <link rel="stylesheet" href="/front/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header class="header">
-    <h1 class="logo" onclick="window.location.href='/front/index.html'" style="cursor:pointer">FREESE STORE</h1>
-    <input type="text" class="search" placeholder="O que você está buscando hoje?" />
-    <div class="acoes">
-      <span id="btn-login-abrir" style="cursor:pointer">Login</span>
+<div class="top-bar">
+    <span><i class="fas fa-truck"></i> FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 499</span>
+    <span><i class="fas fa-credit-card"></i> ATÉ 12X SEM JUROS</span>
+</div>
+
+<header class="header">
+  <div class="logo" onclick="window.location.href='/front/index.html'">
+      <img src="/front/midias/freese2.png" alt="Freese Store">
+  </div>
+
+  <input type="text" class="search" id="input-busca" placeholder="O que você está buscando hoje?" />
+
+  <div class="acoes">
+      <span id="btn-login-abrir" style="cursor:pointer"><i class="far fa-user"></i> Login</span>
       <span class="carrinho" id="abrir-carrinho" style="cursor:pointer">
-        🛒 <span id="contador-carrinho">0</span>
+        <i class="fas fa-shopping-bag"></i> <span id="contador-carrinho">0</span>
       </span>
+  </div>
+</header>
+
+<nav class="menu">
+  <a href="/front/index.html" class="active">Início</a>
+  <a href="/front/catalago/catalago.html">Catálogo</a>
+  <a href="#">Contato</a>
+</nav>
+
+<section class="banner">
+  <div class="banner-overlay">
+    <div class="banner-texto">
+      <h2>TÊNIS NIKE<br><span>AIR JORDAN</span></h2>
+      <p>O clássico Air Jordan em preto e vermelho absoluto. Estilo e conforto premium para quem domina as ruas.</p>
+      <button class="btn-banner" onclick="window.location.href='/front/catalago/catalago.html'">COMPRE AGORA</button>
     </div>
-  </header>
+  </div>
+</section>
 
-  <nav class="menu">
-    <a href="/front/index.html" class="active">Início</a>
-    <a href="/front/catalago/catalago.html">Catálogo</a>
-    <a href="#">Contato</a>
-  </nav>
-
-  <section class="banner">
-    <div class="banner-overlay">
-      <div class="banner-texto">
-        <h2>TÊNIS NIKE<br><span>AIR JORDAN</span></h2>
-        <p>O clássico Air Jordan em preto e vermelho absoluto. Estilo e conforto premium para quem domina as ruas.</p>
-        <button class="btn-banner" onclick="window.location.href='/front/catalago/catalago.html'">COMPRE AGORA</button>
-      </div>
+<section class="features-bar">
+    <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <div>
+            <strong>Compra Segura</strong>
+            <p>Seus dados protegidos</p>
+        </div>
     </div>
-  </section>
+    <div class="feature-item">
+        <i class="fas fa-sync-alt"></i>
+        <div>
+            <strong>Troca Fácil</strong>
+            <p>Até 30 dias para trocar</p>
+        </div>
+    </div>
+    <div class="feature-item">
+        <i class="fab fa-whatsapp"></i>
+        <div>
+            <strong>Suporte VIP</strong>
+            <p>Atendimento humano</p>
+        </div>
+    </div>
+</section>
 
-  <main class="conteudo">
-    <h2 class="titulo-secao">Destaques Puma 2026</h2>
-    <div id="lista-produtos">
-      </div>
-  </main>
+<main class="conteudo">
+    <div class="section-header">
+        <h2 class="titulo-secao">Destaques da Temporada</h2>
+        <p>Os modelos mais desejados de 2026 acabaram de chegar.</p>
+    </div>
+    <div id="lista-produtos" class="grid-produtos">
+        </div>
+</main>
 
-  <div id="modal-login" class="modal">
+<section class="newsletter">
+    <div class="news-content">
+        <h2>FAÇA PARTE DA ELITE</h2>
+        <p>Receba lançamentos exclusivos e descontos de primeira mão.</p>
+        <form class="news-form">
+            <input type="email" placeholder="Seu melhor e-mail">
+            <button type="submit">INSCREVER</button>
+        </form>
+    </div>
+</section>
+
+<div id="modal-login" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h2 id="modal-titulo">Acessar Conta</h2>
       
       <div id="selecao-tipo" class="login-options">
-        <button onclick="configurarLogin('cliente')" class="btn-opt">
-           Sou Cliente (Entrar)
-        </button>
-        <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">
-           Criar Nova Conta
-        </button>
-        <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
-        <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">
-          Acesso Administrador
-        </button>
+        <button onclick="configurarLogin('cliente')" class="btn-opt">Sou Cliente (Entrar)</button>
+        <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">Criar Nova Conta</button>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">Acesso Administrador</button>
       </div>
 
       <form id="form-login" class="hidden" onsubmit="efetuarLogin(event)">
@@ -76,30 +118,51 @@
         <p onclick="voltarSelecao()" class="btn-voltar">Já tenho conta? Entrar.</p>
       </form>
     </div>
-  </div>
+</div>
 
-  <div id="carrinho-lateral" class="carrinho-sidebar">
-      <div class="carrinho-header">
-          <h2>Seu Carrinho</h2>
-          <span class="fechar-carrinho" onclick="toggleCarrinho()">&times;</span>
-      </div>
-      <div id="itens-carrinho" class="carrinho-itens-lista">
+<div id="carrinho-lateral" class="carrinho-sidebar">
+    <div class="carrinho-header">
+        <h2>Seu Carrinho</h2>
+        <span class="fechar-carrinho" onclick="toggleCarrinho()">&times;</span>
+    </div>
+    <div id="itens-carrinho" class="carrinho-itens-lista"></div>
+    <div class="carrinho-footer">
+        <div class="total-container">
+            <span>Total:</span>
+            <span id="valor-total-carrinho">R$ 0,00</span>
         </div>
-      <div class="carrinho-footer">
-          <div class="total-container">
-              <span>Total:</span>
-              <span id="valor-total-carrinho">R$ 0,00</span>
-          </div>
-          <button onclick="finalizarCompra()" class="btn-finalizar">FINALIZAR COMPRA</button>
-      </div>
-  </div>
-  
-  <div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
+        <button onclick="window.location.href='/front/checkout/checkout.html'" class="btn-finalizar">FINALIZAR COMPRA</button>
+    </div>
+</div>
 
-  <footer class="footer">
-    © 2026 Freese Store - Urban Style & Premium Comfort
-  </footer>
+<div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
 
-  <script src="/front/index.js" defer></script>
+<footer class="footer">
+    <div class="footer-grid">
+        <div class="footer-col">
+            <img src="/front/midias/freese2.png" alt="Logo" class="footer-logo">
+            <p>A cultura sneaker levada a sério. Estilo urban para quem não aceita o comum.</p>
+        </div>
+        <div class="footer-col">
+            <h3>INSTITUCIONAL</h3>
+            <a href="#">Sobre Nós</a>
+            <a href="#">Políticas de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+        </div>
+        <div class="footer-col">
+            <h3>SOCIAL</h3>
+            <div class="social-icons">
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-tiktok"></i>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2026 Freese Store - Urban Style & Premium Comfort
+    </div>
+</footer>
+
+<script src="/front/index.js" defer></script>
 </body>
 </html>

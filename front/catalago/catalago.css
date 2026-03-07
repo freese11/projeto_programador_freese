@@ -1,283 +1,307 @@
+/* ============================================================
+   1. CONFIGURAÇÕES GERAIS E CORES
+   ============================================================ */
+:root {
+    --premium-red: #a70101;
+    --dark: #111;
+    --light-gray: #f9f9f9;
+    --white: #ffffff;
+    --transition: 0.3s ease;
+}
+
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
 }
 
 body {
-  background: #f9f9f9;
-  color: #111;
+    background: var(--light-gray);
+    color: var(--dark);
 }
 
-/* HEADER & NAV */
+/* ============================================================
+   2. HEADER, NAV E TOP BAR
+   ============================================================ */
+.top-bar {
+    background: #000;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 40px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 70px;
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-.logo { font-size: 26px; font-weight: 900; letter-spacing: -1px; }
+.logo img {
+    height: 60px;
+    cursor: pointer;
+}
 
 .search {
-  width: 40%;
-  padding: 12px 20px;
-  border-radius: 25px;
-  border: 1px solid #ddd;
-  outline: none;
+    width: 450px;
+    padding: 12px 25px;
+    border-radius: 30px;
+    border: 1px solid #eee;
+    background: #f5f5f5;
+    outline: none;
+    transition: var(--transition);
 }
 
-.acoes { display: flex; gap: 20px; align-items: center; font-weight: bold; }
+.search:focus {
+    background: #fff;
+    border-color: var(--premium-red);
+    box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.05);
+}
+
+.acoes {
+    display: flex;
+    gap: 25px;
+    font-weight: 700;
+    font-size: 14px;
+}
 
 .menu {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px;
-  background: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    background: #fff;
+    padding: 15px;
+    border-bottom: 1px solid #eee;
 }
 
-.menu a { text-decoration: none; color: #000; font-weight: bold; padding-bottom: 5px; }
-.menu a.active { border-bottom: 2px solid #a70101; }
-
-/* FILTROS */
-.filtros-container {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  margin-bottom: 40px;
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.menu a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px;
+    transition: var(--transition);
 }
 
-.filtro-grupo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.menu a.active, .menu a:hover {
+    color: var(--premium-red);
 }
 
-.filtro-grupo label {
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.select-filtro {
-  padding: 8px 12px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  outline: none;
-  cursor: pointer;
-}
-
-/* CONTEÚDO DO CATÁLOGO */
+/* ============================================================
+   3. FILTROS E CONTEÚDO
+   ============================================================ */
 .conteudo-catalago {
-  padding: 40px 5%;
-  max-width: 1400px;
-  margin: 0 auto;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 70px;
 }
 
 .header-pagina {
-  text-align: center;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 50px;
 }
 
-.header-pagina h2 { font-size: 32px; text-transform: uppercase; }
+.header-pagina h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
 
+.header-pagina span { color: var(--premium-red); }
+
+.filtros-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 60px;
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+}
+
+.filtro-grupo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-filtro {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+/* GRID DE PRODUTOS */
 .grid-catalago {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
 }
 
 .produto {
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  border: 1px solid #eee;
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid transparent;
 }
 
 .produto:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-color: #eee;
 }
 
 .produto img {
-  width: 100%;
-  height: 220px;
-  object-fit: contain;
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    margin-bottom: 20px;
 }
 
 .produto h3 {
-  margin: 15px 0 10px;
-  font-size: 16px;
-  text-transform: lowercase; /* Para bater com a imagem da sua loja */
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #333;
+    text-transform: uppercase;
 }
 
 .preco {
-  color: #a70101;
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
+    color: var(--premium-red);
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 20px;
 }
 
 .produto button {
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  cursor: pointer;
-  width: 100%;
-  font-weight: bold;
-  border-radius: 4px;
+    width: 100%;
+    padding: 15px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
 }
 
-/* --- BOTÕES DE SELEÇÃO (CLIENTE/ADMIN) --- */
-.login-options { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 12px; 
-    margin-top: 10px; 
+.produto button:hover {
+    background: var(--premium-red);
 }
 
-.btn-opt { 
-    padding: 15px; 
-    border: 2px solid #e0e0e0; 
-    background: #fff; 
-    cursor: pointer; 
-    font-weight: bold; 
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    font-size: 14px;
+/* ============================================================
+   4. MODAL DE LOGIN
+   ============================================================ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(5px);
 }
 
-.btn-opt:hover { 
-    border-color: #000; 
-    background: #f9f9f9;
-    transform: translateY(-2px);
+.modal-content {
+    background: #fff;
+    margin: 8% auto;
+    padding: 40px;
+    width: 90%;
+    max-width: 420px;
+    border-radius: 25px;
+    position: relative;
+    text-align: center;
 }
 
-.btn-admin { 
-    border-color: #fceaea; 
-    color: #a70101; 
-}
-.btn-admin:hover {
-    background: #fceaea;
-    border-color: #a70101;
+.close-modal {
+    position: absolute;
+    right: 25px; top: 20px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #ccc;
 }
 
-/* --- FORMULÁRIOS E INPUTS --- */
+.login-options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+
+.btn-opt {
+    padding: 16px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-opt:hover { background: #f5f5f5; border-color: #000; }
+.btn-admin { color: var(--premium-red); }
+
+.hidden { display: none !important; }
+
 #form-login, #form-registro {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 20px;
+    gap: 15px;
+    margin-top: 25px;
 }
 
 input {
-    width: 100%;
-    padding: 14px 18px;
+    padding: 15px;
+    border-radius: 12px;
     border: 1px solid #ddd;
-    border-radius: 10px;
     background: #f9f9f9;
     outline: none;
-    transition: 0.3s;
-    font-size: 14px;
 }
 
-input:focus {
-    border-color: #a70101;
-    background: #fff;
-    box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.1);
-}
-
-/* --- BOTÃO DE AÇÃO (ENTRAR/CADASTRAR) --- */
-/* Usei a classe do seu banner para manter o estilo que você gosta */
-#form-login button, #form-registro button {
-    padding: 16px;
+.btn-primary {
     background: #000;
     color: #fff;
-    font-weight: bold;
+    padding: 16px;
+    border-radius: 12px;
     border: none;
-    border-radius: 10px;
+    font-weight: 700;
     cursor: pointer;
-    transition: 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-#form-login button:hover, #form-registro button:hover {
-    background: #a70101;
-    transform: translateY(-2px);
-}
+.btn-primary:hover { background: var(--premium-red); }
 
-.btn-voltar { 
-    font-size: 12px; 
-    margin-top: 20px; 
-    cursor: pointer; 
-    text-decoration: underline; 
-    color: #888; 
-    transition: 0.3s;
-}
-.btn-voltar:hover { color: #000; }
-
-.hidden { display: none !important; }
-
-/* MODAL & AUXILIARES */
-.hidden { display: none !important; }
-.modal {
-  display: none; position: fixed; z-index: 1000;
-  left: 0; top: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-}
-.modal-content {
-  background: #fff; margin: 10% auto; padding: 30px;
-  width: 90%; max-width: 400px; border-radius: 12px;
-  position: relative; text-align: center;
-}
-.close-modal { position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
-.btn-entrar {
-  width: 100%; padding: 12px; background: #000; color: #fff;
-  border: none; border-radius: 5px; margin-top: 10px; cursor: pointer;
-}
-.footer { background: #000; color: #fff; text-align: center; padding: 20px; margin-top: 50px; }
-.btn-voltar { cursor: pointer; color: #666; margin-top: 15px; text-decoration: underline; }
-
-
-/* Sidebar do Carrinho */
+/* ============================================================
+   5. CARRINHO LATERAL (SIDEBAR)
+   ============================================================ */
 .carrinho-sidebar {
     position: fixed;
-    right: -400px; /* Começa escondido */
+    right: -400px;
     top: 0;
-    width: 350px;
+    width: 380px;
     height: 100%;
     background: #fff;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-    z-index: 2000;
-    transition: 0.4s ease;
+    z-index: 3000;
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     display: flex;
     flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
 }
 
 .carrinho-sidebar.ativo { right: 0; }
 
-#carrinho-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1999;
-}
-
 .carrinho-header {
-    padding: 20px;
+    padding: 30px;
     border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
@@ -292,31 +316,45 @@ input:focus {
 
 .item-no-carrinho {
     display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #f9f9f9;
-    padding-bottom: 10px;
+    gap: 15px;
+    padding: 15px;
+    border-bottom: 1px solid #f5f5f5;
+    align-items: center;
 }
 
-.item-no-carrinho img { width: 60px; height: 60px; object-fit: contain; }
+.item-no-carrinho img { width: 70px; height: 70px; object-fit: contain; }
 
-.carrinho-footer { padding: 20px; border-top: 1px solid #eee; }
+.carrinho-footer {
+    padding: 30px;
+    border-top: 1px solid #eee;
+    background: #fcfcfc;
+}
 
 .total-container {
     display: flex;
     justify-content: space-between;
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 20px;
 }
 
 .btn-finalizar {
     width: 100%;
-    padding: 15px;
+    padding: 18px;
     background: #27ae60;
     color: white;
     border: none;
-    font-weight: bold;
+    font-weight: 700;
+    border-radius: 12px;
     cursor: pointer;
-    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+#carrinho-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 2999;
 }

@@ -3,49 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo Completo - Freese Store</title>
+  <title>Catálogo Completo | Freese Store</title>
   <link rel="stylesheet" href="catalago.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <header class="header">
-    <h1 class="logo">FREESE STORE</h1>
-    <input type="text" id="input-busca" class="search" placeholder="O que você está buscando no catálogo?" />
-    <div class="acoes">
-      <span id="btn-login-abrir" style="cursor:pointer">Login</span>
-      <span class="carrinho">
-        🛒 <span id="contador-carrinho">0</span>
+<div class="top-bar">
+    <span><i class="fas fa-truck"></i> FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 499</span>
+</div>
+
+<header class="header">
+  <div class="logo" onclick="window.location.href='/front/index.html'">
+      <img src="/front/midias/freese2.png" alt="Freese Store">
+  </div>
+
+  <input type="text" id="input-busca" class="search" placeholder="Buscar por modelo ou marca..." />
+
+  <div class="acoes">
+      <span id="btn-login-abrir" style="cursor:pointer"><i class="far fa-user"></i> Login</span>
+      <span class="carrinho" id="abrir-carrinho" style="cursor:pointer">
+        <i class="fas fa-shopping-bag"></i> <span id="contador-carrinho">0</span>
       </span>
-    </div>
-  </header>
+  </div>
+</header>
 
-  <nav class="menu">
-    <a href="/front/index.html">Início</a>
-    <a href="/front/catalago/catalago.html" class="active">Catálogo</a>
-    <a href="#">Contato</a>
-  </nav>
+<nav class="menu">
+  <a href="/front/index.html">Início</a>
+  <a href="/front/catalago/catalago.html" class="active">Catálogo</a>
+  <a href="#">Contato</a>
+</nav>
 
-  <main class="conteudo-catalago">
+<main class="conteudo-catalago">
     <div class="header-pagina">
-      <h2>Nosso Catálogo</h2>
-      <p>Explore todos os nossos produtos exclusivos</p>
+      <h2>Explore Nosso <span>Estoque</span></h2>
+      <p>As melhores marcas do street wear mundial em um só lugar.</p>
     </div>
 
     <div class="filtros-container">
       <div class="filtro-grupo">
-        <label for="filtro-categoria">Categoria:</label>
+        <label><i class="fas fa-filter"></i> Categoria:</label>
         <select id="filtro-categoria" class="select-filtro">
           <option value="todos">Todas</option>
           <option value="camisa">Camisas</option>
           <option value="bone">Bonés</option>
           <option value="moletom">Moletons</option>
           <option value="tenis">Tênis</option>
-
         </select>
       </div>
 
       <div class="filtro-grupo">
-        <label for="filtro-marca">Marca:</label>
+        <label><i class="fas fa-tags"></i> Marca:</label>
         <select id="filtro-marca" class="select-filtro">
           <option value="todos">Todas Marcas</option>
           <option value="nike">Nike</option>
@@ -53,78 +62,61 @@
           <option value="bmw">BMW</option>
           <option value="adidas">Adidas</option>
           <option value="lacoste">Lacoste</option>
-          <option value="inter">Inter maior do sul</option>
           <option value="mizuno">Mizuno</option>
-          
         </select>
       </div>
     </div>
     
     <div id="lista-produtos-geral" class="grid-catalago">
-      </div>
-  </main>
- <div id="modal-login" class="modal">
+        </div>
+</main>
+
+<div id="modal-login" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h2 id="modal-titulo">Acessar Conta</h2>
       
       <div id="selecao-tipo" class="login-options">
-        <button onclick="configurarLogin('cliente')" class="btn-opt">
-           Sou Cliente (Entrar)
-        </button>
-        <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">
-           Criar Nova Conta
-        </button>
-        <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
-        <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">
-          Acesso Administrador
-        </button>
+        <button onclick="configurarLogin('cliente')" class="btn-opt">Sou Cliente (Entrar)</button>
+        <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">Criar Nova Conta</button>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">Acesso Administrador</button>
       </div>
 
       <form id="form-login" class="hidden" onsubmit="efetuarLogin(event)">
-        <input type="email" id="email" placeholder="Seu e-mail" required>
-        <input type="password" id="senha" placeholder="Sua senha" required>
-        <button type="submit" class="btn-primary">ENTRAR NA CONTA</button>
-        <p onclick="voltarSelecao()" class="btn-voltar">Voltar para opções</p>
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="password" id="senha" placeholder="Senha" required>
+        <button type="submit" class="btn-primary">ENTRAR</button>
+        <p onclick="voltarSelecao()" class="btn-voltar">Voltar</p>
       </form>
 
       <form id="form-registro" class="hidden" onsubmit="registrarCliente(event)">
         <input type="text" id="reg-nome" placeholder="Nome Completo" required>
-        <input type="email" id="reg-email" placeholder="E-mail de acesso" required>
-        <input type="tel" id="reg-telefone" placeholder="Telefone (WhatsApp)" required>
-        <input type="password" id="reg-senha" placeholder="Crie uma senha" required>
-        <button type="submit" class="btn-primary" style="background: #27ae60;">FINALIZAR CADASTRO</button>
-        <p onclick="voltarSelecao()" class="btn-voltar">Já tenho conta? Entrar.</p>
+        <input type="email" id="reg-email" placeholder="E-mail" required>
+        <input type="tel" id="reg-telefone" placeholder="WhatsApp" required>
+        <input type="password" id="reg-senha" placeholder="Senha" required>
+        <button type="submit" class="btn-primary">FINALIZAR CADASTRO</button>
+        <p onclick="voltarSelecao()" class="btn-voltar">Já tem conta? Entrar.</p>
       </form>
     </div>
-  </div>
-
-  <footer class="footer">
-    © 2026 Freese Store - Todos os direitos reservados
-  </footer>
-
-
+</div>
 
 <div id="carrinho-lateral" class="carrinho-sidebar">
     <div class="carrinho-header">
         <h2>Seu Carrinho</h2>
         <span class="fechar-carrinho" onclick="toggleCarrinho()">&times;</span>
     </div>
-    
-    <div id="itens-carrinho" class="carrinho-itens-lista">
-        </div>
-
+    <div id="itens-carrinho" class="carrinho-itens-lista"></div>
     <div class="carrinho-footer">
         <div class="total-container">
             <span>Total:</span>
             <span id="valor-total-carrinho">R$ 0,00</span>
         </div>
-        <button onclick="finalizarCompra()" class="btn-finalizar">FINALIZAR COMPRA</button>
+        <button onclick="alert('Indo para checkout...')" class="btn-finalizar">FINALIZAR COMPRA</button>
     </div>
 </div>
-
 <div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
 
-  <script src="catalago.js" defer></script>
+<script src="catalago.js" defer></script>
 </body>
 </html>

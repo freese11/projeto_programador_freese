@@ -193,11 +193,20 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 40px;
+  padding: 10px 70px;
   background: #fff;
 }
-.logo { font-size: 26px; font-weight: 900; letter-spacing: -1px; }
+.logo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
+.logo img{
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+}
 
 .search {
   width: 40%;
@@ -500,3 +509,61 @@ input:focus {
 .btn-finalizar:hover { background: #219150; }
 
 .hidden { display: none !important; }
+
+
+/* Top Bar */
+.top-bar {
+    background: #000;
+    color: #fff;
+    padding: 8px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+/* Features Bar */
+.features-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 40px 8%;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+.feature-item { display: flex; align-items: center; gap: 15px; }
+.feature-item i { font-size: 25px; color: #a70101; }
+.feature-item strong { display: block; font-size: 14px; text-transform: uppercase; }
+.feature-item p { font-size: 12px; color: #777; }
+
+/* Newsletter */
+.newsletter {
+    background: #111;
+    color: #fff;
+    padding: 80px 20px;
+    text-align: center;
+    margin-top: 50px;
+}
+.news-form {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.news-form input { max-width: 300px; background: #222; border: 1px solid #333; color: #fff; }
+.news-form button { padding: 15px 30px; background: #a70101; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+
+/* Footer Grid */
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    padding: 60px 8%;
+    background: #f9f9f9;
+    color: #333;
+}
+.footer-col h3 { font-size: 14px; margin-bottom: 20px; letter-spacing: 1px; }
+.footer-col a { display: block; text-decoration: none; color: #666; margin-bottom: 10px; font-size: 13px; }
+.footer-logo { height: 60px; margin-bottom: 20px; filter: grayscale(1); }
+.footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }
