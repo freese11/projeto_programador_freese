@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contato | Freese Store</title>
+  <link rel="stylesheet" href="/front/contato/contato.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo" onclick="window.location.href='/front/index.html'">
+      <img src="/front/midias/freese2.png" alt="Freese Store">
+  </div>
+  <nav class="menu">
+    <a href="/front/index.html">Início</a>
+    <a href="/front/catalago/catalago.html">Catálogo</a>
+    <a href="#" class="active">Contato</a>
+  </nav>
+  <div class="acoes">
+      <span id="btn-login-abrir" style="cursor:pointer"><i class="far fa-user"></i> Login</span>
+  </div>
+</header>
+
+<main class="contato-container">
+    <section class="contato-header">
+        <h1>FALE COM A <span>FREESE STORE</span></h1>
+        <p>Dúvidas sobre seu pedido ou parcerias? Nossa equipe está pronta para atender.</p>
+    </section>
+
+    <div class="contato-grid">
+        <div class="contato-info">
+            <div class="info-card">
+                <i class="fab fa-whatsapp"></i>
+                <h3>WHATSAPP</h3>
+                <p>(51) 9535-2834</p>
+                <span>Segunda a Sexta, 9h às 18h</span>
+            </div>
+            <div class="info-card">
+                <i class="far fa-envelope"></i>
+                <h3>E-MAIL</h3>
+                <p>suporte@freesestore.com.br</p>
+            </div>
+            <div class="info-card">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>NOSSA BASE</h3>
+                <p>Parobe, Rio Grande do Sul - Brasil</p>
+            </div>
+        </div>
+
+        <div class="contato-form">
+            <form id="form-contato">
+                <div class="input-group">
+                    <label>NOME COMPLETO</label>
+                    <input type="text" placeholder="Como podemos te chamar?" required>
+                </div>
+                <div class="input-group">
+                    <label>E-MAIL</label>
+                    <input type="email" placeholder="Seu melhor e-mail" required>
+                </div>
+                <div class="input-group">
+                    <label>ASSUNTO</label>
+                    <select>
+                        <option>Status do Pedido</option>
+                        <option>Trocas e Devoluções</option>
+                        <option>Parcerias / Influencer</option>
+                        <option>Outros</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>MENSAGEM</label>
+                    <textarea rows="5" placeholder="Escreva aqui sua dúvida..."></textarea>
+                </div>
+                <button type="submit" class="btn-enviar">ENVIAR MENSAGEM</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    © 2026 Freese Store - Urban Style & Premium Comfort
+</footer>
+
+<script src="/front/index.js" defer></script>
+</body>
+</html>
