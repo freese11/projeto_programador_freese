@@ -28,7 +28,7 @@ router.get('/:codcliente', async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         // Agora recebemos a senha também
-        const { nome, email, telefone, senha } = req.body;
+        const { nome, email, telefone, senha} = req.body;
         const result = await pool.query(
             'INSERT INTO cliente (nome, email, telefone, senha) VALUES ($1, $2, $3, $4) RETURNING *',
             [nome, email, telefone, senha]

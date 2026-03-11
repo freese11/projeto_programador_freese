@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contato | Freese Store</title>
-  <link rel="stylesheet" href="/front/contato/contato.css">
+  <link rel="stylesheet" href="contato.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
@@ -21,13 +21,16 @@
   </nav>
   <div class="acoes">
       <span id="btn-login-abrir" style="cursor:pointer"><i class="far fa-user"></i> Login</span>
+      <span class="carrinho" id="abrir-carrinho" style="cursor:pointer; margin-left: 15px;">
+        <i class="fas fa-shopping-bag"></i> <span id="contador-carrinho">0</span>
+      </span>
   </div>
 </header>
 
 <main class="contato-container">
     <section class="contato-header">
-        <h1>FALE COM A <span>FREESE STORE</span></h1>
-        <p>Dúvidas sobre seu pedido ou parcerias? Nossa equipe está pronta para atender.</p>
+        <h1>FALE COM A <span>ELITE</span></h1>
+        <p>Dúvidas ou suporte? Nossa equipe responde em até 24h.</p>
     </section>
 
     <div class="contato-grid">
@@ -35,43 +38,24 @@
             <div class="info-card">
                 <i class="fab fa-whatsapp"></i>
                 <h3>WHATSAPP</h3>
-                <p>(51) 9535-2834</p>
-                <span>Segunda a Sexta, 9h às 18h</span>
+                <p>(51) 99999-9999</p>
             </div>
             <div class="info-card">
                 <i class="far fa-envelope"></i>
                 <h3>E-MAIL</h3>
                 <p>suporte@freesestore.com.br</p>
             </div>
-            <div class="info-card">
-                <i class="fas fa-map-marker-alt"></i>
-                <h3>NOSSA BASE</h3>
-                <p>Parobe, Rio Grande do Sul - Brasil</p>
-            </div>
         </div>
 
         <div class="contato-form">
-            <form id="form-contato">
+            <form id="form-contato-ajuda">
                 <div class="input-group">
                     <label>NOME COMPLETO</label>
-                    <input type="text" placeholder="Como podemos te chamar?" required>
-                </div>
-                <div class="input-group">
-                    <label>E-MAIL</label>
-                    <input type="email" placeholder="Seu melhor e-mail" required>
-                </div>
-                <div class="input-group">
-                    <label>ASSUNTO</label>
-                    <select>
-                        <option>Status do Pedido</option>
-                        <option>Trocas e Devoluções</option>
-                        <option>Parcerias / Influencer</option>
-                        <option>Outros</option>
-                    </select>
+                    <input type="text" placeholder="Seu nome" required>
                 </div>
                 <div class="input-group">
                     <label>MENSAGEM</label>
-                    <textarea rows="5" placeholder="Escreva aqui sua dúvida..."></textarea>
+                    <textarea rows="4" placeholder="Como podemos ajudar?" required></textarea>
                 </div>
                 <button type="submit" class="btn-enviar">ENVIAR MENSAGEM</button>
             </form>
@@ -79,8 +63,73 @@
     </div>
 </main>
 
+<div id="modal-login" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modal-titulo">Acessar Conta</h2>
+      
+      <div id="selecao-tipo" class="login-options">
+        <button onclick="configurarLogin('cliente')" class="btn-opt">Sou Cliente (Entrar)</button>
+        <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">Criar Nova Conta</button>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">Acesso Administrador</button>
+      </div>
+
+      <form id="form-login" class="hidden" onsubmit="efetuarLogin(event)">
+        <input type="email" id="email" placeholder="E-mail" required>
+        <input type="password" id="senha" placeholder="Senha" required>
+        <button type="submit" class="btn-primary">ENTRAR</button>
+        <p onclick="voltarSelecao()" class="btn-voltar">Voltar</p>
+      </form>
+
+      <form id="form-registro" class="hidden" onsubmit="registrarCliente(event)">
+        <input type="text" id="reg-nome" placeholder="Nome Completo" required>
+        <input type="email" id="reg-email" placeholder="E-mail" required>
+        <input type="tel" id="reg-telefone" placeholder="WhatsApp" required>
+        <input type="password" id="reg-senha" placeholder="Crie uma senha" required>
+        <button type="submit" class="btn-primary" style="background: #27ae60;">CADASTRAR</button>
+        <p onclick="voltarSelecao()" class="btn-voltar">Já tenho conta? Entrar.</p>
+      </form>
+    </div>
+</div>
+
+<div id="carrinho-lateral" class="carrinho-sidebar">
+    <div class="carrinho-header">
+        <h2>Seu Carrinho</h2>
+        <span onclick="toggleCarrinho()">&times;</span>
+    </div>
+    <div id="itens-carrinho"></div>
+    <div class="carrinho-footer">
+        <span id="valor-total-carrinho">R$ 0,00</span>
+    </div>
+</div>
+<div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
+
+
 <footer class="footer">
-    © 2026 Freese Store - Urban Style & Premium Comfort
+    <div class="footer-grid">
+        <div class="footer-col">
+            <img src="/front/midias/freese2.png" alt="Logo" class="footer-logo">
+            <p>A cultura sneaker levada a sério. Estilo urban para quem não aceita o comum.</p>
+        </div>
+        <div class="footer-col">
+            <h3>INSTITUCIONAL</h3>
+            <a href="#">Sobre Nós</a>
+            <a href="#">Políticas de Privacidade</a>
+            <a href="#">Termos de Uso</a>
+        </div>
+        <div class="footer-col">
+            <h3>SOCIAL</h3>
+            <div class="social-icons">
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-facebook"></i>
+                <i class="fab fa-tiktok"></i>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        © 2026 Freese Store - Urban Style & Premium Comfort
+    </div>
 </footer>
 
 <script src="/front/index.js" defer></script>
