@@ -1,6 +1,6 @@
-const API_URL = "http://localhost:3000/produtos";
-// Substitua pelo valor real da sua API_KEY que está no catálogo!
+const API_URL = "https://projeto-programador-freese-backend.onrender.com/produtos";
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
+const LOGIN_URL = "https://projeto-programador-freese-backend.onrender.com/login";
 
 let todosProdutos = [];
 let produtoAtual = null;
@@ -16,11 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     verificarStatusUsuario();
 });
 
-// ==========================================
-// LÓGICA DO PRODUTO (BUSCAR E EXIBIR)
-// ==========================================
 async function carregarProduto() {
-    // Pega o ID da URL (ex: detalhes.html?id=5)
     const params = new URLSearchParams(window.location.search);
     const idProduto = params.get('id');
 
@@ -33,7 +29,6 @@ async function carregarProduto() {
         const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
         
-        // Acha o produto específico na lista
         produtoAtual = todosProdutos.find(p => p.codproduto == idProduto);
         
         if (produtoAtual) {
@@ -73,9 +68,6 @@ function renderizarDetalhes(produto) {
     `;
 }
 
-// ==========================================
-// LÓGICA DO CARRINHO (IGUAL AO CATÁLOGO)
-// ==========================================
 function adicionarAoCarrinhoDetalhes() {
     if (!localStorage.getItem("usuarioAtivo")) {
         alert("Acesse sua conta para comprar.");
@@ -86,7 +78,6 @@ function adicionarAoCarrinhoDetalhes() {
 
     const tamanhoEscolhido = document.getElementById("tamanho-escolhido").value;
     
-    // Verifica se já existe esse produto COM ESSE TAMANHO no carrinho
     const itemExistente = carrinho.find(p => p.codproduto === produtoAtual.codproduto && p.tamanho === tamanhoEscolhido);
     
     if (itemExistente) {
@@ -97,7 +88,7 @@ function adicionarAoCarrinhoDetalhes() {
 
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
-    toggleCarrinho(true); // Abre a gaveta lateral
+    toggleCarrinho(true); 
 }
 
 function atualizarContador() {
@@ -141,9 +132,7 @@ async function renderizarItensCarrinho() {
     totalElement.innerText = `R$ ${total.toFixed(2)}`;
 }
 
-// ==========================================
-// LÓGICA DE LOGIN (AGORA COM API KEY!)
-// ==========================================
+// 👇 AQUI ESTÁ A CORREÇÃO DO REDIRECIONAMENTO DO ADM 👇
 function verificarStatusUsuario() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     const btnLogin = document.getElementById("btn-login-abrir");
@@ -151,6 +140,11 @@ function verificarStatusUsuario() {
         const usuario = JSON.parse(usuarioJson);
         btnLogin.innerHTML = `<i class="fas fa-user-check"></i> ${usuario.nome.split(' ')[0]} (Sair)`;
         btnLogin.onclick = () => { if(confirm("Deseja sair da sua conta?")) { localStorage.removeItem("usuarioAtivo"); location.reload(); }};
+        
+        // CORREÇÃO: Se for administrador, manda pro painel!
+        if (usuario.tipo && (usuario.tipo.toLowerCase() === "adm" || usuario.tipo.toLowerCase() === "admin")) {
+            window.location.href = "/front/admin/admin.html";
+        }
     } else {
         btnLogin.onclick = () => { modal.style.display = "block"; voltarSelecao(); };
     }
@@ -161,18 +155,17 @@ function configurarRegistro() { document.getElementById("selecao-tipo").classLis
 function voltarSelecao() { document.getElementById("selecao-tipo").classList.remove("hidden"); document.getElementById("form-login").classList.add("hidden"); document.getElementById("form-registro").classList.add("hidden"); }
 document.querySelector(".close-modal").onclick = () => modal.style.display = "none";
 
-// Esta é a função que destranca o servidor enviando a API KEY no cabeçalho
 async function efetuarLogin(event) {
-    event.preventDefault(); // Impede a tela de recarregar
+    event.preventDefault(); 
     const email = document.getElementById("email").value.trim();
     const senha = document.getElementById("senha").value.trim();
 
     try {
-        const resposta = await fetch("http://localhost:3000/login", {
+        const resposta = await fetch(LOGIN_URL, {
             method: "POST",
             headers: { 
                 "Content-Type": "application/json",
-                "minha-chave": API_KEY // 👈 ENVIANDO A CHAVE PARA O SERVIDOR NÃO DAR ACESSO NEGADO!
+                "minha-chave": API_KEY 
             },
             body: JSON.stringify({ 
                 email: email, 
@@ -186,7 +179,7 @@ async function efetuarLogin(event) {
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
             alert(`Bem-vindo(a) de volta, ${dados.nome}!`);
             modal.style.display = "none";
-            verificarStatusUsuario(); // Atualiza o topo do site
+            location.reload(); // Vai recarregar a tela e acionar a verificação que manda pro ADM
         } else {
             alert("E-mail ou senha incorretos! Verifique também se escolheu a opção correta (Cliente ou Admin).");
         }

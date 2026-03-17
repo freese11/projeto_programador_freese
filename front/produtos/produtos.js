@@ -1,4 +1,4 @@
-const API = "http://localhost:3000/produtos";
+const API = "https://projeto-programador-freese-backend.onrender.com/produtos";
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
 let produtos = [];

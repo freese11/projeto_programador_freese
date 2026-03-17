@@ -1,93 +1,87 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <title>Admin - Usuários</title>
     <link rel="stylesheet" href="usuarios.css">
 </head>
-
 <body>
 
-    <header class="topbar">
-        <div class="left">
-            <button class="btn-voltar" onclick="voltar()">← Voltar</button>
-            <h1>Gerenciamento de Usuários</h1>
+<header class="topbar">
+    <div class="left">
+        <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+        <h1>Gerenciamento de Usuários</h1>
+    </div>
+    <!-- Opcional: Se você ainda não tem a rota POST no backend, esse botão pode dar erro ao criar novo -->
+    <button class="btn-novo" onclick="abrirModal()">+ Novo Usuário</button>
+</header>
+
+<div class="abas-container">
+    <button id="aba-clientes" class="btn-aba ativo" onclick="mudarAba('cliente')">👤 Clientes</button>
+    <button id="aba-adms" class="btn-aba" onclick="mudarAba('adm')">🛡️ Administradores</button>
+</div>
+
+<section class="filtros">
+    <input type="text" id="filtro-nome" placeholder="Buscar por nome ou e-mail..." oninput="filtrar()">
+</section>
+
+<div class="tabela-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Foto</th>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>E-mail</th>
+                <th>Número</th>
+                <th>Perfil</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="tabela-usuarios">
+            <!-- Usuários injetados via JS -->
+        </tbody>
+    </table>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-titulo">Novo Usuário</h2>
+
+        <input type="hidden" id="codusuario">
+
+        <div class="foto-upload-container">
+            <img id="preview-foto" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Preview" class="avatar-preview">
+            <label for="foto" class="btn-upload">Escolher Foto</label>
+            <input type="file" id="foto" accept="image/*" style="display: none;" onchange="previewImagem(event)">
         </div>
 
-        <button class="btn-novo" onclick="abrirModal()">+ Novo Usuário</button>
-    </header>
-
-    <section class="filtros">
-
-        <input type="text" id="filtro-nome" placeholder="Buscar usuário..." oninput="filtrar()">
-
-        <select id="filtro-perfil" onchange="filtrar()">
-            <option value="">Todos</option>
-            <option value="adm">Administrador</option>
+        <label>Nome Completo</label>
+        <input type="text" id="nome" placeholder="Ex: Maria Eduarda">
+        
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="maria@email.com">
+        
+        <label>Senha</label>
+        <input type="text" id="senha" placeholder="Digite a senha">
+        
+        <label>Número (WhatsApp/Celular)</label>
+        <input type="text" id="numero" placeholder="51999999999">
+        
+        <label>Perfil</label>
+        <select id="perfil">
             <option value="cliente">Cliente</option>
+            <option value="adm">Administrador</option>
         </select>
 
-    </section>
-
-    <div class="tabela-container">
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>Foto</th>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Número</th>
-                    <th>Perfil</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-
-            <tbody id="tabela-usuarios"></tbody>
-
-        </table>
-
-    </div>
-
-    <!-- MODAL -->
-
-    <div id="modal" class="modal">
-
-        <div class="modal-content">
-
-            <h2>Novo Usuário</h2>
-
-            <input type="hidden" id="codusuario">
-
-            <input type="text" id="nome" placeholder="Nome">
-            <input type="email" id="email" placeholder="Email">
-            <input type="text" id="numero" placeholder="Número">
-            <input type="password" id="senha" placeholder="Senha">
-
-            <select id="perfil">
-                <option value="cliente">Cliente</option>
-                <option value="adm">Administrador</option>
-            </select>
-
-            <input type="file" id="foto" accept="image/*">
-
-            <img id="preview" class="preview-img">
-
-            <div class="modal-buttons">
-
-                <button class="salvar" onclick="salvar()">Salvar</button>
-                <button class="cancelar" onclick="fecharModal()">Cancelar</button>
-
-            </div>
-
+        <div class="modal-buttons">
+            <button class="salvar" onclick="salvar()">Salvar</button>
+            <button class="cancelar" onclick="fecharModal()">Cancelar</button>
         </div>
-
     </div>
+</div>
 
-    <script src="usuarios.js"></script>
-
+<script src="usuarios.js"></script>
 </body>
-
 </html>

@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// LISTAR
+// LISTAR TODOS (GET)
 router.get("/", async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM usuarios ORDER BY codusuario DESC");
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// BUSCAR UM
+// BUSCAR UM (GET)
 router.get("/:codusuario", async (req, res) => {
     try {
         const { codusuario } = req.params;
@@ -32,13 +32,35 @@ router.get("/:codusuario", async (req, res) => {
     }
 });
 
-// ATUALIZAR (PUT) - CORRIGIDO
+// 👇 AQUI ESTÁ A ROTA POST QUE FALTAVA PARA CRIAR O USUÁRIO 👇
+router.post("/", upload.single("foto"), async (req, res) => {
+    try {
+        const { nome, email, numero, senha, perfil } = req.body;
+        
+        let fotoFinal = null;
+        if (req.file) {
+            fotoFinal = "/uploads/usuarios/" + req.file.filename;
+        }
+
+        const result = await pool.query(
+            `INSERT INTO usuarios (nome, email, numero, senha, perfil, foto_perfil) 
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [nome, email, numero, senha, perfil, fotoFinal]
+        );
+
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error("ERRO NO POST:", err);
+        res.status(500).json({ erro: "Erro interno: " + err.message });
+    }
+});
+
+// ATUALIZAR (PUT)
 router.put("/:codusuario", upload.single("foto"), async (req, res) => {
     try {
         const { codusuario } = req.params;
         const { nome, email, numero, senha, perfil } = req.body;
 
-        // 1. Busca a foto atual para não apagar se não enviar nova
         const usuarioAtual = await pool.query("SELECT foto_perfil FROM usuarios WHERE codusuario=$1", [codusuario]);
         
         if (usuarioAtual.rows.length === 0) {
@@ -46,13 +68,10 @@ router.put("/:codusuario", upload.single("foto"), async (req, res) => {
         }
 
         let fotoFinal = usuarioAtual.rows[0].foto_perfil;
-
-        // 2. Se enviou uma foto nova, atualiza o caminho
         if (req.file) {
             fotoFinal = "/uploads/usuarios/" + req.file.filename;
         }
 
-        // 3. SQL usando EXATAMENTE o nome da sua coluna: foto_perfil
         const result = await pool.query(
             `UPDATE usuarios 
              SET nome=$1, email=$2, numero=$3, senha=$4, perfil=$5, foto_perfil=$6
@@ -62,12 +81,12 @@ router.put("/:codusuario", upload.single("foto"), async (req, res) => {
 
         res.json(result.rows[0]);
     } catch (err) {
-        console.error("ERRO DETALHADO NO PUT:", err); // Isso aparecerá no seu terminal
+        console.error("ERRO DETALHADO NO PUT:", err);
         res.status(500).json({ erro: "Erro interno: " + err.message });
     }
 });
 
-// DELETE (com tratamento de erro de chave estrangeira)
+// DELETE
 router.delete("/:codusuario", async (req, res) => {
     try {
         const { codusuario } = req.params;

@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:3000/produtos";
-const USUARIOS_URL = "http://localhost:3000/usuarios";
+const API_URL = "https://projeto-programador-freese-backend.onrender.com/produtos";
+const USUARIOS_URL = "https://projeto-programador-freese-backend.onrender.com/usuarios";
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
 // Elementos

@@ -1,7 +1,6 @@
-const API_URL = "http://localhost:3000/produtos";
-const USUARIOS_URL = "http://localhost:3000/usuarios";
-
-// 👇 CORRIGIDO: Chave exatamente igual à do servidor
+const API_URL = "https://projeto-programador-freese-backend.onrender.com/produtos";
+const USUARIOS_URL = "https://projeto-programador-freese-backend.onrender.com/usuarios";
+const LOGIN_URL = "https://projeto-programador-freese-backend.onrender.com/login";
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
 const listaProdutosGeral = document.getElementById("lista-produtos-geral");
@@ -21,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarContador();
     verificarStatusUsuario();
     
-    // Conecta o formulário de login com a nossa função segura
     const formLogin = document.getElementById("form-login");
     if (formLogin) {
         formLogin.addEventListener("submit", efetuarLogin);
@@ -73,12 +71,10 @@ function filtrarProdutos() {
     renderizarProdutos(filtrados);
 }
 
-// Eventos de Filtro
 if(inputBusca) inputBusca.addEventListener("input", filtrarProdutos);
 if(filtroCategoria) filtroCategoria.addEventListener("change", filtrarProdutos);
 if(filtroMarca) filtroMarca.addEventListener("change", filtrarProdutos);
 
-// Funções de Carrinho
 function adicionarCarrinho(codproduto) {
     if (!localStorage.getItem("usuarioAtivo")) {
         alert("Acesse sua conta para comprar.");
@@ -131,7 +127,7 @@ async function renderizarItensCarrinho() {
     totalElement.innerText = `R$ ${total.toFixed(2)}`;
 }
 
-// Login/Status 
+// 👇 AQUI ESTÁ A CORREÇÃO DO REDIRECIONAMENTO DO ADM 👇
 function verificarStatusUsuario() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     const btnLogin = document.getElementById("btn-login-abrir");
@@ -141,12 +137,16 @@ function verificarStatusUsuario() {
         const usuario = JSON.parse(usuarioJson);
         btnLogin.innerHTML = `<i class="fas fa-user-check"></i> ${usuario.nome.split(' ')[0]} (Sair)`;
         btnLogin.onclick = () => { if(confirm("Sair da conta?")) { localStorage.clear(); location.reload(); }};
+        
+        // CORREÇÃO: Se for administrador, manda pro painel!
+        if (usuario.tipo && (usuario.tipo.toLowerCase() === "adm" || usuario.tipo.toLowerCase() === "admin")) {
+            window.location.href = "/front/admin/admin.html";
+        }
     } else {
         btnLogin.onclick = () => { modal.style.display = "block"; voltarSelecao(); };
     }
 }
 
-// Funções auxiliares do modal
 function configurarLogin(tipo) { 
     tipoLoginEscolhido = tipo; 
     document.getElementById("selecao-tipo").classList.add("hidden"); 
@@ -167,11 +167,9 @@ function voltarSelecao() {
 const btnClose = document.querySelector(".close-modal");
 if(btnClose) btnClose.onclick = () => modal.style.display = "none";
 
-// 👇 A MÁGICA ACONTECE AQUI: FUNÇÃO NOVA PARA EFETUAR O LOGIN 👇
 async function efetuarLogin(event) {
-    if(event) event.preventDefault(); // Evita que a página recarregue ao clicar em "Entrar"
+    if(event) event.preventDefault();
 
-    // Busca os inputs de e-mail e senha no HTML (ajusta para os IDs mais comuns)
     const emailInput = document.getElementById("email") || document.querySelector('input[type="email"]');
     const senhaInput = document.getElementById("senha") || document.querySelector('input[type="password"]');
 
@@ -181,11 +179,11 @@ async function efetuarLogin(event) {
     }
 
     try {
-        const resposta = await fetch('http://localhost:3000/login', {
+        const resposta = await fetch(LOGIN_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'minha-chave': API_KEY // 👈 Enviando a chave secreta exigida pelo servidor!
+                'minha-chave': API_KEY 
             },
             body: JSON.stringify({
                 email: emailInput.value,
@@ -197,11 +195,9 @@ async function efetuarLogin(event) {
         const dados = await resposta.json();
 
         if (resposta.ok && dados.sucesso) {
-            // Sucesso! Salva o usuário no navegador e atualiza a tela
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
             location.reload(); 
         } else {
-            // Se errou a senha
             alert(dados.message || "E-mail ou senha incorretos!");
         }
     } catch (erro) {
@@ -210,21 +206,15 @@ async function efetuarLogin(event) {
     }
 }
 
-
-// ==========================================
-// FUNÇÃO PARA FINALIZAR A VENDA (CHECKOUT)
-// ==========================================
 async function finalizarCompra() {
     const carrinhoAtual = JSON.parse(localStorage.getItem("carrinho")) || [];
     const usuarioJson = localStorage.getItem("usuarioAtivo");
 
-    // 1. Verifica se o carrinho tem itens
     if (carrinhoAtual.length === 0) {
         alert("O seu carrinho está vazio! Adicione produtos antes de comprar.");
         return;
     }
 
-    // 2. Verifica se o usuário está logado
     if (!usuarioJson) {
         alert("Você precisa fazer login para finalizar a compra.");
         const modal = document.getElementById("modal-login");
@@ -233,10 +223,8 @@ async function finalizarCompra() {
     }
 
     const usuarioLogado = JSON.parse(usuarioJson);
-    // Pega o ID do usuário (ajuste caso o seu banco retorne um nome diferente, ex: codcliente)
     const idUsuario = usuarioLogado.codusuario || usuarioLogado.id || usuarioLogado.codcliente;
 
-    // Muda o botão para mostrar que está carregando
     const btnFinalizar = document.getElementById("btn-finalizar-compra");
     if (btnFinalizar) {
         btnFinalizar.innerText = "Processando...";
@@ -244,35 +232,29 @@ async function finalizarCompra() {
     }
 
     try {
-        // Pega a data de hoje no formato YYYY-MM-DD (Padrão de banco de dados)
         const dataAtual = new Date().toISOString().split('T')[0]; 
-        
         let sucessoGeral = true;
 
-        // 3. Como o banco aceita 1 produto por vez, fazemos um loop no carrinho
         for (const item of carrinhoAtual) {
-            // Acha o preço do produto na lista de produtos carregada
             const produto = todosProdutos.find(p => p.codproduto === item.codproduto);
             if (!produto) continue;
 
             const valorTotalDoItem = produto.valor * item.qtd;
 
-            // Monta os dados exatamente como o seu vendasDB.js pede
             const dadosDaVenda = {
                 codcliente: idUsuario,
                 codproduto: item.codproduto,
-                codusuario: idUsuario, // Usamos o mesmo ID para cliente e usuário logado
+                codusuario: idUsuario, 
                 status: "Pendente",
                 data: dataAtual,
                 valortotal: valorTotalDoItem
             };
 
-            // 4. Envia para a sua API com a Chave de Segurança!
-            const resposta = await fetch('http://localhost:3000/vendas', {
+            const resposta = await fetch('https://projeto-programador-freese-backend.onrender.com/vendas', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'minha-chave': API_KEY // A chave que libera o acesso no servidor!
+                    'minha-chave': API_KEY 
                 },
                 body: JSON.stringify(dadosDaVenda)
             });
@@ -283,14 +265,13 @@ async function finalizarCompra() {
             }
         }
 
-        // 5. Verifica se tudo deu certo
         if (sucessoGeral) {
             alert("🎉 Compra realizada com sucesso! A Freese Store agradece sua preferência.");
-            localStorage.removeItem("carrinho"); // Esvazia a memória do navegador
-            carrinho = []; // Zera a variável
+            localStorage.removeItem("carrinho"); 
+            carrinho = []; 
             atualizarContador();
-            toggleCarrinho(false); // Fecha a barra lateral
-            location.reload(); // Recarrega para limpar tudo
+            toggleCarrinho(false); 
+            location.reload(); 
         } else {
             alert("Tivemos um problema ao registrar alguns itens. Tente novamente.");
         }
@@ -299,7 +280,6 @@ async function finalizarCompra() {
         console.error("Erro no checkout:", erro);
         alert("Erro de conexão com o servidor. Tente novamente mais tarde.");
     } finally {
-        // Volta o botão ao normal
         if (btnFinalizar) {
             btnFinalizar.innerText = "FINALIZAR COMPRA";
             btnFinalizar.disabled = false;
