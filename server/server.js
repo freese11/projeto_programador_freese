@@ -1,7 +1,8 @@
 const express = require("express");
 require("dotenv").config();
 const cors = require('cors');
-const pool = require('./db'); // Importante: Adicionei a importação do pool aqui
+const path = require('path'); // 🔹 Adicionado para encontrar as pastas corretamente
+const pool = require('./db');
 
 const produtosRouter = require("./routes/produtosDB");
 const autenticarAPIkey = require("./autorizar");
@@ -12,19 +13,26 @@ const vendasRouter = require("./routes/vendasDB");
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(autenticarAPIkey);
 
-// 🔹 liberar acesso às imagens enviadas
-app.use('/uploads', express.static('uploads'));
+// ==========================================
+// 1. ÁREA PÚBLICA (Não precisa de API Key)
+// ==========================================
 
-// Rota raiz
+// 🔹 Liberar acesso aos arquivos do site (HTML, CSS, JS, Imagens)
+app.use('/front', express.static(path.join(__dirname, 'front')));
+
+// 🔹 Liberar acesso às imagens de produtos e fotos de perfil enviadas
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 🔹 Rota raiz
 app.get("/", (req, res) => {
-  res.send("🌎 API de Produtos rodando!");
+  res.send("🌎 API da Freese Store rodando!");
 });
 
-// =====================
-// Rota de Login Unificada
-// =====================
+// 🔹 Catálogo de Produtos (Os clientes precisam ver os produtos sem ter senha)
+app.use("/produtos", produtosRouter);
+
+// 🔹 Rota de Login Unificada (Pública, para permitir que entrem)
 app.post("/login", async (req, res) => {
     const { email, senha, tipoLoginEscolhido } = req.body;
 
@@ -33,13 +41,11 @@ app.post("/login", async (req, res) => {
         console.log("TIPO DE LOGIN SOLICITADO:", tipoLoginEscolhido);
 
         if (tipoLoginEscolhido === 'admin') {
-            // Busca o admin na tabela usuarios
             result = await pool.query(
                 'SELECT * FROM usuarios WHERE email = $1 AND senha = $2 AND perfil = $3',
                 [email, senha, 'adm']
             );
         } else {
-            // Busca o cliente na tabela usuarios (COMO VOCÊ FEZ ORIGINALMENTE!)
             result = await pool.query(
                 'SELECT * FROM usuarios WHERE email = $1 AND senha = $2 AND perfil = $3',
                 [email, senha, 'cliente']
@@ -53,34 +59,32 @@ app.post("/login", async (req, res) => {
                 nome: user.nome,
                 tipo: user.perfil
             });
-
         } else {
             res.status(401).json({
                 sucesso: false,
                 message: "E-mail ou senha incorretos"
             });
         }
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Erro no servidor" });
     }
 });
 
-// =====================
-// Rotas das Tabelas
-// =====================
+// ==========================================
+// 2. PORTA DE SEGURANÇA (Middlewares)
+// ==========================================
+// 🔴 A PARTIR DESTA LINHA, TUDO EXIGE A API KEY!
+app.use(autenticarAPIkey);
 
-// A rota de produtos fica fora do autenticador para o catálogo ser público
-app.use("/produtos", produtosRouter);
-
-// As outras rotas precisam de API KEY (autenticarAPIkey)
+// ==========================================
+// 3. ÁREA RESTRITA (Requer API Key)
+// ==========================================
 app.use("/clientes", clientesRouter);
 app.use("/usuarios", usuariosRouter);
 app.use("/vendas", vendasRouter);
 
 const PORT = process.env.PORT || 3000;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
 });
