@@ -1,23 +1,24 @@
 const express = require('express');
-const pool = require('../db');
+const pool = require('../db'); // Verifique se o caminho do db está correto
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs"); 
 const router = express.Router();
 
-// Configuração do Multer com criação de pasta GARANTIDA e Caminho Absoluto
+// 🔹 Configuração do Multer nível Sênior
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // process.cwd() pega a raiz exata do seu projeto no Render, não importa de onde o arquivo seja chamado
-        const dirUploads = path.join(process.cwd(), 'uploads', 'usuarios');
+        // Usamos __dirname para voltar uma pasta (..) e entrar em uploads/usuarios. 
+        // Isso é 100% à prova de falhas no Render!
+        const dirUploads = path.join(__dirname, '..', 'uploads', 'usuarios');
         
-        // Verifica e cria a pasta EXATAMENTE na hora de salvar o arquivo
+        // Verifica e cria a pasta na hora de salvar o arquivo
         if (!fs.existsSync(dirUploads)) {
             fs.mkdirSync(dirUploads, { recursive: true });
-            console.log("Pasta criada com sucesso no momento do upload:", dirUploads);
+            console.log("Pasta criada com sucesso:", dirUploads);
         }
         
-        cb(null, dirUploads); // Avisa o Multer que a pasta tá pronta e é aqui!
+        cb(null, dirUploads);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + path.extname(file.originalname));
@@ -65,6 +66,10 @@ router.post("/", upload.single("foto"), async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         console.error("ERRO NO POST:", err);
+        // Se for erro de e-mail duplicado, avisamos de forma clara!
+        if (err.code === '23505') {
+            return res.status(400).json({ erro: "Este e-mail já está cadastrado!" });
+        }
         res.status(500).json({ erro: "Erro interno: " + err.message });
     }
 });
@@ -108,7 +113,7 @@ router.delete("/:codusuario", async (req, res) => {
         res.json({ message: "Deletado" });
     } catch (err) {
         if (err.code === '23503') {
-            res.status(500).json({ erro: "Este usuário tem vendas e não pode ser excluído." });
+            res.status(400).json({ erro: "Este usuário tem vendas e não pode ser excluído." });
         } else {
             res.status(500).json({ erro: err.message });
         }
