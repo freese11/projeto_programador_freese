@@ -71,7 +71,7 @@ function verificarStatusUsuario() {
         };
 
         if (usuario.tipo && usuario.tipo.toLowerCase() === "adm") {
-            window.location.href = "/front/admin/admin.html";
+            window.location.href = "/admin/admin.html";
         }
     } else {
         btnLogin.innerText = "Login";

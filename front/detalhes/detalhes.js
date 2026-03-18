@@ -143,7 +143,7 @@ function verificarStatusUsuario() {
         
         // CORREÇÃO: Se for administrador, manda pro painel!
         if (usuario.tipo && (usuario.tipo.toLowerCase() === "adm" || usuario.tipo.toLowerCase() === "admin")) {
-            window.location.href = "/front/admin/admin.html";
+            window.location.href = "/admin/admin.html";
         }
     } else {
         btnLogin.onclick = () => { modal.style.display = "block"; voltarSelecao(); };

@@ -45,7 +45,7 @@ function renderizarProdutos(produtos) {
         div.className = "produto";
         
         div.innerHTML = `
-            <div style="cursor: pointer;" onclick="window.location.href='/front/detalhes/detalhes.html?id=${p.codproduto}'">
+            <div style="cursor: pointer;" onclick="window.location.href='/detalhes/detalhes.html?id=${p.codproduto}'">
                 <img src="${p.img}" alt="${p.nome}">
                 <h3>${p.nome}</h3>
                 <p class="preco">R$ ${Number(p.valor).toFixed(2)}</p>
@@ -140,7 +140,7 @@ function verificarStatusUsuario() {
         
         // CORREÇÃO: Se for administrador, manda pro painel!
         if (usuario.tipo && (usuario.tipo.toLowerCase() === "adm" || usuario.tipo.toLowerCase() === "admin")) {
-            window.location.href = "/front/admin/admin.html";
+            window.location.href = "/admin/admin.html";
         }
     } else {
         btnLogin.onclick = () => { modal.style.display = "block"; voltarSelecao(); };

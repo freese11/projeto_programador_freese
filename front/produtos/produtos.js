@@ -4,7 +4,7 @@ const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 let produtos = [];
 
 function voltar() {
-    window.location.href = "/front/admin/admin.html";
+    window.location.href = "/admin/admin.html";
 }
 
 async function carregar() {

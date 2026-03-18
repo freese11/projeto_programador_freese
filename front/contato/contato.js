@@ -38,7 +38,7 @@ function verificarStatusUsuario() {
         };
         // Redireciona ADM
         if (usuario.tipo?.toLowerCase() === "adm" && !window.location.pathname.includes("/admin/")) {
-            window.location.href = "/front/admin/admin.html";
+            window.location.href = "/admin/admin.html";
         }
     } else {
         btnLogin.onclick = () => { modal.style.display = "block"; voltarSelecao(); };

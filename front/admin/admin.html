@@ -13,7 +13,7 @@
 <header class="header">
     <div class="header-container">
         <div class="logo">
-            <img src="/front/midias/freese2.png" alt="Freese Store">
+            <img src="/midias/freese2.png" alt="Freese Store">
         </div>
 
         <div class="nav-actions">
@@ -38,7 +38,7 @@
         </div>
 
         <div class="hub-grid">
-            <a href="/front/vendas/vendas.html" class="hub-card">
+            <a href="/vendas/vendas.html" class="hub-card">
                 <i class="fas fa-chart-line"></i>
                 <div class="hub-info">
                     <h3>Vendas</h3>
@@ -46,7 +46,7 @@
                 </div>
             </a>
 
-            <a href="/front/produtos/produtos.html" class="hub-card">
+            <a href="/produtos/produtos.html" class="hub-card">
                 <i class="fas fa-box-open"></i>
                 <div class="hub-info">
                     <h3>Produtos</h3>
@@ -54,7 +54,7 @@
                 </div>
             </a>
 
-            <a href="/front/usuarios/usuarios.html" class="hub-card">
+            <a href="/usuarios/usuarios.html" class="hub-card">
                 <i class="fas fa-user-shield"></i>
                 <div class="hub-info">
                     <h3>Usuários</h3>
@@ -73,14 +73,14 @@
             if (confirm("Deseja realmente sair do sistema?")) {
                 localStorage.removeItem("usuarioAtivo");
                 localStorage.removeItem("carrinho");
-                window.location.href = "/front/index.html";
+                window.location.href = "/index.html";
             }
         }
 
         const usuario = JSON.parse(localStorage.getItem("usuarioAtivo"));
 
         if (!usuario || usuario.tipo !== "adm") {
-            window.location.href = "/front/index.html";
+            window.location.href = "/index.html";
         }
     </script>
 

@@ -2,12 +2,26 @@ const express = require('express');
 const pool = require('../db');
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs"); 
 const router = express.Router();
 
-// Configuração do Multer
+// Configuração do Multer com criação de pasta GARANTIDA e Caminho Absoluto
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, "uploads/usuarios"),
-    filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+    destination: (req, file, cb) => {
+        // process.cwd() pega a raiz exata do seu projeto no Render, não importa de onde o arquivo seja chamado
+        const dirUploads = path.join(process.cwd(), 'uploads', 'usuarios');
+        
+        // Verifica e cria a pasta EXATAMENTE na hora de salvar o arquivo
+        if (!fs.existsSync(dirUploads)) {
+            fs.mkdirSync(dirUploads, { recursive: true });
+            console.log("Pasta criada com sucesso no momento do upload:", dirUploads);
+        }
+        
+        cb(null, dirUploads); // Avisa o Multer que a pasta tá pronta e é aqui!
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
 });
 const upload = multer({ storage });
 
@@ -32,7 +46,7 @@ router.get("/:codusuario", async (req, res) => {
     }
 });
 
-// 👇 AQUI ESTÁ A ROTA POST QUE FALTAVA PARA CRIAR O USUÁRIO 👇
+// CRIAR USUÁRIO (POST)
 router.post("/", upload.single("foto"), async (req, res) => {
     try {
         const { nome, email, numero, senha, perfil } = req.body;

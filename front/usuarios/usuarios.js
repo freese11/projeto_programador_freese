@@ -5,7 +5,7 @@ let todosUsuarios = [];
 let abaAtiva = "cliente"; 
 
 function voltar() {
-    window.location.href = "/front/admin/admin.html";
+    window.location.href = "/admin/admin.html";
 }
 
 async function carregar() {
