@@ -38,8 +38,9 @@ async function carregarProdutosHome() {
         destaques.forEach(produto => {
             const div = document.createElement("div");
             div.className = "produto";
+            // 👇 Adicionado onerror para fotos de produtos que sumirem
             div.innerHTML = `
-                <img src="${produto.img}" alt="${produto.nome}">
+                <img src="${produto.img}" alt="${produto.nome}" onerror="this.onerror=null; this.src='https://via.placeholder.com/300x300?text=Sem+Foto';">
                 <h3>${produto.nome}</h3>
                 <p class="preco">R$ ${Number(produto.valor).toFixed(2)}</p>
                 <button onclick="adicionarCarrinho(${produto.codproduto})">ADICIONAR AO CARRINHO</button>
@@ -52,7 +53,7 @@ async function carregarProdutosHome() {
 }
 
 // ==========================================
-// 🚀 SOLUÇÃO MÁXIMA COM BASE NO SEU SUPABASE
+// 🚀 STATUS DO USUÁRIO E FOTO DE PERFIL
 // ==========================================
 async function verificarStatusUsuario() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
@@ -63,22 +64,18 @@ async function verificarStatusUsuario() {
     if (usuarioJson && usuarioJson !== "undefined") {
         let session = JSON.parse(usuarioJson);
         
-        // Entendendo a estrutura exata (lidando com {usuario: {...}} ou apenas {...})
         let userObj = session.usuario ? session.usuario : session;
         
-        // Baseado na sua imagem, a coluna é "codusuario" (ex: 18)
         let idUser = userObj.codusuario || userObj.id;
         let nomeSalvo = userObj.nome || "Usuário";
         let primeiroNome = String(nomeSalvo).split(' ')[0];
         let fotoSalva = userObj.foto_perfil || userObj.foto;
 
-        // Se for admin, manda pro painel
         if (userObj.perfil === "adm" || session.tipo === "adm") {
             window.location.href = "/admin/admin.html";
             return;
         }
 
-        // Função mágica que junta o caminho igual ao seu usuario.js
         const montarUrlFoto = (caminho) => {
             if (!caminho || caminho === "null" || caminho.trim() === "") {
                 return 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
@@ -86,16 +83,18 @@ async function verificarStatusUsuario() {
             if (caminho.startsWith('http') || caminho.startsWith('data:')) {
                 return caminho;
             }
-            // Exatamente como vimos no Supabase: /uploads/usuarios/...
             let caminhoCorrigido = caminho.startsWith('/') ? caminho : '/' + caminho;
             return URL_SERVIDOR + caminhoCorrigido;
         };
 
-        // 1. Já coloca a foto na tela com o que tem salvo (para não dar tela em branco)
         let urlFotoAtual = montarUrlFoto(fotoSalva);
         
+        // 👇 A MÁGICA ESTÁ AQUI: O onerror troca para a foto cinza se o Render apagar o arquivo
         btnLogin.innerHTML = `
-            <img id="img-perfil-header" src="${urlFotoAtual}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 5px; border: 1px solid #ccc;"> 
+            <img id="img-perfil-header" 
+                 src="${urlFotoAtual}" 
+                 onerror="this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png';" 
+                 style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 5px; border: 1px solid #ccc; background: white;"> 
             <span style="font-weight: bold;">${primeiroNome}</span>
         `;
         
@@ -107,10 +106,8 @@ async function verificarStatusUsuario() {
             }
         };
 
-        // 2. Busca os dados Fresquinhos direto do Supabase via API pelo ID (ex: /usuarios/18)
         if (idUser) {
             try {
-                // Esse fetch bate direto na mesma rota que o Painel Admin usa!
                 const res = await fetch(`${USUARIOS_URL}/${idUser}`, { headers: { "minha-chave": API_KEY } });
                 
                 if (res.ok) {
@@ -118,18 +115,18 @@ async function verificarStatusUsuario() {
                     
                     if (u && u.foto_perfil) {
                         let urlFotoNova = montarUrlFoto(u.foto_perfil);
-                        // Quebra o Cache do navegador pra ter certeza que carrega a nova
                         urlFotoNova += "?v=" + new Date().getTime();
                         
-                        // Troca a foto do cabeçalho
                         const imgHeader = document.getElementById("img-perfil-header");
                         if (imgHeader) imgHeader.src = urlFotoNova;
 
-                        // Se o modal estiver aberto, troca lá também
                         const imgModal = document.getElementById("preview-foto-perfil");
-                        if (imgModal) imgModal.src = urlFotoNova;
+                        // 👇 Adiciona a proteção no modal também
+                        if (imgModal) {
+                            imgModal.onerror = function() { this.onerror=null; this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'; };
+                            imgModal.src = urlFotoNova;
+                        }
 
-                        // Atualiza silenciosamente a memória do PC para a próxima vez
                         userObj.foto_perfil = u.foto_perfil;
                         if(session.usuario) {
                             session.usuario = userObj;
@@ -292,7 +289,8 @@ async function renderizarItensCarrinho() {
             const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
             if (p) {
                 totalGeral += p.valor * item.qtd;
-                container.innerHTML += `<div class="item-no-carrinho"><img src="${p.img}"><div><p><strong>${p.nome}</strong></p><p>${item.qtd}x R$ ${p.valor}</p></div></div>`;
+                // 👇 Adicionado onerror aqui também para fotos no carrinho
+                container.innerHTML += `<div class="item-no-carrinho"><img src="${p.img}" onerror="this.onerror=null; this.src='https://via.placeholder.com/150?text=Sem+Foto';"><div><p><strong>${p.nome}</strong></p><p>${item.qtd}x R$ ${p.valor}</p></div></div>`;
             }
         });
         document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
@@ -329,7 +327,6 @@ async function salvarFotoPerfil() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     const session = JSON.parse(usuarioJson);
     
-    // Pega o ID com segurança
     const userObj = session.usuario ? session.usuario : session;
     const idUser = userObj.codusuario || userObj.id;
 
@@ -344,7 +341,6 @@ async function salvarFotoPerfil() {
     btnSalvar.disabled = true;
 
     try {
-        // Puxa os dados originais direto pelo ID
         const resBusca = await fetch(`${USUARIOS_URL}/${idUser}`, { headers: { "minha-chave": API_KEY } });
         const u = await resBusca.json();
 

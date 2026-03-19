@@ -52,18 +52,18 @@ app.post("/login", async (req, res) => {
             );
         }
 
-                if (result.rows.length > 0) {
+        if (result.rows.length > 0) {
             const user = result.rows[0];
+            
+            // 👇 AQUI ESTÁ A CORREÇÃO! AGORA ENVIAMOS TODOS OS DADOS 👇
             res.json({
                 sucesso: true,
-                codusuario: user.codusuario, // 👈 AGORA O SITE SABE O ID!
+                codusuario: user.codusuario, // ID do usuário
                 nome: user.nome,
-                email: user.email,           // 👈 AGORA O SITE SABE O EMAIL!
+                email: user.email,
                 tipo: user.perfil,
-                foto_perfil: user.foto_perfil // 👈 AGORA A FOTO JÁ VEM NO LOGIN!
+                foto_perfil: user.foto_perfil // A foto vai junto no login agora!
             });
-    
-
         } else {
             res.status(401).json({
                 sucesso: false,
