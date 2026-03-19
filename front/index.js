@@ -1,10 +1,11 @@
-const API_URL = "https://projeto-programador-freese-backend.onrender.com/produtos";
-const USUARIOS_URL = "https://projeto-programador-freese-backend.onrender.com/usuarios";
-const LOGIN_URL = "https://projeto-programador-freese-backend.onrender.com/login";
+const URL_SERVIDOR = "https://projeto-programador-freese-backend.onrender.com";
+const API_URL = `${URL_SERVIDOR}/produtos`;
+const USUARIOS_URL = `${URL_SERVIDOR}/usuarios`;
+const LOGIN_URL = `${URL_SERVIDOR}/login`;
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
 // Elementos
-const listaProdutosDestaque = document.getElementById("lista-produtos"); // ID da Home
+const listaProdutosDestaque = document.getElementById("lista-produtos"); 
 const contadorCarrinho = document.getElementById("contador-carrinho");
 const modal = document.getElementById("modal-login");
 
@@ -12,25 +13,25 @@ let todosProdutos = [];
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 let tipoLoginEscolhido = "";
 
-// ===============================
-// 1️⃣ INICIALIZAÇÃO
-// ===============================
 document.addEventListener("DOMContentLoaded", () => {
     atualizarContador();
     carregarProdutosHome();
     verificarStatusUsuario();
+    
+    const closeBtns = document.querySelectorAll(".close-modal");
+    closeBtns.forEach(btn => {
+        btn.onclick = function() {
+            this.closest('.modal').style.display = "none";
+        }
+    });
 });
 
-// ===============================
-// 2️⃣ CARREGAR PRODUTOS (HOME - FILTRO BMW)
-// ===============================
 async function carregarProdutosHome() {
     if (!listaProdutosDestaque) return;
     try {
         const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
         
-        // Filtra para mostrar apenas BMW na Home como destaque
         const destaques = todosProdutos.filter(p => p.nome.toLowerCase().includes("bmw"));
         
         listaProdutosDestaque.innerHTML = "";
@@ -50,31 +51,101 @@ async function carregarProdutosHome() {
     }
 }
 
-// ===============================
-// 3️⃣ STATUS DO USUÁRIO & MODAL
-// ===============================
-function verificarStatusUsuario() {
+// ==========================================
+// 🚀 SOLUÇÃO MÁXIMA COM BASE NO SEU SUPABASE
+// ==========================================
+async function verificarStatusUsuario() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     const btnLogin = document.getElementById("btn-login-abrir");
 
     if (!btnLogin) return;
 
     if (usuarioJson && usuarioJson !== "undefined") {
-        const usuario = JSON.parse(usuarioJson);
-        btnLogin.innerHTML = ` ${usuario.nome.split(' ')[0]} (Sair)`;
+        let session = JSON.parse(usuarioJson);
+        
+        // Entendendo a estrutura exata (lidando com {usuario: {...}} ou apenas {...})
+        let userObj = session.usuario ? session.usuario : session;
+        
+        // Baseado na sua imagem, a coluna é "codusuario" (ex: 18)
+        let idUser = userObj.codusuario || userObj.id;
+        let nomeSalvo = userObj.nome || "Usuário";
+        let primeiroNome = String(nomeSalvo).split(' ')[0];
+        let fotoSalva = userObj.foto_perfil || userObj.foto;
+
+        // Se for admin, manda pro painel
+        if (userObj.perfil === "adm" || session.tipo === "adm") {
+            window.location.href = "/admin/admin.html";
+            return;
+        }
+
+        // Função mágica que junta o caminho igual ao seu usuario.js
+        const montarUrlFoto = (caminho) => {
+            if (!caminho || caminho === "null" || caminho.trim() === "") {
+                return 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            }
+            if (caminho.startsWith('http') || caminho.startsWith('data:')) {
+                return caminho;
+            }
+            // Exatamente como vimos no Supabase: /uploads/usuarios/...
+            let caminhoCorrigido = caminho.startsWith('/') ? caminho : '/' + caminho;
+            return URL_SERVIDOR + caminhoCorrigido;
+        };
+
+        // 1. Já coloca a foto na tela com o que tem salvo (para não dar tela em branco)
+        let urlFotoAtual = montarUrlFoto(fotoSalva);
+        
+        btnLogin.innerHTML = `
+            <img id="img-perfil-header" src="${urlFotoAtual}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 5px; border: 1px solid #ccc;"> 
+            <span style="font-weight: bold;">${primeiroNome}</span>
+        `;
+        
         btnLogin.onclick = () => {
-            if (confirm("Deseja sair?")) {
-                localStorage.removeItem("usuarioAtivo");
-                localStorage.removeItem("carrinho");
-                location.reload();
+            const modalPerfil = document.getElementById("modal-perfil");
+            if (modalPerfil) {
+                modalPerfil.style.display = "block";
+                document.getElementById("preview-foto-perfil").src = document.getElementById("img-perfil-header").src;
             }
         };
 
-        if (usuario.tipo && usuario.tipo.toLowerCase() === "adm") {
-            window.location.href = "/admin/admin.html";
+        // 2. Busca os dados Fresquinhos direto do Supabase via API pelo ID (ex: /usuarios/18)
+        if (idUser) {
+            try {
+                // Esse fetch bate direto na mesma rota que o Painel Admin usa!
+                const res = await fetch(`${USUARIOS_URL}/${idUser}`, { headers: { "minha-chave": API_KEY } });
+                
+                if (res.ok) {
+                    const u = await res.json();
+                    
+                    if (u && u.foto_perfil) {
+                        let urlFotoNova = montarUrlFoto(u.foto_perfil);
+                        // Quebra o Cache do navegador pra ter certeza que carrega a nova
+                        urlFotoNova += "?v=" + new Date().getTime();
+                        
+                        // Troca a foto do cabeçalho
+                        const imgHeader = document.getElementById("img-perfil-header");
+                        if (imgHeader) imgHeader.src = urlFotoNova;
+
+                        // Se o modal estiver aberto, troca lá também
+                        const imgModal = document.getElementById("preview-foto-perfil");
+                        if (imgModal) imgModal.src = urlFotoNova;
+
+                        // Atualiza silenciosamente a memória do PC para a próxima vez
+                        userObj.foto_perfil = u.foto_perfil;
+                        if(session.usuario) {
+                            session.usuario = userObj;
+                        } else {
+                            session = userObj;
+                        }
+                        localStorage.setItem("usuarioAtivo", JSON.stringify(session));
+                    }
+                }
+            } catch (err) {
+                console.error("Erro ao buscar foto fresquinha:", err);
+            }
         }
+
     } else {
-        btnLogin.innerText = "Login";
+        btnLogin.innerHTML = `<i class="far fa-user"></i> Login`;
         btnLogin.onclick = () => {
             if (modal) {
                 modal.style.display = "block";
@@ -84,9 +155,9 @@ function verificarStatusUsuario() {
     }
 }
 
-// ===============================
-// 4️⃣ FUNÇÕES DO MODAL (ESTILO CATÁLOGO)
-// ===============================
+// ==========================================
+// FUNÇÕES DO MODAL LOGIN E REGISTRO
+// ==========================================
 function configurarLogin(tipo) {
     tipoLoginEscolhido = tipo;
     document.getElementById("selecao-tipo").classList.add("hidden");
@@ -107,13 +178,6 @@ function voltarSelecao() {
     document.getElementById("modal-titulo").innerText = "Acessar Conta";
 }
 
-// Fecha no X
-const closeBtn = document.querySelector(".close-modal");
-if (closeBtn) closeBtn.onclick = () => modal.style.display = "none";
-
-// ===============================
-// 5️⃣ LÓGICA DE LOGIN & REGISTRO (COPIADA DO SEU EXEMPLO)
-// ===============================
 async function efetuarLogin(event) {
     event.preventDefault();
     const email = document.getElementById("email").value;
@@ -135,9 +199,62 @@ async function efetuarLogin(event) {
     } catch (erro) { alert("Erro de conexão"); }
 }
 
-// ===============================
-// 6️⃣ CARRINHO (MANTENDO SUA LÓGICA)
-// ===============================
+function previewImagemRegistro(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("preview-foto-registro").src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+async function registrarCliente(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("nome", document.getElementById("reg-nome").value);
+    formData.append("email", document.getElementById("reg-email").value);
+    formData.append("senha", document.getElementById("reg-senha").value);
+    formData.append("numero", document.getElementById("reg-telefone").value);
+    formData.append("perfil", "cliente"); 
+
+    const inputFoto = document.getElementById("reg-foto");
+    if (inputFoto.files && inputFoto.files.length > 0) {
+        formData.append("foto", inputFoto.files[0]);
+    }
+
+    const btnSalvar = document.querySelector("#form-registro button[type='submit']");
+    const textoOriginal = btnSalvar.innerText;
+    btnSalvar.innerText = "CADASTRANDO...";
+    btnSalvar.disabled = true;
+
+    try {
+        const res = await fetch(USUARIOS_URL, {
+            method: "POST",
+            headers: { "minha-chave": API_KEY },
+            body: formData
+        });
+
+        if (res.ok) {
+            alert("Conta criada com sucesso! Você já pode fazer login.");
+            voltarSelecao(); 
+        } else {
+            const erro = await res.json();
+            alert("Erro: " + (erro.erro || "Falha ao cadastrar."));
+        }
+    } catch (erro) {
+        alert("Erro de conexão com o servidor.");
+    } finally {
+        btnSalvar.innerText = textoOriginal;
+        btnSalvar.disabled = false;
+    }
+}
+
+// ==========================================
+// CARRINHO E PERFIL
+// ==========================================
 function adicionarCarrinho(codproduto) {
     if (!localStorage.getItem("usuarioAtivo")) {
         alert("Acesse sua conta primeiro.");
@@ -180,4 +297,82 @@ async function renderizarItensCarrinho() {
         });
         document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
     } catch (e) { console.error(e); }
+}
+
+function previewImagemPerfil(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById("preview-foto-perfil").src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function sairConta() {
+    if (confirm("Deseja realmente sair da sua conta?")) {
+        localStorage.removeItem("usuarioAtivo");
+        localStorage.removeItem("carrinho");
+        location.reload();
+    }
+}
+
+async function salvarFotoPerfil() {
+    const inputFoto = document.getElementById("foto-perfil");
+    
+    if (inputFoto.files.length === 0) {
+        alert("Por favor, clique em 'Escolher Nova Foto' primeiro para selecionar uma imagem.");
+        return;
+    }
+
+    const usuarioJson = localStorage.getItem("usuarioAtivo");
+    const session = JSON.parse(usuarioJson);
+    
+    // Pega o ID com segurança
+    const userObj = session.usuario ? session.usuario : session;
+    const idUser = userObj.codusuario || userObj.id;
+
+    if (!idUser) {
+        alert("Erro de autenticação. Faça login novamente.");
+        return;
+    }
+
+    const btnSalvar = document.querySelector("#modal-perfil button.btn-primary");
+    const textoOriginal = btnSalvar.innerText;
+    btnSalvar.innerText = "Salvando...";
+    btnSalvar.disabled = true;
+
+    try {
+        // Puxa os dados originais direto pelo ID
+        const resBusca = await fetch(`${USUARIOS_URL}/${idUser}`, { headers: { "minha-chave": API_KEY } });
+        const u = await resBusca.json();
+
+        const formData = new FormData();
+        formData.append("nome", u.nome);
+        formData.append("email", u.email);
+        if (u.senha) formData.append("senha", u.senha); 
+        if (u.numero) formData.append("numero", u.numero);
+        formData.append("perfil", u.perfil || "cliente");
+        formData.append("foto", inputFoto.files[0]); 
+
+        const resPut = await fetch(`${USUARIOS_URL}/${idUser}`, {
+            method: "PUT",
+            headers: { "minha-chave": API_KEY },
+            body: formData
+        });
+
+        if (resPut.ok) {
+            alert("Sua foto de perfil foi atualizada com sucesso!");
+            location.reload(); 
+        } else {
+            alert("Erro ao atualizar foto. Tente novamente.");
+        }
+    } catch(err) {
+        console.error("Erro ao salvar foto:", err);
+        alert("Erro de conexão ao tentar salvar a foto.");
+    } finally {
+        btnSalvar.innerText = textoOriginal;
+        btnSalvar.disabled = false;
+    }
 }

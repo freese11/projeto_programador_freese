@@ -567,3 +567,81 @@ input:focus {
 .footer-col a { display: block; text-decoration: none; color: #666; margin-bottom: 10px; font-size: 13px; }
 .footer-logo { height: 60px; margin-bottom: 20px; filter: grayscale(1); }
 .footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }
+
+
+/* ========================================= */
+/* ESTILOS DO MODAL DE PERFIL E CABEÇALHO    */
+/* ========================================= */
+
+.text-center {
+    text-align: center;
+}
+
+.hr-divisor {
+    margin: 15px 0;
+    border: 0;
+    border-top: 1px solid #eee;
+}
+
+.btn-acao-header {
+    cursor: pointer;
+}
+
+/* Foto do usuário no Cabeçalho */
+.avatar-header {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    vertical-align: middle;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+}
+
+.nome-header {
+    font-weight: bold;
+}
+
+/* Modal de Perfil do Cliente */
+.perfil-foto-container {
+    margin: 20px 0;
+}
+
+.perfil-foto-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #111;
+    margin-bottom: 15px;
+}
+
+.input-escondido {
+    display: none;
+}
+
+.btn-escolher-foto {
+    cursor: pointer;
+    padding: 10px 20px;
+    display: inline-block;
+    width: auto;
+    font-size: 14px;
+}
+
+/* Cores Extras para Botões */
+.btn-success {
+    background: #27ae60 !important;
+    margin-bottom: 10px;
+}
+
+.btn-success:hover {
+    background: #219653 !important;
+}
+
+.btn-danger {
+    background: #e74c3c !important;
+}
+
+.btn-danger:hover {
+    background: #c0392b !important;
+}

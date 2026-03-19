@@ -74,8 +74,7 @@
     <div class="section-header">
         <h2 class="titulo-secao">Destaques da Temporada</h2>
     </div>
-    <div id="lista-produtos" class="grid-produtos">
-        </div>
+    <div id="lista-produtos" class="grid-produtos"></div>
 </main>
 
 <section class="newsletter">
@@ -89,6 +88,7 @@
     </div>
 </section>
 
+<!-- MODAL DE LOGIN E REGISTRO -->
 <div id="modal-login" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
@@ -108,7 +108,16 @@
         <p onclick="voltarSelecao()" class="btn-voltar">Voltar para opções</p>
       </form>
 
+      <!-- AQUI: FORMULÁRIO DE CRIAR CONTA AGORA COM A FOTO CORRIGIDA -->
       <form id="form-registro" class="hidden" onsubmit="registrarCliente(event)">
+        
+        <div style="text-align: center; margin-bottom: 15px;">
+            <img id="preview-foto-registro" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc; margin-bottom: 10px;">
+            <br>
+            <label for="reg-foto" style="cursor: pointer; background: #333; color: white; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: bold;">📷 Escolher Foto (Opcional)</label>
+            <input type="file" id="reg-foto" accept="image/*" style="display: none;" onchange="previewImagemRegistro(event)">
+        </div>
+
         <input type="text" id="reg-nome" placeholder="Nome Completo" required>
         <input type="email" id="reg-email" placeholder="E-mail de acesso" required>
         <input type="tel" id="reg-telefone" placeholder="Telefone (WhatsApp)" required>
@@ -116,6 +125,24 @@
         <button type="submit" class="btn-primary" style="background: #27ae60;">FINALIZAR CADASTRO</button>
         <p onclick="voltarSelecao()" class="btn-voltar">Já tenho conta? Entrar.</p>
       </form>
+    </div>
+</div>
+
+<!-- MODAL DE MEU PERFIL -->
+<div id="modal-perfil" class="modal">
+    <div class="modal-content" style="text-align: center;">
+      <span class="close-modal">&times;</span>
+      <h2>Meu Perfil</h2>
+      
+      <div style="margin: 20px 0;">
+          <img id="preview-foto-perfil" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Sua Foto" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #111; margin-bottom: 15px;">
+          <br>
+          <label for="foto-perfil" class="btn-primary" style="cursor: pointer; padding: 10px 20px; display: inline-block; width: auto; font-size: 14px;">📷 Escolher Nova Foto</label>
+          <input type="file" id="foto-perfil" accept="image/*" style="display: none;" onchange="previewImagemPerfil(event)">
+      </div>
+
+      <button onclick="salvarFotoPerfil()" class="btn-primary" style="background: #27ae60; margin-bottom: 10px;">SALVAR FOTO</button>
+      <button onclick="sairConta()" class="btn-primary" style="background: #e74c3c;">SAIR DA CONTA</button>
     </div>
 </div>
 
@@ -162,6 +189,6 @@
     </div>
 </footer>
 
-<script src="/index.js" defer></script>
+<script src="index.js" defer></script>
 </body>
 </html>
