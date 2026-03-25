@@ -4,11 +4,9 @@ const USUARIOS_URL = `${URL_SERVIDOR}/usuarios`;
 const LOGIN_URL = `${URL_SERVIDOR}/login`;
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
-// 👇 Imagens de segurança ultra-fortes embutidas (Impossível de falhar ou serem apagadas)
 const IMG_FALHA_PRODUTO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23999'%3ESem Foto%3C/text%3E%3C/svg%3E";
 const IMG_FALHA_USUARIO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
-// Função para garantir que a URL da imagem sempre aponte pro servidor correto
 function montarUrlSegura(caminho) {
     if (!caminho || caminho === "null" || caminho.trim() === "") return null;
     if (caminho.startsWith('http') || caminho.startsWith('data:')) return caminho;
@@ -16,7 +14,6 @@ function montarUrlSegura(caminho) {
     return URL_SERVIDOR + caminhoCorrigido;
 }
 
-// Elementos
 const listaProdutosDestaque = document.getElementById("lista-produtos"); 
 const contadorCarrinho = document.getElementById("contador-carrinho");
 const modal = document.getElementById("modal-login");
@@ -29,6 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
     atualizarContador();
     carregarProdutosHome();
     verificarStatusUsuario();
+    
+    // 👇 ADICIONADO: Ativando o clique no ícone do carrinho no header
+    const btnAbrirCarrinho = document.getElementById("abrir-carrinho");
+    if (btnAbrirCarrinho) {
+        btnAbrirCarrinho.addEventListener("click", () => toggleCarrinho(true));
+    }
     
     const closeBtns = document.querySelectorAll(".close-modal");
     closeBtns.forEach(btn => {
@@ -44,6 +47,7 @@ async function carregarProdutosHome() {
         const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
         
+        // Exibindo destaques (no caso os da BMW, ou qualquer regra que preferir)
         const destaques = todosProdutos.filter(p => p.nome.toLowerCase().includes("bmw"));
         
         listaProdutosDestaque.innerHTML = "";
@@ -52,11 +56,14 @@ async function carregarProdutosHome() {
 
             const div = document.createElement("div");
             div.className = "produto";
+            // 👇 ADICIONADO: Redirecionamento para a tela de detalhes!
             div.innerHTML = `
-                <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
-                <h3>${produto.nome}</h3>
-                <p class="preco">R$ ${Number(produto.valor).toFixed(2)}</p>
-                <button onclick="adicionarCarrinho(${produto.codproduto})">ADICIONAR AO CARRINHO</button>
+                <div style="cursor: pointer;" onclick="window.location.href='/detalhes/detalhes.html?id=${produto.codproduto}'">
+                    <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
+                    <h3>${produto.nome}</h3>
+                    <p class="preco">R$ ${Number(produto.valor).toFixed(2)}</p>
+                </div>
+                <button onclick="window.location.href='/detalhes/detalhes.html?id=${produto.codproduto}'">VER DETALHES</button>
             `;
             listaProdutosDestaque.appendChild(div);
         });
@@ -65,9 +72,6 @@ async function carregarProdutosHome() {
     }
 }
 
-// ==========================================
-// STATUS DO USUÁRIO E FOTO DE PERFIL
-// ==========================================
 async function verificarStatusUsuario() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     const btnLogin = document.getElementById("btn-login-abrir");
@@ -83,26 +87,22 @@ async function verificarStatusUsuario() {
         let primeiroNome = String(nomeSalvo).split(' ')[0];
         let fotoSalva = userObj.foto_perfil || userObj.foto;
 
-        if (userObj.perfil === "adm" || session.tipo === "adm") {
+        if (userObj.perfil === "adm" || session.tipo === "adm" || session.tipo === "admin") {
             window.location.href = "/admin/admin.html";
             return;
         }
 
         let urlFotoAtual = montarUrlSegura(fotoSalva) || IMG_FALHA_USUARIO;
         
-        // 👇 IF PARA SEPARAR GIF DE FOTO NORMAL (AGORA SEM BORDA VERDE) 👇
         let ehGif = urlFotoAtual.toLowerCase().includes('.gif');
         let estiloImagem = "";
         
         if (ehGif) {
-            // Se for GIF: Fica um pouco maior (55px), mas com borda escura chique
             estiloImagem = "width: 55px; height: 55px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 10px; border: 2px solid #111; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.15);";
         } else {
-            // Se for Foto Normal: Tamanho padrão (45px) com borda escura chique
             estiloImagem = "width: 45px; height: 45px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 10px; border: 2px solid #111; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1);";
         }
 
-        // Nome menor, sem maiúsculas forçadas e mais elegante
         btnLogin.innerHTML = `
             <img id="img-perfil-header" 
                  src="${urlFotoAtual}" 
@@ -119,28 +119,22 @@ async function verificarStatusUsuario() {
             }
         };
 
-        // Atualiza a foto direto do banco caso tenha mudado
         if (idUser) {
             try {
                 const res = await fetch(`${USUARIOS_URL}/${idUser}`, { headers: { "minha-chave": API_KEY } });
                 
                 if (res.ok) {
                     const u = await res.json();
-                    
                     if (u && u.foto_perfil) {
                         let urlFotoNova = montarUrlSegura(u.foto_perfil);
-                        if (urlFotoNova) {
-                            urlFotoNova += "?v=" + new Date().getTime();
-                        } else {
-                            urlFotoNova = IMG_FALHA_USUARIO;
-                        }
+                        if (urlFotoNova) urlFotoNova += "?v=" + new Date().getTime();
+                        else urlFotoNova = IMG_FALHA_USUARIO;
                         
                         const imgHeader = document.getElementById("img-perfil-header");
                         if (imgHeader) {
                             imgHeader.src = urlFotoNova;
                             imgHeader.onerror = function() { this.onerror=null; this.src=IMG_FALHA_USUARIO; };
                             
-                            // Aplica o IF novamente caso o usuário tenha acabado de trocar a foto
                             let novaEhGif = urlFotoNova.toLowerCase().includes('.gif');
                             if(novaEhGif) {
                                 imgHeader.style.cssText = "width: 55px; height: 55px; border-radius: 50%; object-fit: cover; vertical-align: middle; margin-right: 10px; border: 2px solid #111; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.15);";
@@ -162,7 +156,6 @@ async function verificarStatusUsuario() {
                 }
             } catch (err) { console.error("Erro ao buscar foto:", err); }
         }
-
     } else {
         btnLogin.innerHTML = `<i class="far fa-user" style="font-size: 16px; margin-right: 5px;"></i> <span style="font-weight: 600; font-size: 14px;">Login</span>`;
         btnLogin.onclick = () => {
@@ -171,11 +164,6 @@ async function verificarStatusUsuario() {
     }
 }
 
-
-
-// ==========================================
-// FUNÇÕES DO MODAL LOGIN E REGISTRO
-// ==========================================
 function configurarLogin(tipo) {
     tipoLoginEscolhido = tipo;
     document.getElementById("selecao-tipo").classList.add("hidden");
@@ -262,22 +250,6 @@ async function registrarCliente(event) {
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
-// ==========================================
-// CARRINHO E PERFIL
-// ==========================================
-function adicionarCarrinho(codproduto) {
-    if (!localStorage.getItem("usuarioAtivo")) {
-        alert("Acesse sua conta primeiro.");
-        modal.style.display = "block";
-        return;
-    }
-    const item = carrinho.find(p => p.codproduto === codproduto);
-    item ? item.qtd++ : carrinho.push({ codproduto, qtd: 1 });
-    localStorage.setItem("carrinho", JSON.stringify(carrinho));
-    atualizarContador();
-    toggleCarrinho(true);
-}
-
 function atualizarContador() {
     if (contadorCarrinho) contadorCarrinho.innerText = carrinho.reduce((soma, p) => soma + p.qtd, 0);
 }
@@ -303,7 +275,7 @@ async function renderizarItensCarrinho() {
             if (p) {
                 totalGeral += p.valor * item.qtd;
                 let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
-                container.innerHTML += `<div class="item-no-carrinho"><img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';"><div><p><strong>${p.nome}</strong></p><p>${item.qtd}x R$ ${p.valor}</p></div></div>`;
+                container.innerHTML += `<div class="item-no-carrinho"><img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';"><div><p><strong>${p.nome}</strong></p><p>${item.qtd}x R$ ${Number(p.valor).toFixed(2)}</p></div></div>`;
             }
         });
         document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
@@ -372,3 +344,5 @@ async function salvarFotoPerfil() {
     } catch(err) { alert("Erro de conexão ao tentar salvar a foto."); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
+
+

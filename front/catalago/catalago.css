@@ -1,5 +1,5 @@
 /* ============================================================
-   1. CONFIGURAÇÕES GERAIS E CORES
+   1. CONFIGURAÇÕES GERAIS E CORES (Padrão Index)
    ============================================================ */
 :root {
     --premium-red: #a70101;
@@ -17,78 +17,80 @@
 }
 
 body {
-    background: var(--light-gray);
+    background: #f5f5f5;
     color: var(--dark);
 }
 
 /* ============================================================
-   2. HEADER, NAV E TOP BAR
+   2. HEADER, NAV E TOP BAR (Padrão Index)
    ============================================================ */
-
-/* TOPO */
 .top-bar {
-  background: #000;
-  color: #fff;
-  display: flex;
-  justify-content: space-around;
-  padding: 8px;
-  font-size: 14px;
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
 }
 
-/* HEADER */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 70px;
-  background: #fff;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 70px;
+    background: #fff;
 }
 
-.logo img{
-  height: 90px;
-  width: auto;
-  object-fit: contain;
+.logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo img {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
 }
 
 .search {
-  width: 40%;
-  padding: 12px 20px;
-  border-radius: 25px;
-  border: 1px solid #ddd;
-  outline: none;
+    width: 40%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
 }
 
-.acoes { display: flex; gap: 20px; align-items: center; font-weight: bold; }
-
-
-/* MENU */
-.menu {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #eee;
+.acoes { 
+    display: flex; 
+    gap: 20px; 
+    align-items: center; 
+    font-weight: bold; 
 }
 
 .menu {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px;
-  background: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px;
+    background: #fff;
+    border-top: 1px solid #eee;
 }
 
-.menu a { text-decoration: none; color: #000; font-weight: bold; padding-bottom: 5px; }
-.menu a.active { border-bottom: 2px solid #a70101; }
+.menu a { 
+    text-decoration: none; 
+    color: #000; 
+    font-weight: bold; 
+    padding-bottom: 5px; 
+}
+
+.menu a.active { border-bottom: 2px solid var(--premium-red); }
 
 /* ============================================================
-   3. FILTROS E CONTEÚDO
+   3. FILTROS E CONTEÚDO (Catálogo)
    ============================================================ */
 .conteudo-catalago {
     max-width: 1400px;
@@ -197,83 +199,82 @@ body {
 }
 
 /* ============================================================
-   4. MODAL DE LOGIN
+   4. MODAL (LOGIN, REGISTRO E PERFIL) - Padrão Index
    ============================================================ */
 .modal {
     display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 3000; 
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.85); 
+    backdrop-filter: blur(8px); 
+    animation: fadeIn 0.3s ease;
 }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
     background: #fff;
-    margin: 8% auto;
+    margin: 6% auto; 
     padding: 40px;
-    width: 90%;
+    width: 100%;
     max-width: 420px;
-    border-radius: 25px;
-    position: relative;
+    border-radius: 20px; 
     text-align: center;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease-out;
 }
 
-.close-modal {
-    position: absolute;
-    right: 25px; top: 20px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #ccc;
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.close-modal { 
+    position: absolute; right: 20px; top: 15px; 
+    font-size: 28px; cursor: pointer; color: #999; transition: 0.3s;
 }
+.close-modal:hover { color: #000; }
 
-.login-options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+#modal-titulo { font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
 
-.btn-opt {
-    padding: 16px;
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: var(--transition);
+.login-options { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+
+.btn-opt { 
+    padding: 15px; border: 2px solid #e0e0e0; background: #fff; 
+    cursor: pointer; font-weight: bold; border-radius: 10px;
+    transition: all 0.3s ease; font-size: 14px;
 }
+.btn-opt:hover { border-color: #000; background: #f9f9f9; transform: translateY(-2px); }
 
-.btn-opt:hover { background: #f5f5f5; border-color: #000; }
-.btn-admin { color: var(--premium-red); }
+.btn-admin { border-color: #fceaea; color: var(--premium-red); }
+.btn-admin:hover { background: #fceaea; border-color: var(--premium-red); }
 
-.hidden { display: none !important; }
-
-#form-login, #form-registro {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 25px;
-}
+#form-login, #form-registro { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
 
 input {
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
-    outline: none;
+    width: 100%; padding: 14px 18px; border: 1px solid #ddd;
+    border-radius: 10px; background: #f9f9f9; outline: none;
+    transition: 0.3s; font-size: 14px;
 }
+input:focus { border-color: var(--premium-red); background: #fff; box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.1); }
 
-.btn-primary {
-    background: #000;
-    color: #fff;
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
+.btn-primary, .btn-sair {
+    width: 100%; padding: 16px; font-weight: bold; border: none;
+    border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+    text-transform: uppercase; font-size: 14px; margin-bottom: 5px;
 }
+.btn-primary { background: #000; color: #fff; }
+.btn-primary:hover { background: var(--premium-red); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(167, 1, 1, 0.3); }
 
-.btn-primary:hover { background: var(--premium-red); }
+.btn-sair { background: #fff; color: #111; border: 2px solid #eee; }
+.btn-sair:hover { background: #fceaea; color: var(--premium-red); border-color: var(--premium-red); transform: translateY(-2px); }
+
+.btn-voltar { font-size: 12px; margin-top: 10px; cursor: pointer; text-decoration: underline; color: #888; transition: 0.3s; }
+.btn-voltar:hover { color: #000; }
+.hidden { display: none !important; }
 
 /* ============================================================
-   5. CARRINHO LATERAL (SIDEBAR)
+   5. CARRINHO LATERAL (Padrão Index)
    ============================================================ */
 .carrinho-sidebar {
     position: fixed;
@@ -299,37 +300,18 @@ input {
     align-items: center;
 }
 
-.carrinho-itens-lista {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 20px;
-}
+.fechar-carrinho { cursor: pointer; font-size: 24px; }
 
-.item-no-carrinho {
-    display: flex;
-    gap: 15px;
-    padding: 15px;
-    border-bottom: 1px solid #f5f5f5;
-    align-items: center;
-}
+.carrinho-itens-lista { flex-grow: 1; overflow-y: auto; padding: 20px; }
 
+.item-no-carrinho { display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
 .item-no-carrinho img { width: 70px; height: 70px; object-fit: contain; }
 
-.carrinho-footer {
-    padding: 30px;
-    border-top: 1px solid #eee;
-    background: #fcfcfc;
-}
+.carrinho-footer { padding: 30px; border-top: 1px solid #eee; background: #fcfcfc; }
 
-.total-container {
-    display: flex;
-    justify-content: space-between;
-    font-size: 22px;
-    font-weight: 900;
-    margin-bottom: 20px;
-}
+.total-container { display: flex; justify-content: space-between; font-size: 22px; font-weight: 900; margin-bottom: 20px; }
 
-.btn-finalizar {
+#btn-finalizar-compra {
     width: 100%;
     padding: 18px;
     background: #27ae60;
@@ -339,6 +321,11 @@ input {
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
+    transition: var(--transition);
+}
+
+#btn-finalizar-compra:hover {
+    background: #219150;
 }
 
 #carrinho-overlay {
@@ -349,3 +336,23 @@ input {
     background: rgba(0,0,0,0.4);
     z-index: 2999;
 }
+
+/* ============================================================
+   6. FOOTER E NEWSLETTER (Padrão Index)
+   ============================================================ */
+.newsletter {
+    background: #111; color: #fff; padding: 80px 20px;
+    text-align: center; margin-top: 50px;
+}
+.news-form { margin-top: 30px; display: flex; justify-content: center; gap: 10px; }
+.news-form input { max-width: 300px; background: #222; border: 1px solid #333; color: #fff; }
+.news-form button { padding: 15px 30px; background: var(--premium-red); color: #fff; border: none; font-weight: bold; cursor: pointer; border-radius: 10px;}
+
+.footer-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px; padding: 60px 8%; background: #f9f9f9; color: #333;
+}
+.footer-col h3 { font-size: 14px; margin-bottom: 20px; letter-spacing: 1px; }
+.footer-col a { display: block; text-decoration: none; color: #666; margin-bottom: 10px; font-size: 13px; }
+.footer-logo { height: 60px; margin-bottom: 20px; filter: grayscale(1); }
+.footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }

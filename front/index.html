@@ -108,9 +108,7 @@
         <p onclick="voltarSelecao()" class="btn-voltar" style="text-align: center; margin-top: 15px; cursor: pointer; font-size: 14px; color: #555; text-decoration: underline;">Voltar para opções</p>
       </form>
 
-      <!-- FORMULÁRIO DE CRIAR CONTA AGORA LIMPO E MODERNO -->
       <form id="form-registro" class="hidden" onsubmit="registrarCliente(event)">
-        
         <div style="text-align: center; margin-bottom: 20px;">
             <img id="preview-foto-registro" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #eee; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
             <br>
@@ -128,7 +126,7 @@
     </div>
 </div>
 
-<!-- MODAL DE MEU PERFIL LIMPO E MODERNO -->
+<!-- MODAL DE MEU PERFIL -->
 <div id="modal-perfil" class="modal">
     <div class="modal-content" style="text-align: center;">
       <span class="close-modal">&times;</span>
@@ -141,14 +139,14 @@
           <input type="file" id="foto-perfil" accept="image/*" style="display: none;" onchange="previewImagemPerfil(event)">
       </div>
 
-            <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
           <button onclick="salvarFotoPerfil()" class="btn-primary">SALVAR FOTO</button>
           <button onclick="sairConta()" class="btn-sair">SAIR DA CONTA</button>
       </div>
-
     </div>
 </div>
 
+<!-- CARRINHO LATERAL -->
 <div id="carrinho-lateral" class="carrinho-sidebar">
     <div class="carrinho-header">
         <h2>Seu Carrinho</h2>
@@ -160,7 +158,7 @@
             <span>Total:</span>
             <span id="valor-total-carrinho">R$ 0,00</span>
         </div>
-        <button onclick="window.location.href='/checkout/checkout.html'" class="btn-finalizar">FINALIZAR COMPRA</button>
+        <button id="btn-finalizar-compra" onclick="window.location.href='/checkout/checkout.html'">FINALIZAR COMPRA</button>
     </div>
 </div>
 

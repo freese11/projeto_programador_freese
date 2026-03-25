@@ -1,8 +1,12 @@
+/* ============================================================
+   1. CONFIGURAÇÕES GERAIS E CORES (Padrão Index)
+   ============================================================ */
 :root {
     --premium-red: #a70101;
     --dark: #111;
-    --gray: #666;
-    --light-bg: #f9f9f9;
+    --light-gray: #f9f9f9;
+    --white: #ffffff;
+    --transition: 0.3s ease;
 }
 
 * {
@@ -13,73 +17,81 @@
 }
 
 body {
-    background-color: var(--light-bg);
+    background: #f5f5f5;
+    color: var(--dark);
 }
 
-
-/* TOPO */
+/* ============================================================
+   2. HEADER, NAV E TOP BAR (Padrão Index)
+   ============================================================ */
 .top-bar {
-  background: #000;
-  color: #fff;
-  display: flex;
-  justify-content: space-around;
-  padding: 8px;
-  font-size: 14px;
+    background: #000;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 8px;
+    font-size: 12px;
+    letter-spacing: 1px;
 }
 
-/* HEADER */
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 70px;
-  background: #fff;
-}
-.logo {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 70px;
+    background: #fff;
 }
 
-.logo img{
-  height: 90px;
-  width: auto;
-  object-fit: contain;
+.logo {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.logo img {
+    height: 90px;
+    width: auto;
+    object-fit: contain;
 }
 
 .search {
-  width: 40%;
-  padding: 12px 20px;
-  border-radius: 25px;
-  border: 1px solid #ddd;
-  outline: none;
+    width: 40%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 14px;
 }
 
-.acoes { display: flex; gap: 20px; align-items: center; font-weight: bold; }
-
-
-/* MENU */
-.menu {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #eee;
+.acoes { 
+    display: flex; 
+    gap: 20px; 
+    align-items: center; 
+    font-weight: bold; 
 }
 
 .menu {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  padding: 15px;
-  background: #fff;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 15px;
+    background: #fff;
+    border-top: 1px solid #eee;
 }
 
-.menu a { text-decoration: none; color: #000; font-weight: bold; padding-bottom: 5px; }
-.menu a.active { border-bottom: 2px solid #a70101; }
+.menu a { 
+    text-decoration: none; 
+    color: #000; 
+    font-weight: bold; 
+    padding-bottom: 5px; 
+}
 
-/* Layout Contato */
+.menu a.active { border-bottom: 2px solid var(--premium-red); }
+
+/* ============================================================
+   3. CONTEÚDO EXCLUSIVO DA PÁGINA DE CONTATO
+   ============================================================ */
 .contato-container {
     max-width: 1200px;
     margin: 60px auto;
@@ -117,7 +129,7 @@ body {
     padding: 30px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-    transition: 0.3s;
+    transition: var(--transition);
 }
 
 .info-card:hover { transform: translateY(-5px); }
@@ -130,7 +142,7 @@ body {
 
 .info-card h3 {
     font-size: 14px;
-    color: var(--gray);
+    color: #666;
     margin-bottom: 5px;
     letter-spacing: 1px;
 }
@@ -160,17 +172,21 @@ body {
     color: var(--dark);
 }
 
-input, select, textarea {
+/* Campos do formulário com estilo ajustado para não conflitar com modais */
+.contato-form input, 
+.contato-form select, 
+.contato-form textarea {
     width: 100%;
     padding: 15px;
     border: 1px solid #eee;
     border-radius: 12px;
     background: #fcfcfc;
     outline: none;
-    transition: 0.3s;
+    transition: var(--transition);
 }
 
-input:focus, textarea:focus {
+.contato-form input:focus, 
+.contato-form textarea:focus {
     border-color: var(--premium-red);
     background: #fff;
     box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.05);
@@ -185,7 +201,7 @@ input:focus, textarea:focus {
     border-radius: 12px;
     font-weight: 900;
     cursor: pointer;
-    transition: 0.3s;
+    transition: var(--transition);
 }
 
 .btn-enviar:hover {
@@ -193,126 +209,162 @@ input:focus, textarea:focus {
     transform: scale(1.02);
 }
 
-.footer {
-    text-align: center;
-    padding: 40px;
-    font-size: 12px;
-    color: #999;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-    .contato-grid { grid-template-columns: 1fr; }
-    .header { padding: 20px; }
-}
-
-:root { --premium-red: #a70101; --dark: #111; }
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-body { background: #f9f9f9; }
-
-
-/* Conteúdo Contato */
-.contato-container { max-width: 1000px; margin: 60px auto; padding: 0 20px; }
-.contato-header { text-align: center; margin-bottom: 50px; }
-.contato-header h1 { font-size: 40px; font-weight: 900; }
-.contato-header span { color: var(--premium-red); }
-.contato-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
-.info-card { background: #fff; padding: 30px; border-radius: 15px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: center; }
-.info-card i { font-size: 30px; color: var(--premium-red); margin-bottom: 10px; }
-.contato-form { background: #fff; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-.input-group { margin-bottom: 15px; }
-.input-group label { display: block; font-weight: 800; font-size: 11px; margin-bottom: 5px; }
-input, textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 8px; outline: none; background: #fcfcfc; }
-.btn-enviar { width: 100%; padding: 15px; background: #000; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
- 
+/* ============================================================
+   4. MODAL (LOGIN, REGISTRO E PERFIL) - IDÊNTICO AO INDEX
+   ============================================================ */
 .modal {
     display: none;
     position: fixed;
-    z-index: 2000;
+    z-index: 3000; 
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.85); 
+    backdrop-filter: blur(8px); 
+    animation: fadeIn 0.3s ease;
 }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 .modal-content {
     background: #fff;
-    margin: 8% auto;
+    margin: 6% auto; 
     padding: 40px;
-    width: 90%;
+    width: 100%;
     max-width: 420px;
-    border-radius: 25px;
-    position: relative;
+    border-radius: 20px; 
     text-align: center;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: slideUp 0.4s ease-out;
 }
 
-.close-modal {
-    position: absolute;
-    right: 25px; top: 20px;
-    font-size: 30px;
-    cursor: pointer;
-    color: #ccc;
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.close-modal { 
+    position: absolute; right: 20px; top: 15px; 
+    font-size: 28px; cursor: pointer; color: #999; transition: 0.3s;
+}
+.close-modal:hover { color: #000; }
+
+#modal-titulo { font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
+
+.login-options { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+
+.btn-opt { 
+    padding: 15px; border: 2px solid #e0e0e0; background: #fff; 
+    cursor: pointer; font-weight: bold; border-radius: 10px;
+    transition: all 0.3s ease; font-size: 14px;
+}
+.btn-opt:hover { border-color: #000; background: #f9f9f9; transform: translateY(-2px); }
+
+.btn-admin { border-color: #fceaea; color: var(--premium-red); }
+.btn-admin:hover { background: #fceaea; border-color: var(--premium-red); }
+
+#form-login, #form-registro { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+
+#form-login input, #form-registro input {
+    width: 100%; padding: 14px 18px; border: 1px solid #ddd;
+    border-radius: 10px; background: #f9f9f9; outline: none;
+    transition: 0.3s; font-size: 14px;
+}
+#form-login input:focus, #form-registro input:focus { 
+    border-color: var(--premium-red); background: #fff; box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.1); 
 }
 
-.login-options { display: flex; flex-direction: column; gap: 15px; margin-top: 25px; }
+.btn-primary, .btn-sair {
+    width: 100%; padding: 16px; font-weight: bold; border: none;
+    border-radius: 10px; cursor: pointer; transition: all 0.3s ease;
+    text-transform: uppercase; font-size: 14px; margin-bottom: 5px;
+}
+.btn-primary { background: #000; color: #fff; }
+.btn-primary:hover { background: var(--premium-red); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(167, 1, 1, 0.3); }
 
-.btn-opt {
-    padding: 16px;
-    border: 1px solid #ddd;
+.btn-sair { background: #fff; color: #111; border: 2px solid #eee; }
+.btn-sair:hover { background: #fceaea; color: var(--premium-red); border-color: var(--premium-red); transform: translateY(-2px); }
+
+.btn-voltar { font-size: 12px; margin-top: 10px; cursor: pointer; text-decoration: underline; color: #888; transition: 0.3s; }
+.btn-voltar:hover { color: #000; }
+.hidden { display: none !important; }
+
+/* ============================================================
+   5. CARRINHO LATERAL (IDÊNTICO AO INDEX)
+   ============================================================ */
+.carrinho-sidebar {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 380px;
+    height: 100%;
     background: #fff;
-    border-radius: 12px;
+    z-index: 3000;
+    transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+}
+
+.carrinho-sidebar.ativo { right: 0; }
+
+.carrinho-header {
+    padding: 30px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fechar-carrinho { cursor: pointer; font-size: 24px; }
+
+.carrinho-itens-lista { flex-grow: 1; overflow-y: auto; padding: 20px; }
+
+.item-no-carrinho { display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #f5f5f5; align-items: center; }
+.item-no-carrinho img { width: 70px; height: 70px; object-fit: contain; }
+
+.carrinho-footer { padding: 30px; border-top: 1px solid #eee; background: #fcfcfc; }
+
+.total-container { display: flex; justify-content: space-between; font-size: 22px; font-weight: 900; margin-bottom: 20px; }
+
+#btn-finalizar-compra {
+    width: 100%;
+    padding: 18px;
+    background: #27ae60;
+    color: white;
+    border: none;
     font-weight: 700;
+    border-radius: 12px;
     cursor: pointer;
+    text-transform: uppercase;
     transition: var(--transition);
 }
 
-.btn-opt:hover { background: #f5f5f5; border-color: #000; }
-.btn-admin { color: var(--premium-red); }
-
-.hidden { display: none !important; }
-
-#form-login, #form-registro {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    margin-top: 25px;
+#btn-finalizar-compra:hover {
+    background: #219150;
 }
 
-input {
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
-    outline: none;
+#carrinho-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 2999;
 }
 
-.btn-primary {
-    background: #000;
-    color: #fff;
-    padding: 16px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.btn-primary:hover { background: var(--premium-red); }
-
-/* Sidebar Carrinho Oculta */
-.carrinho-sidebar { position: fixed; right: -400px; top: 0; width: 320px; height: 100%; background: #fff; z-index: 1100; transition: 0.3s; }
-.carrinho-sidebar.ativo { right: 0; }
-#carrinho-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); z-index: 1050; }
-
-/* Footer Grid */
+/* ============================================================
+   6. FOOTER (Padrão Index)
+   ============================================================ */
 .footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 40px;
-    padding: 60px 8%;
-    background: #f9f9f9;
-    color: #333;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px; padding: 60px 8%; background: #f9f9f9; color: #333;
 }
 .footer-col h3 { font-size: 14px; margin-bottom: 20px; letter-spacing: 1px; }
 .footer-col a { display: block; text-decoration: none; color: #666; margin-bottom: 10px; font-size: 13px; }
 .footer-logo { height: 60px; margin-bottom: 20px; filter: grayscale(1); }
 .footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }
+
+/* Responsividade Básica para a página de contato */
+@media (max-width: 768px) {
+    .contato-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px; flex-direction: column; gap: 15px;}
+    .search { width: 100%; }
+}
