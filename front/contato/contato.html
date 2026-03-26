@@ -125,12 +125,16 @@
 <div id="carrinho-lateral" class="carrinho-sidebar">
     <div class="carrinho-header">
         <h2>Seu Carrinho</h2>
-        <span onclick="toggleCarrinho()">&times;</span>
+        <span class="fechar-carrinho" onclick="toggleCarrinho()">&times;</span>
     </div>
-    <div id="itens-carrinho" class="carrinho-itens-lista" style="padding: 15px; color: #666; font-size: 14px;">Carrinho está no Catálogo e Home.</div>
+    <div id="itens-carrinho" class="carrinho-itens-lista"></div>
     <div class="carrinho-footer">
-        <span id="valor-total-carrinho" style="font-weight: bold;">R$ 0,00</span>
-        <button style="width: 100%; padding: 12px; background: #111; color: #fff; border: none; font-weight: bold; margin-top: 10px; cursor: pointer;" onclick="window.location.href='/checkout/checkout.html'">FINALIZAR COMPRA</button>
+        <div class="total-container">
+            <span>Total:</span>
+            <span id="valor-total-carrinho">R$ 0,00</span>
+        </div>
+        <!-- 👇 Botão arrumado apontando para checkout 👇 -->
+        <button id="btn-finalizar-compra" onclick="window.location.href='/checkout/checkout.html'">FINALIZAR COMPRA</button>
     </div>
 </div>
 <div id="carrinho-overlay" onclick="toggleCarrinho()"></div>

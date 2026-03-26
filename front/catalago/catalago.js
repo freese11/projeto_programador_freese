@@ -100,32 +100,68 @@ function toggleCarrinho(abrir = false) {
     if(abrir) { side.classList.add("ativo"); overlay.style.display = "block"; renderizarItensCarrinho(); }
     else { side.classList.remove("ativo"); overlay.style.display = "none"; }
 }
-
+// 👇 1. SUBSTITUA SUA FUNÇÃO RENDERIZAR POR ESTA (agora com o ícone de lixeira) 👇
 async function renderizarItensCarrinho() {
     const container = document.getElementById("itens-carrinho");
-    const totalElement = document.getElementById("valor-total-carrinho");
-    if(!container || !totalElement) return;
-
+    if (!container) return;
     container.innerHTML = "";
-    let total = 0;
+    let totalGeral = 0;
     
-    carrinho.forEach(item => {
-        const p = todosProdutos.find(prod => prod.codproduto === item.codproduto);
-        if(p) {
-            total += p.valor * item.qtd;
-            let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
-            container.innerHTML += `
-                <div class="item-no-carrinho">
-                    <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
-                    <div>
-                        <p style="font-weight: bold;">${p.nome}</p>
-                        <p style="font-size: 13px; color: #666;">Tamanho: ${item.tamanho || 'Único'}</p>
-                        <p>${item.qtd}x R$ ${Number(p.valor).toFixed(2)}</p>
-                    </div>
-                </div>`;
-        }
-    });
-    totalElement.innerText = `R$ ${total.toFixed(2)}`;
+    // Se o carrinho estiver vazio, mostra uma mensagem amigável
+    if (carrinho.length === 0) {
+        container.innerHTML = "<p style='text-align:center; padding: 30px 20px; color:#888; font-weight: 600;'>Seu carrinho está vazio.</p>";
+        document.getElementById("valor-total-carrinho").innerText = "R$ 0,00";
+        return;
+    }
+
+    try {
+        const resposta = await fetch(API_URL);
+        const produtosBD = await resposta.json();
+        
+        // Note que adicionei o "index" aqui para saber qual item remover
+        carrinho.forEach((item, index) => {
+            const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
+            if (p) {
+                totalGeral += p.valor * item.qtd;
+                let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
+                
+                // Adicionado 'position: relative' e o ícone de lixeira no final
+                container.innerHTML += `
+                    <div class="item-no-carrinho" style="position: relative;">
+                        <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
+                        <div style="flex-grow: 1; padding-right: 30px;">
+                            <p style="font-weight: bold; font-size: 15px; color: #111; margin-bottom: 2px; text-transform: lowercase;">${p.nome}</p>
+                            <p style="font-size: 13px; color: #666; margin-bottom: 3px;">Tam: ${item.tamanho || 'Único'} | Qtd: ${item.qtd}</p>
+                            <p style="font-size: 16px; font-weight: 900; color: var(--premium-red);">R$ ${Number(p.valor).toFixed(2)}</p>
+                        </div>
+                        
+                        <i class="fas fa-trash" 
+                           onclick="removerItemCarrinho(${index})" 
+                           title="Remover produto"
+                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #bbb; cursor: pointer; transition: 0.3s; font-size: 18px;" 
+                           onmouseover="this.style.color='var(--premium-red)'" 
+                           onmouseout="this.style.color='#bbb'">
+                        </i>
+                    </div>`;
+            }
+        });
+        document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
+    } catch (e) { console.error("Erro ao renderizar carrinho:", e); }
+}
+
+// 👇 2. ADICIONE ESTA NOVA FUNÇÃO LOGO ABAIXO 👇
+function removerItemCarrinho(index) {
+    // Remove 1 item a partir da posição (index) que foi clicada
+    carrinho.splice(index, 1); 
+    
+    // Atualiza o banco de dados local do navegador
+    localStorage.setItem("carrinho", JSON.stringify(carrinho)); 
+    
+    // Atualiza o número vermelho de itens no header
+    atualizarContador(); 
+    
+    // Desenha o carrinho novamente sem o item e com o novo preço
+    renderizarItensCarrinho(); 
 }
 
 // ==========================================

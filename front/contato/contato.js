@@ -1,8 +1,12 @@
 const URL_SERVIDOR = "https://projeto-programador-freese-backend.onrender.com";
+// 👇 VARIÁVEIS ADICIONADAS QUE FALTAVAM 👇
+const API_URL = `${URL_SERVIDOR}/produtos`;
 const USUARIOS_URL = `${URL_SERVIDOR}/usuarios`;
 const LOGIN_URL = `${URL_SERVIDOR}/login`;
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
+// 👇 IMAGEM PADRÃO DO PRODUTO ADICIONADA 👇
+const IMG_FALHA_PRODUTO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23999'%3ESem Foto%3C/text%3E%3C/svg%3E";
 const IMG_FALHA_USUARIO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
 const contadorCarrinho = document.getElementById("contador-carrinho");
@@ -37,6 +41,7 @@ function toggleCarrinho() {
     if(!side.classList.contains("ativo")) { 
         side.classList.add("ativo"); 
         overlay.style.display = "block"; 
+        renderizarItensCarrinho(); // 👇 AQUI ESTAVA O ERRO! Agora ele desenha os itens ao abrir.
     } else { 
         side.classList.remove("ativo"); 
         overlay.style.display = "none"; 
@@ -235,4 +240,68 @@ async function salvarFotoPerfil() {
         } else { alert("Erro ao atualizar foto. Tente novamente."); }
     } catch(err) { alert("Erro de conexão ao tentar salvar a foto."); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
+}
+
+// 👇 1. SUBSTITUA SUA FUNÇÃO RENDERIZAR POR ESTA (agora com o ícone de lixeira) 👇
+async function renderizarItensCarrinho() {
+    const container = document.getElementById("itens-carrinho");
+    if (!container) return;
+    container.innerHTML = "";
+    let totalGeral = 0;
+    
+    // Se o carrinho estiver vazio, mostra uma mensagem amigável
+    if (carrinho.length === 0) {
+        container.innerHTML = "<p style='text-align:center; padding: 30px 20px; color:#888; font-weight: 600;'>Seu carrinho está vazio.</p>";
+        document.getElementById("valor-total-carrinho").innerText = "R$ 0,00";
+        return;
+    }
+
+    try {
+        const resposta = await fetch(API_URL);
+        const produtosBD = await resposta.json();
+        
+        // Note que adicionei o "index" aqui para saber qual item remover
+        carrinho.forEach((item, index) => {
+            const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
+            if (p) {
+                totalGeral += p.valor * item.qtd;
+                let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
+                
+                // Adicionado 'position: relative' e o ícone de lixeira no final
+                container.innerHTML += `
+                    <div class="item-no-carrinho" style="position: relative;">
+                        <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
+                        <div style="flex-grow: 1; padding-right: 30px;">
+                            <p style="font-weight: bold; font-size: 15px; color: #111; margin-bottom: 2px; text-transform: lowercase;">${p.nome}</p>
+                            <p style="font-size: 13px; color: #666; margin-bottom: 3px;">Tam: ${item.tamanho || 'Único'} | Qtd: ${item.qtd}</p>
+                            <p style="font-size: 16px; font-weight: 900; color: var(--premium-red);">R$ ${Number(p.valor).toFixed(2)}</p>
+                        </div>
+                        
+                        <i class="fas fa-trash" 
+                           onclick="removerItemCarrinho(${index})" 
+                           title="Remover produto"
+                           style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #bbb; cursor: pointer; transition: 0.3s; font-size: 18px;" 
+                           onmouseover="this.style.color='var(--premium-red)'" 
+                           onmouseout="this.style.color='#bbb'">
+                        </i>
+                    </div>`;
+            }
+        });
+        document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
+    } catch (e) { console.error("Erro ao renderizar carrinho:", e); }
+}
+
+// 👇 2. ADICIONE ESTA NOVA FUNÇÃO LOGO ABAIXO 👇
+function removerItemCarrinho(index) {
+    // Remove 1 item a partir da posição (index) que foi clicada
+    carrinho.splice(index, 1); 
+    
+    // Atualiza o banco de dados local do navegador
+    localStorage.setItem("carrinho", JSON.stringify(carrinho)); 
+    
+    // Atualiza o número vermelho de itens no header
+    atualizarContador(); 
+    
+    // Desenha o carrinho novamente sem o item e com o novo preço
+    renderizarItensCarrinho(); 
 }
