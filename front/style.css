@@ -450,39 +450,57 @@ input:focus { border-color: var(--premium-red); background: #fff; box-shadow: 0 
         align-items: center; /* Centraliza os ícones no mobile */
         padding: 30px 20px;
     }
-
-    /* Grid de Produtos (2 por linha para melhor experiência) */
+    /* Grid de Produtos (Mobile Otimizado) */
     .conteudo {
         padding: 30px 15px;
     }
 
     .grid-produtos {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
+        /* Força exatamente 2 colunas travadas, sem quebrar o layout */
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px; 
     }
 
     .produto {
-        padding: 10px;
+        padding: 15px 10px;
+        /* Transforma o card para alinhar os elementos perfeitamente */
+        display: flex;
+        flex-direction: column;
+        height: 100%; 
     }
 
     .produto img {
-        height: 160px;
+        height: 130px; /* Um pouco menor para dar respiro */
+        object-fit: contain;
+        /* TRUQUE DE OURO: Isso apaga o fundo cinza da foto do tênis e mescla com o branco do card! */
+        mix-blend-mode: multiply; 
     }
 
     .produto h3 {
-        font-size: 13px;
+        font-size: 12px;
         margin: 10px 0;
+        line-height: 1.3;
+        /* Faz o título empurrar o preço e o botão para baixo */
+        flex-grow: 1; 
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .preco {
-        font-size: 16px;
-        margin-bottom: 10px;
+        font-size: 15px;
+        margin-bottom: 12px;
     }
 
     .produto button {
-        padding: 10px;
-        font-size: 12px;
+        padding: 10px 5px;
+        font-size: 11px; /* Fonte levemente menor para caber bonito */
+        letter-spacing: 0.5px;
+        width: 100%;
+        /* Joga o botão lá pro fundo do card, alinhando todos na mesma linha */
+        margin-top: auto; 
     }
+
 
     /* Modal (Login/Cadastro) */
     .modal-content {
