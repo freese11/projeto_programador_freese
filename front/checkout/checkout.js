@@ -83,7 +83,7 @@ async function carregarResumoPedido() {
     }
 }
 
-// Envia a Venda pro seu Banco de Dados (vendasdb.js)
+// Envia a Venda pro seu Banco de Dados
 async function processarCompra() {
     // 1. Checa se tá logado
     const usuarioJson = localStorage.getItem("usuarioAtivo");
@@ -93,26 +93,51 @@ async function processarCompra() {
         return;
     }
 
-    // 2. Valida se preencheu o básico do endereço
+    // 2. PEGA TODOS OS DADOS DO ENDEREÇO DA TELA
     const cep = document.getElementById("cep").value;
+    const rua = document.getElementById("rua").value;
     const numero = document.getElementById("numero").value;
     
-    if(!cep || !numero) {
-        alert("Por favor, preencha seu CEP e Número para a entrega.");
+    // Como complemento é opcional, a gente checa se o campo existe no HTML
+    const campoComplemento = document.getElementById("complemento");
+    const complemento = campoComplemento ? campoComplemento.value : "";
+    
+    const bairro = document.getElementById("bairro").value;
+    const cidade = document.getElementById("cidade").value;
+    const estado = document.getElementById("estado").value;
+    
+    // Validação de segurança
+    if(!cep || !numero || !rua || !bairro) {
+        alert("Por favor, preencha seu endereço completo (CEP, Rua, Número e Bairro) para a entrega.");
         document.getElementById("cep").focus();
         return;
     }
 
+    // MONTA A STRING DO ENDEREÇO COMPLETO PARA SALVAR NO BANCO
+    const enderecoCompleto = `${rua}, ${numero} ${complemento ? '- ' + complemento : ''}, ${bairro}, ${cidade} - ${estado}, CEP: ${cep}`;
+
+    // 3. Pega o ID do usuário
     let session = JSON.parse(usuarioJson);
     let userObj = session.usuario ? session.usuario : session;
     let codusuario = userObj.codusuario || userObj.id;
 
+    // 4. FORMATA O CARRINHO PARA O PADRÃO QUE O SERVIDOR ESPERA (id, quantidade, preco)
+    const carrinhoFormatado = carrinhoCheckout.map(item => {
+        const produto = produtosBD.find(p => p.codproduto === item.codproduto);
+        return {
+            id: item.codproduto,
+            quantidade: item.qtd,
+            preco: produto ? produto.valor : 0 // Pega o preço atualizado do banco
+        };
+    });
+
+    // 5. Muda o botão para "Processando..."
     const btn = document.getElementById("btn-confirmar-compra");
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
     btn.disabled = true;
 
     try {
-        // Envia pro backend novo que fizemos na mensagem anterior!
+        // Envia pro backend novo que fizemos! (Agora com o endereço)
         const resposta = await fetch(VENDAS_URL, {
             method: "POST",
             headers: { 
@@ -121,18 +146,19 @@ async function processarCompra() {
             },
             body: JSON.stringify({
                 codusuario: codusuario,
-                carrinho: carrinhoCheckout
+                carrinho: carrinhoFormatado,
+                endereco_entrega: enderecoCompleto // << Aqui está o pulo do gato!
             })
         });
 
         const dados = await resposta.json();
 
-        if (resposta.ok) {
+        if (resposta.ok || resposta.status === 201) {
             alert("🎉 SUCESSO! Seu pedido na Freese Store foi confirmado!");
             localStorage.removeItem("carrinho"); // Esvazia o carrinho
             window.location.href = "../index.html"; // Volta pra home
         } else {
-            alert("Não foi possível finalizar: " + (dados.mensagem || "Erro desconhecido."));
+            alert("Não foi possível finalizar: " + (dados.erro || dados.mensagem || "Erro desconhecido."));
             btn.innerHTML = '<i class="fas fa-lock"></i> Tentar Novamente';
             btn.disabled = false;
         }

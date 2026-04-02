@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Vendas</title>
+    <link rel="stylesheet" href="vendas.css">
+    <!-- Importando a biblioteca de Gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="left">
+        <button class="btn-voltar" onclick="voltar()">← Voltar</button>
+        <h1>Gerenciamento de Vendas</h1>
+    </div>
+    <button class="btn-novo" onclick="carregar()">Atualizar Dados</button>
+</header>
+
+<!-- Resumo e Gráfico -->
+<div class="dashboard-container">
+    <div class="dashboard-resumo">
+        <div class="card">
+            <h3>Faturamento Total</h3>
+            <p id="total-faturamento">R$ 0,00</p>
+        </div>
+        <div class="card">
+            <h3>Pedidos Realizados</h3>
+            <p id="total-pedidos">0</p>
+        </div>
+    </div>
+
+    <div class="grafico-container">
+        <canvas id="graficoVendas"></canvas>
+    </div>
+</div>
+
+<section class="filtros">
+    <input type="text" id="filtro-id" placeholder="Buscar por Cód. Venda..." oninput="filtrar()">
+
+    <select id="filtro-status" onchange="filtrar()">
+        <option value="">Todos os Status</option>
+        <option value="pendente">Pendente</option>
+        <option value="concluido">Concluído</option>
+        <option value="cancelado">Cancelado</option>
+    </select>
+</section>
+
+<div class="tabela-container">
+<table>
+    <thead>
+        <tr>
+            <th>Cód. Venda</th>
+            <th>Cód. Cliente</th>
+            <th>Data</th>
+            <th>Total</th>
+            <th>Endereço</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody id="tabela-vendas"></tbody>
+</table>
+</div>
+
+<!-- MODAL PARA ATUALIZAR STATUS -->
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <h2 id="modal-titulo">Atualizar Venda #<span id="venda-id-display"></span></h2>
+
+        <input type="hidden" id="codvenda">
+
+        <label>Status do Pedido</label>
+        <select id="status-venda">
+            <option value="pendente">Pendente</option>
+            <option value="concluido">Concluído</option>
+            <option value="cancelado">Cancelado</option>
+        </select>
+
+        <div class="modal-buttons">
+            <button class="salvar" onclick="salvarStatus()">Salvar Status</button>
+            <button class="cancelar" onclick="fecharModal()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="vendas.js"></script>
+</body>
+</html>

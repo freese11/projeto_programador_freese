@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Freese Store | Urban Style</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet" />
 </head>
 <body>
 
@@ -17,13 +17,15 @@
 
 <header class="header">
   <div class="logo" onclick="window.location.href='/index.html'">
-      <img src="midias/freese2.png" alt="Freese Store">
+      <img src="midias/freese2.png" alt="Freese Store" />
   </div>
 
   <input type="text" class="search" id="input-busca" placeholder="O que você está buscando hoje?" />
 
   <div class="acoes">
-      <span id="btn-login-abrir" style="cursor:pointer; display: flex; align-items: center;"><i class="far fa-user" style="margin-right: 5px;"></i> Login</span>
+      <span id="btn-login-abrir" style="cursor:pointer; display: flex; align-items: center;">
+          <i class="far fa-user" style="margin-right: 5px;"></i> Login
+      </span>
       <span class="carrinho" id="abrir-carrinho" style="cursor:pointer">
         <i class="fas fa-shopping-bag"></i> <span id="contador-carrinho">0</span>
       </span>
@@ -39,7 +41,7 @@
 <section class="banner">
   <div class="banner-overlay">
     <div class="banner-texto">
-      <h2>TÊNIS NIKE<br><span>AIR JORDAN</span></h2>
+      <h2>TÊNIS NIKE<br /><span>AIR JORDAN</span></h2>
       <p>O clássico Air Jordan em preto e vermelho absoluto. Estilo e conforto premium para quem domina as ruas.</p>
       <button class="btn-banner" onclick="window.location.href='catalago/catalago.html'">COMPRE AGORA</button>
     </div>
@@ -82,7 +84,7 @@
         <h2>FAÇA PARTE DA ELITE</h2>
         <p>Receba lançamentos exclusivos e descontos de primeira mão.</p>
         <form class="news-form">
-            <input type="email" placeholder="Seu melhor e-mail">
+            <input type="email" placeholder="Seu melhor e-mail" required />
             <button type="submit">INSCREVER</button>
         </form>
     </div>
@@ -97,29 +99,29 @@
       <div id="selecao-tipo" class="login-options">
         <button onclick="configurarLogin('cliente')" class="btn-opt">Sou Cliente (Entrar)</button>
         <button onclick="configurarRegistro()" class="btn-opt btn-opt-new">Criar Nova Conta</button>
-        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;" />
         <button onclick="configurarLogin('admin')" class="btn-opt btn-admin">Acesso Administrador</button>
       </div>
 
       <form id="form-login" class="hidden" onsubmit="efetuarLogin(event)">
-        <input type="email" id="email" placeholder="Seu e-mail" required>
-        <input type="password" id="senha" placeholder="Sua senha" required>
+        <input type="email" id="email" placeholder="Seu e-mail" required />
+        <input type="password" id="senha" placeholder="Sua senha" required />
         <button type="submit" class="btn-primary">ENTRAR NA CONTA</button>
         <p onclick="voltarSelecao()" class="btn-voltar" style="text-align: center; margin-top: 15px; cursor: pointer; font-size: 14px; color: #555; text-decoration: underline;">Voltar para opções</p>
       </form>
 
       <form id="form-registro" class="hidden" onsubmit="registrarCliente(event)">
         <div style="text-align: center; margin-bottom: 20px;">
-            <img id="preview-foto-registro" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #eee; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-            <br>
+            <img id="preview-foto-registro" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #eee; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);" alt="Preview da Foto" />
+            <br />
             <label for="reg-foto" style="cursor: pointer; color: #333; font-size: 13px; font-weight: bold; text-decoration: underline;"><i class="fas fa-camera"></i> Escolher Foto (Opcional)</label>
-            <input type="file" id="reg-foto" accept="image/*" style="display: none;" onchange="previewImagemRegistro(event)">
+            <input type="file" id="reg-foto" accept="image/*" style="display: none;" onchange="previewImagemRegistro(event)" />
         </div>
 
-        <input type="text" id="reg-nome" placeholder="Nome Completo" required>
-        <input type="email" id="reg-email" placeholder="E-mail de acesso" required>
-        <input type="tel" id="reg-telefone" placeholder="Telefone (WhatsApp)" required>
-        <input type="password" id="reg-senha" placeholder="Crie uma senha" required>
+        <input type="text" id="reg-nome" placeholder="Nome Completo" required />
+        <input type="email" id="reg-email" placeholder="E-mail de acesso" required />
+        <input type="tel" id="reg-telefone" placeholder="Telefone (WhatsApp)" required />
+        <input type="password" id="reg-senha" placeholder="Crie uma senha" required />
         <button type="submit" class="btn-primary">FINALIZAR CADASTRO</button>
         <p onclick="voltarSelecao()" class="btn-voltar" style="text-align: center; margin-top: 15px; cursor: pointer; font-size: 14px; color: #555; text-decoration: underline;">Já tenho conta? Entrar.</p>
       </form>
@@ -133,10 +135,10 @@
       <h2>Meu Perfil</h2>
       
       <div style="margin: 20px 0;">
-          <img id="preview-foto-perfil" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Sua Foto" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin-bottom: 15px;">
-          <br>
+          <img id="preview-foto-perfil" src="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E" alt="Sua Foto" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin-bottom: 15px;" />
+          <br />
           <label for="foto-perfil" style="cursor: pointer; color: #111; font-size: 14px; font-weight: bold; text-decoration: underline;"><i class="fas fa-camera"></i> Trocar Foto</label>
-          <input type="file" id="foto-perfil" accept="image/*" style="display: none;" onchange="previewImagemPerfil(event)">
+          <input type="file" id="foto-perfil" accept="image/*" style="display: none;" onchange="previewImagemPerfil(event)" />
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
@@ -167,7 +169,7 @@
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-col">
-            <img src="midias/freese2.png" alt="Logo" class="footer-logo">
+            <img src="midias/freese2.png" alt="Logo" class="footer-logo" />
             <p>A cultura sneaker levada a sério. Estilo urban para quem não aceita o comum.</p>
         </div>
         <div class="footer-col">
