@@ -23,89 +23,57 @@ router.get('/:codvenda', async (req, res) => {
         res.status(500).send('Erro no servidor');
     }
 });
-router.post("/", async (req, res) => {
-    // Usamos client.connect() para fazer uma "Transação" (BEGIN/COMMIT)
-    // Isso garante que se der erro no meio (ex: falta de estoque), ele cancela tudo e não cobra o cliente à toa.
-    const client = await pool.connect();
-    
-    try { 
-        await client.query("BEGIN"); // Inicia a transação
 
-        // O Frontend vai enviar o código do usuário logado e o array do carrinho
-        const { codusuario, carrinho } = req.body;
-        
-        if (!codusuario) throw new Error("Usuário não identificado.");
-        if (!carrinho || carrinho.length === 0) throw new Error("O carrinho está vazio.");
+// ROTA PARA FINALIZAR A COMPRA E SALVAR O ENDEREÇO
+router.post('/', async (req, res) => {
+    // 1. Recebemos os dados que o site da Freese Store enviou
+    const { codusuario, carrinho, endereco_entrega } = req.body;
 
-        let valorTotalVenda = 0;
-        const dataAtual = new Date(); // Pega a data de hoje
-        const statusVenda = 'Finalizado'; // ou 'Pendente', como você preferir
+    // Verificação de segurança: não deixa comprar com carrinho vazio
+    if (!codusuario || !carrinho || carrinho.length === 0) {
+        return res.status(400).json({ erro: "Dados incompletos para finalizar a compra." });
+    }
 
-        // 1. Cria o registro na tabela "vendas" com valor 0 por enquanto
-        const resultVenda = await client.query(
-            "INSERT INTO vendas (codusuario, status, data, valortotal) VALUES ($1, $2, $3, $4) RETURNING codvenda",
-            [codusuario, statusVenda, dataAtual, 0]
-        );
-        
-        // Pega o código da venda que acabou de ser gerado no banco
-        const codvendaGerado = resultVenda.rows[0].codvenda;
-
-        // 2. Faz um loop (for) para passar por cada produto do carrinho do cliente
-        for (const item of carrinho) {
-            const { codproduto, qtd } = item;
-
-            // Busca o preço real do produto no banco e vê quanto tem no estoque
-            const produtoBD = await client.query(
-                "SELECT valor, estoque FROM produtos WHERE codproduto = $1", 
-                [codproduto]
-            );
-
-            if (produtoBD.rowCount === 0) throw new Error(`Produto código ${codproduto} não existe mais.`);
-            
-            const precoUnitario = produtoBD.rows[0].valor;
-            const estoqueAtual = produtoBD.rows[0].estoque;
-
-            // Validação de estoque importantíssima para e-commerce!
-            if (qtd > estoqueAtual) throw new Error(`Estoque insuficiente para o produto código ${codproduto}.`);
-
-            // Insere o produto na tabela "itens_venda" conectando com o código da venda
-            await client.query(
-                "INSERT INTO itens_venda (codvenda, codproduto, quantidade, preco_unitario) VALUES ($1, $2, $3, $4)",
-                [codvendaGerado, codproduto, qtd, precoUnitario]
-            );
-
-            // Tira a roupa do estoque na tabela "produtos"
-            await client.query(
-                "UPDATE produtos SET estoque = estoque - $1 WHERE codproduto = $2",
-                [qtd, codproduto]
-            );
-
-            // Vai somando o valor dos produtos para termos o total da nota
-            valorTotalVenda += (precoUnitario * qtd);
+    try {
+        // 2. Calcula o valor total do carrinho
+        let valorTotal = 0;
+        for (let item of carrinho) {
+            valorTotal += (item.preco * item.quantidade);
         }
 
-        // 3. Atualiza a tabela "vendas" colocando o Valor Total correto da compra
-        await client.query(
-            "UPDATE vendas SET valortotal = $1 WHERE codvenda = $2",
-            [valorTotalVenda, codvendaGerado]
-        );
-
-        // Se chegou até aqui sem dar erro, salva tudo no banco de uma vez!
-        await client.query("COMMIT");
+        // 3. INSERE A VENDA NO BANCO DE DADOS (COM O ENDEREÇO)
+        const sqlVenda = `
+            INSERT INTO vendas (codusuario, status, data, valortotal, endereco_entrega) 
+            VALUES ($1, 'Finalizado', CURRENT_DATE, $2, $3) 
+            RETURNING codvenda;
+        `;
         
-        // Responde ao frontend que deu tudo certo
-        res.status(201).json({ sucesso: true, mensagem: "Venda realizada com sucesso na Freese Store!" });
+        const valoresVenda = [codusuario, valorTotal, endereco_entrega];
+        const resultVenda = await pool.query(sqlVenda, valoresVenda);
+        const codVendaGerado = resultVenda.rows[0].codvenda;
 
-    } catch (err) {
-        // Se der qualquer erro (ex: alguém comprou o último item 1 segundo antes), ele desfaz tudo
-        await client.query("ROLLBACK");
-        console.error("Erro na venda:", err.message);
-        res.status(400).json({ sucesso: false, mensagem: err.message });
-    } finally {
-        client.release(); // Libera o banco de dados
+        // 4. INSERE OS ITENS DA VENDA (As roupas compradas)
+        // Se der erro de "tabela itens_venda não existe", a gente resolve depois!
+        const sqlItem = `
+            INSERT INTO itens_venda (codvenda, codproduto, quantidade, precounitario) 
+            VALUES ($1, $2, $3, $4);
+        `;
+
+        for (let item of carrinho) {
+            await pool.query(sqlItem, [codVendaGerado, item.id, item.quantidade, item.preco]);
+        }
+
+        // 5. Retorna mensagem de sucesso
+        res.status(201).json({ 
+            mensagem: "Compra finalizada com sucesso!", 
+            codvenda: codVendaGerado 
+        });
+
+    } catch (erro) {
+        console.error("Erro ao processar venda:", erro);
+        res.status(500).json({ erro: "Erro interno ao finalizar a compra.", detalhes: erro.message });
     }
 });
-
 
 router.delete("/:codvenda", async (req, res) => {
     try {
@@ -137,6 +105,5 @@ router.put("/:codvenda", async (req, res) => {
         res.status(500).json({ error: "Erro ao atualizar venda" ,errorDetails: err.message});
     }
 });
-
 
 module.exports = router;
