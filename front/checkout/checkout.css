@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+/* ============================================================
+   CONFIGURAÇÕES GERAIS (Inspirado no seu CSS Principal)
+   ============================================================ */
+:root {
+    --premium-red: #a70101;
+    --dark: #111;
+    --light-gray: #f9f9f9;
+    --white: #ffffff;
+    --transition: 0.3s ease;
+    --borda: #e0e0e0;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+body { background: #f5f5f5; color: var(--dark); }
+
+/* Header Minimalista para o Checkout (Evita distrações) */
+.checkout-header {
+    background: var(--white);
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--borda);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.checkout-header h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+.checkout-header h1 span { color: var(--premium-red); }
+.voltar-loja { text-decoration: none; color: #666; font-size: 14px; font-weight: 600; transition: var(--transition); }
+.voltar-loja:hover { color: var(--premium-red); }
+
+/* ============================================================
+   GRID DO CHECKOUT
+   ============================================================ */
+.checkout-container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 30px;
+}
+
+.box {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+}
+
+.titulo-sessao {
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--light-gray);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.titulo-sessao i { color: var(--premium-red); }
+
+/* Formulários */
+.linha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+.form-group { margin-bottom: 18px; }
+.form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555; text-transform: uppercase; }
+
+input, select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    background: var(--light-gray);
+    outline: none;
+    transition: var(--transition);
+    font-size: 14px;
+}
+input:focus, select:focus {
+    border-color: var(--premium-red);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.08);
+}
+
+/* ============================================================
+   RESUMO DO PEDIDO
+   ============================================================ */
+.lista-itens-resumo { max-height: 350px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
+.lista-itens-resumo::-webkit-scrollbar { width: 5px; }
+.lista-itens-resumo::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
+
+.item-resumo { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--light-gray); }
+.item-resumo img { width: 65px; height: 65px; border-radius: 8px; object-fit: contain; background: var(--light-gray); border: 1px solid #eee; }
+.item-info { flex-grow: 1; }
+.item-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; text-transform: uppercase; }
+.item-info p { font-size: 12px; color: #777; }
+.item-preco { font-weight: 900; color: var(--dark); font-size: 15px; }
+
+.totais { padding-top: 15px; border-top: 2px solid var(--dark); margin-top: 10px; }
+.linha-total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; color: #555; }
+.linha-total.destaque { font-size: 22px; font-weight: 900; color: var(--dark); margin-top: 15px; }
+.linha-total.destaque span:last-child { color: var(--premium-red); }
+
+/* Botão Verde de Finalizar (Puxado do seu CSS) */
+.btn-finalizar {
+    width: 100%;
+    padding: 18px;
+    background: #27ae60;
+    color: var(--white);
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: var(--transition);
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.btn-finalizar:hover { background: #219150; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3); }
+.btn-finalizar:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.seguranca-msg { text-align: center; font-size: 12px; color: #888; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+    .checkout-container { grid-template-columns: 1fr; margin: 20px auto; gap: 20px; }
+    .linha-inputs { grid-template-columns: 1fr; gap: 0; }
+    .checkout-header { flex-direction: column; gap: 10px; padding: 15px; }
+}
