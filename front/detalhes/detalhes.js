@@ -52,11 +52,45 @@ async function carregarProduto() {
         document.getElementById("produto-wrapper").innerHTML = "<h2>Erro ao carregar o servidor.</h2>";
     }
 }
-
 function renderizarDetalhes(produto) {
     const wrapper = document.getElementById("produto-wrapper");
     let srcImg = montarUrlSegura(produto.img) || IMG_FALHA_PRODUTO;
 
+    // 1. Verificamos se o produto é um Tênis/Calçado pelo nome
+    let nomeProduto = produto.nome.toLowerCase();
+    let ehCalcado = nomeProduto.includes("tênis") || 
+                    nomeProduto.includes("tenis") || 
+                    nomeProduto.includes("sneaker") || 
+                    nomeProduto.includes("chinelo");
+
+    // 2. Criamos as opções de tamanhos baseadas no tipo de produto
+    let opcoesTamanho = "";
+    
+    if (ehCalcado) {
+        // Se for calçado, gera as opções em números
+        opcoesTamanho = `
+            <option value="36">Tamanho 36</option>
+            <option value="37">Tamanho 37</option>
+            <option value="38">Tamanho 38</option>
+            <option value="39">Tamanho 39</option>
+            <option value="40">Tamanho 40</option>
+            <option value="41">Tamanho 41</option>
+            <option value="42">Tamanho 42</option>
+            <option value="43">Tamanho 43</option>
+            <option value="44">Tamanho 44</option>
+        `;
+    } else {
+        // Se for roupa, gera as opções em letras
+        opcoesTamanho = `
+            <option value="P">Tamanho P</option>
+            <option value="M">Tamanho M</option>
+            <option value="G">Tamanho G</option>
+            <option value="GG">Tamanho GG</option>
+            <option value="XG">Tamanho XG</option>
+        `;
+    }
+
+    // 3. Montamos a tela na página injetando as opções corretas
     wrapper.innerHTML = `
         <div class="produto-imagem">
             <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -70,10 +104,7 @@ function renderizarDetalhes(produto) {
             <div class="seletor-tamanho">
                 <label>Selecione o Tamanho:</label>
                 <select id="tamanho-escolhido">
-                    <option value="P">Tamanho P</option>
-                    <option value="M">Tamanho M</option>
-                    <option value="G">Tamanho G</option>
-                    <option value="GG">Tamanho GG</option>
+                    ${opcoesTamanho}
                 </select>
             </div>
             
@@ -81,6 +112,7 @@ function renderizarDetalhes(produto) {
         </div>
     `;
 }
+
 
 function adicionarAoCarrinhoDetalhes() {
     if (!localStorage.getItem("usuarioAtivo")) {

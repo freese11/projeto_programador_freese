@@ -95,7 +95,7 @@ function atualizarGrafico(lista) {
             datasets: [{
                 label: 'Faturamento por Dia (R$)',
                 data: valores,
-                backgroundColor: '#ff4757', // Cor da barra preta elegante
+                backgroundColor: '#000', // Cor da barra preta elegante
                 borderRadius: 4
             }]
         },
