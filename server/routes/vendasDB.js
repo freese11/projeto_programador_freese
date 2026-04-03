@@ -3,20 +3,35 @@ const pool = require('../db');
 
 const router = express.Router();
 
+// 1. BUSCAR TODAS AS VENDAS (AGORA COM O NOME DO CLIENTE!)
 router.get('/', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM vendas');
+        // Fazemos um JOIN ligando o codusuario da venda com o codusuario do cliente
+        const sql = `
+            SELECT vendas.*, usuarios.nome AS nome_cliente 
+            FROM vendas 
+            LEFT JOIN usuarios ON vendas.codusuario = usuarios.codusuario
+            ORDER BY vendas.codvenda DESC
+        `;
+        const result = await pool.query(sql);
         res.json(result.rows);
     } catch (err) {
-        console.error(err.message);
+        console.error("Erro ao buscar vendas:", err.message);
         res.status(500).send('Erro no servidor');
     }
 });
 
+// 2. BUSCAR UMA VENDA ESPECÍFICA (TAMBÉM COM O NOME)
 router.get('/:codvenda', async (req, res) => {
     try {
         const { codvenda } = req.params;
-        const result = await pool.query('SELECT * FROM vendas WHERE codvenda = $1', [codvenda]);
+        const sql = `
+            SELECT vendas.*, usuarios.nome AS nome_cliente 
+            FROM vendas 
+            LEFT JOIN usuarios ON vendas.codusuario = usuarios.codusuario
+            WHERE vendas.codvenda = $1
+        `;
+        const result = await pool.query(sql, [codvenda]);
         res.json(result.rows[0]);
     } catch (err) {
         console.error(err.message);
@@ -53,7 +68,6 @@ router.post('/', async (req, res) => {
         const codVendaGerado = resultVenda.rows[0].codvenda;
 
         // 4. INSERE OS ITENS DA VENDA (As roupas compradas)
-        // Se der erro de "tabela itens_venda não existe", a gente resolve depois!
         const sqlItem = `
             INSERT INTO itens_venda (codvenda, codproduto, quantidade, precounitario) 
             VALUES ($1, $2, $3, $4);
@@ -88,6 +102,7 @@ router.delete("/:codvenda", async (req, res) => {
         res.status(500).json({ error: "Erro ao deletar venda" ,errorDetails: err.message});
     }
 });
+
 router.put("/:codvenda", async (req, res) => {
     try {
         const { codvenda } = req.params;
@@ -109,7 +124,5 @@ router.put("/:codvenda", async (req, res) => {
         res.status(500).json({ error: "Erro ao atualizar venda", errorDetails: err.message });
     }
 });
-
-
 
 module.exports = router;
