@@ -3,7 +3,7 @@ const pool = require('../db');
 
 const router = express.Router();
 
-// 1. BUSCAR TODAS AS VENDAS (COM AS ROUPAS COMPRADAS!)
+// 1. BUSCAR TODAS AS VENDAS (COM AS ROUPAS COMPRADAS E AS FOTOS!)
 router.get('/', async (req, res) => {
     try {
         const sqlVendas = `
@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
         const vendas = resultVendas.rows;
 
         for (let venda of vendas) {
-            // 👇 VOLTAMOS PARA p.codproduto E MANTIVEMOS SEM O p.imagem 👇
+            // 👇 SOLUÇÃO FINAL: Adicionamos p.img AS imagem 👇
             const sqlItens = `
-                SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome 
+                SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome, p.img AS imagem
                 FROM itens_venda iv
                 LEFT JOIN produtos p ON iv.codproduto = p.codproduto
                 WHERE iv.codvenda = $1
@@ -54,9 +54,9 @@ router.get('/:codvenda', async (req, res) => {
 
         const venda = resultVenda.rows[0];
 
-        // 👇 VOLTAMOS PARA p.codproduto E MANTIVEMOS SEM O p.imagem 👇
+        // 👇 SOLUÇÃO FINAL AQUI TAMBÉM: Adicionamos p.img AS imagem 👇
         const sqlItens = `
-            SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome 
+            SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome, p.img AS imagem
             FROM itens_venda iv
             LEFT JOIN produtos p ON iv.codproduto = p.codproduto
             WHERE iv.codvenda = $1
@@ -72,7 +72,7 @@ router.get('/:codvenda', async (req, res) => {
 });
 
 // =======================================================
-// ROTAS DE CRIAR, DELETAR E ATUALIZAR VENDA
+// ROTAS DE CRIAR, DELETAR E ATUALIZAR VENDA (INTACTAS)
 // =======================================================
 router.post('/', async (req, res) => {
     const { codusuario, carrinho, endereco_entrega } = req.body;
