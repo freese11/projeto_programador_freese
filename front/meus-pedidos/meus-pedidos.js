@@ -150,7 +150,7 @@ function renderizarPedidos(pedidos) {
                             <i class="fas fa-receipt"></i> Ver Detalhes
                         </button>
                         
-                        <button class="btn-ajuda" onclick="window.open('https://wa.me/5551999999999', '_blank')">
+                        <button class="btn-ajuda" onclick="window.open('https://wa.me/555195352834', '_blank')">
                             <i class="fab fa-whatsapp"></i> Preciso de Ajuda
                         </button>
                     </div>
