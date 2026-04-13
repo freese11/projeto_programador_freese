@@ -52,22 +52,20 @@ async function carregarProduto() {
         document.getElementById("produto-wrapper").innerHTML = "<h2>Erro ao carregar o servidor.</h2>";
     }
 }
+
 function renderizarDetalhes(produto) {
     const wrapper = document.getElementById("produto-wrapper");
     let srcImg = montarUrlSegura(produto.img) || IMG_FALHA_PRODUTO;
 
-    // 1. Verificamos se o produto é um Tênis/Calçado pelo nome
     let nomeProduto = produto.nome.toLowerCase();
     let ehCalcado = nomeProduto.includes("tênis") || 
                     nomeProduto.includes("tenis") || 
                     nomeProduto.includes("sneaker") || 
                     nomeProduto.includes("chinelo");
 
-    // 2. Criamos as opções de tamanhos baseadas no tipo de produto
     let opcoesTamanho = "";
     
     if (ehCalcado) {
-        // Se for calçado, gera as opções em números
         opcoesTamanho = `
             <option value="36">Tamanho 36</option>
             <option value="37">Tamanho 37</option>
@@ -80,7 +78,6 @@ function renderizarDetalhes(produto) {
             <option value="44">Tamanho 44</option>
         `;
     } else {
-        // Se for roupa, gera as opções em letras
         opcoesTamanho = `
             <option value="P">Tamanho P</option>
             <option value="M">Tamanho M</option>
@@ -90,7 +87,6 @@ function renderizarDetalhes(produto) {
         `;
     }
 
-    // 3. Montamos a tela na página injetando as opções corretas
     wrapper.innerHTML = `
         <div class="produto-imagem">
             <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -98,7 +94,7 @@ function renderizarDetalhes(produto) {
         <div class="produto-info">
             <span class="selo-marca">FREESE STORE</span>
             <h1>${produto.nome}</h1>
-            <p class="preco-detalhe">R$ ${Number(produto.valor).toFixed(2)}</p>
+            <p class="preco-detalhe">R$ ${Number(produto.valor).toFixed(2).replace('.', ',')}</p>
             <p class="descricao">Produto original de alta qualidade. Adicione estilo e conforto ao seu guarda-roupa com as melhores peças do mercado.</p>
             
             <div class="seletor-tamanho">
@@ -116,7 +112,7 @@ function renderizarDetalhes(produto) {
 
 function adicionarAoCarrinhoDetalhes() {
     if (!localStorage.getItem("usuarioAtivo")) {
-        alert("Acesse sua conta para comprar.");
+        showToast("Acesse sua conta para adicionar produtos ao carrinho.", "warning");
         if (modal) modal.style.display = "block";
         voltarSelecao();
         return;
@@ -134,6 +130,7 @@ function adicionarAoCarrinhoDetalhes() {
     localStorage.setItem("carrinho", JSON.stringify(carrinho));
     atualizarContador();
     toggleCarrinho(true); 
+    showToast("Produto adicionado ao carrinho!", "success");
 }
 
 function atualizarContador() {
@@ -152,14 +149,13 @@ function toggleCarrinho(abrir = false) {
         overlay.style.display = "none"; 
     }
 }
-// 👇 1. SUBSTITUA SUA FUNÇÃO RENDERIZAR POR ESTA (agora com o ícone de lixeira) 👇
+
 async function renderizarItensCarrinho() {
     const container = document.getElementById("itens-carrinho");
     if (!container) return;
     container.innerHTML = "";
     let totalGeral = 0;
     
-    // Se o carrinho estiver vazio, mostra uma mensagem amigável
     if (carrinho.length === 0) {
         container.innerHTML = "<p style='text-align:center; padding: 30px 20px; color:#888; font-weight: 600;'>Seu carrinho está vazio.</p>";
         document.getElementById("valor-total-carrinho").innerText = "R$ 0,00";
@@ -170,21 +166,19 @@ async function renderizarItensCarrinho() {
         const resposta = await fetch(API_URL);
         const produtosBD = await resposta.json();
         
-        // Note que adicionei o "index" aqui para saber qual item remover
         carrinho.forEach((item, index) => {
             const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
             if (p) {
                 totalGeral += p.valor * item.qtd;
                 let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
                 
-                // Adicionado 'position: relative' e o ícone de lixeira no final
                 container.innerHTML += `
                     <div class="item-no-carrinho" style="position: relative;">
                         <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
                         <div style="flex-grow: 1; padding-right: 30px;">
                             <p style="font-weight: bold; font-size: 15px; color: #111; margin-bottom: 2px; text-transform: lowercase;">${p.nome}</p>
                             <p style="font-size: 13px; color: #666; margin-bottom: 3px;">Tam: ${item.tamanho || 'Único'} | Qtd: ${item.qtd}</p>
-                            <p style="font-size: 16px; font-weight: 900; color: var(--premium-red);">R$ ${Number(p.valor).toFixed(2)}</p>
+                            <p style="font-size: 16px; font-weight: 900; color: var(--premium-red);">R$ ${Number(p.valor).toFixed(2).replace('.', ',')}</p>
                         </div>
                         
                         <i class="fas fa-trash" 
@@ -197,25 +191,16 @@ async function renderizarItensCarrinho() {
                     </div>`;
             }
         });
-        document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2)}`;
+        document.getElementById("valor-total-carrinho").innerText = `R$ ${totalGeral.toFixed(2).replace('.', ',')}`;
     } catch (e) { console.error("Erro ao renderizar carrinho:", e); }
 }
 
-// 👇 2. ADICIONE ESTA NOVA FUNÇÃO LOGO ABAIXO 👇
 function removerItemCarrinho(index) {
-    // Remove 1 item a partir da posição (index) que foi clicada
     carrinho.splice(index, 1); 
-    
-    // Atualiza o banco de dados local do navegador
     localStorage.setItem("carrinho", JSON.stringify(carrinho)); 
-    
-    // Atualiza o número vermelho de itens no header
     atualizarContador(); 
-    
-    // Desenha o carrinho novamente sem o item e com o novo preço
     renderizarItensCarrinho(); 
 }
-
 
 // ==========================================
 // LOGIN, REGISTRO E SISTEMA DE PERFIL
@@ -240,11 +225,14 @@ async function efetuarLogin(event) {
         if (resposta.ok) {
             const dados = await resposta.json();
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
-            location.reload(); 
+            
+            showToast("Login realizado com sucesso!", "success");
+            // Delay para dar tempo de ler o Toast verde antes de atualizar a página
+            setTimeout(() => { location.reload(); }, 1500); 
         } else {
-            alert("E-mail ou senha incorretos! Verifique também se escolheu a opção correta (Cliente ou Admin).");
+            showToast("E-mail ou senha incorretos! Verifique também o perfil escolhido.", "error");
         }
-    } catch (erro) { alert("Erro ao conectar com o servidor."); }
+    } catch (erro) { showToast("Erro ao conectar com o servidor.", "error"); }
 }
 
 function previewImagemRegistro(event) {
@@ -281,13 +269,13 @@ async function registrarCliente(event) {
         });
 
         if (res.ok) {
-            alert("Conta criada com sucesso! Você já pode fazer login.");
+            showToast("Conta criada com sucesso! Você já pode fazer login.", "success");
             voltarSelecao(); 
         } else {
             const erro = await res.json();
-            alert("Erro: " + (erro.erro || "Falha ao cadastrar."));
+            showToast("Erro: " + (erro.erro || "Falha ao cadastrar."), "error");
         }
-    } catch (erro) { alert("Erro de conexão com o servidor."); } 
+    } catch (erro) { showToast("Erro de conexão com o servidor.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
@@ -370,18 +358,10 @@ function previewImagemPerfil(event) {
     }
 }
 
-function sairConta() {
-    if (confirm("Deseja realmente sair da sua conta?")) {
-        localStorage.removeItem("usuarioAtivo");
-        localStorage.removeItem("carrinho");
-        window.location.href = "/index.html"; 
-    }
-}
-
 async function salvarFotoPerfil() {
     const inputFoto = document.getElementById("foto-perfil");
     if (!inputFoto || inputFoto.files.length === 0) {
-        alert("Por favor, clique em 'Trocar Foto' primeiro para selecionar uma imagem.");
+        showToast("Por favor, clique em 'Trocar Foto' para escolher uma imagem.", "warning");
         return;
     }
 
@@ -390,7 +370,7 @@ async function salvarFotoPerfil() {
     const userObj = session.usuario ? session.usuario : session;
     const idUser = userObj.codusuario || userObj.id;
 
-    if (!idUser) { alert("Erro de autenticação. Faça login novamente."); return; }
+    if (!idUser) { showToast("Erro de autenticação. Faça login novamente.", "error"); return; }
 
     const btnSalvar = document.querySelector("#modal-perfil button.btn-primary");
     const textoOriginal = btnSalvar.innerText;
@@ -416,9 +396,69 @@ async function salvarFotoPerfil() {
         });
 
         if (resPut.ok) {
-            alert("Sua foto de perfil foi atualizada com sucesso!");
-            location.reload(); 
-        } else { alert("Erro ao atualizar foto. Tente novamente."); }
-    } catch(err) { alert("Erro de conexão ao tentar salvar a foto."); } 
+            showToast("Foto de perfil atualizada com sucesso!", "success");
+            // Espera o aviso para atualizar a página
+            setTimeout(() => { location.reload(); }, 1500); 
+        } else { showToast("Erro ao atualizar foto. Tente novamente.", "error"); }
+    } catch(err) { showToast("Erro de conexão ao tentar salvar a foto.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
+}
+
+// Lógica de Confirmação de Saída da Conta (Deslogar)
+function sairConta() {
+    // Esconde o modal de perfil e abre o modal de confirmação
+    document.getElementById("modal-perfil").style.display = "none";
+    document.getElementById("modal-confirmacao-sair").style.display = "block";
+}
+
+function fecharModalSair() {
+    document.getElementById("modal-confirmacao-sair").style.display = "none";
+}
+
+function confirmarSaida() {
+    localStorage.removeItem("usuarioAtivo");
+    localStorage.removeItem("carrinho");
+    window.location.href = "/index.html"; 
+}
+
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: 'var(--premium-red)' }, 
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 3500);
 }

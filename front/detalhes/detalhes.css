@@ -246,7 +246,7 @@ body {
 }
 
 /* ============================================================
-   4. MODAIS (LOGIN, REGISTRO E PERFIL) - Padrão Unificado
+   4. MODAIS (LOGIN, REGISTRO, PERFIL E SAÍDA)
    ============================================================ */
 .modal {
     display: none; position: fixed; z-index: 3000; inset: 0;
@@ -277,6 +277,38 @@ body {
 .btn-voltar { font-size: 12px; margin-top: 10px; cursor: pointer; text-decoration: underline; color: #888; }
 .btn-voltar:hover { color: #000; }
 .hidden { display: none !important; }
+
+/* Botão Ver Meus Pedidos (Modal Perfil) */
+.btn-meus-pedidos {
+    background: transparent;
+    color: #111;
+    border: 2px solid #111;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+}
+.btn-meus-pedidos:hover { background: #111; color: white; transform: translateY(-2px); }
+
+/* Botões Específicos do Modal de Saída */
+.btn-cancelar {
+    padding: 12px; border: 1px solid #ddd; background: #fff; 
+    border-radius: 8px; cursor: pointer; font-weight: bold; color: #333; transition: 0.3s;
+}
+.btn-cancelar:hover { background: #eee; }
+
+.btn-confirmar-sair {
+    padding: 12px; border: none; background: var(--premium-red); 
+    color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+.btn-confirmar-sair:hover { background: #8a0000; box-shadow: 0 4px 10px rgba(167, 1, 1, 0.3); transform: translateY(-2px); }
+
 
 /* ============================================================
    5. CARRINHO LATERAL - Padrão Unificado
@@ -328,12 +360,60 @@ body {
 .footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }
 
 /* ============================================================
-   7. RESPONSIVIDADE PARA CELULAR (TUDO PADRONIZADO E ALINHADO)
+   7. NOTIFICAÇÕES TOAST (FREESE STORE)
+   ============================================================ */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.toast-freese {
+    min-width: 320px;
+    max-width: 400px;
+    background-color: #111; 
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    transform: translateX(120%) scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-freese.show { transform: translateX(0) scale(1); opacity: 1; }
+
+.toast-icon {
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08); width: 48px; height: 48px;
+    border-radius: 50%; flex-shrink: 0; 
+}
+
+.toast-content { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; padding-right: 10px; }
+.toast-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
+.toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; color: #fff; }
+.toast-progress { position: absolute; bottom: 0; left: 0; height: 4px; background-color: var(--toast-cor); width: 100%; animation: toastProgress 3.5s linear forwards; }
+
+@keyframes toastProgress { 0% { width: 100%; } 100% { width: 0%; } }
+
+/* ============================================================
+   8. RESPONSIVIDADE PARA CELULAR 
    ============================================================ */
 @media (max-width: 768px) {
     .top-bar { display: none; } 
     
-    /* Header Mobile Padrão */
     .header { padding: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
     .logo { order: 1; }
     .logo img { height: 45px; }
@@ -343,48 +423,18 @@ body {
     .menu { flex-wrap: wrap; justify-content: center; gap: 15px; padding: 15px 10px; font-size: 14px; }
     .carrinho-sidebar { width: 100%; right: -100%; }
 
-    /* Ajustes específicos da Página de Detalhes no Celular */
-    .produto-wrapper { 
-        flex-direction: column; 
-        padding: 25px 20px; 
-        gap: 30px; 
-    }
-    .produto-imagem { 
-        min-height: 300px; 
-        padding: 20px; 
-    }
+    .produto-wrapper { flex-direction: column; padding: 25px 20px; gap: 30px; }
+    .produto-imagem { min-height: 300px; padding: 20px; }
     .produto-info h1 { font-size: 28px; }
     .preco-detalhe { font-size: 26px; }
-    .seletor-tamanho select { width: 100%; } /* Select ocupa 100% no celular para facilitar o clique */
+    .seletor-tamanho select { width: 100%; } 
 
-    /* Ajustes Footer e Newsletter */
     .news-form { flex-direction: column; align-items: center; }
     .news-form input { max-width: 100%; }
     .news-form button { width: 100%; }
     .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 30px; padding: 40px 20px; }
     .footer-logo { margin: 0 auto 15px auto; }
-}
 
-
-/* Botão Ver Meus Pedidos (Modal Perfil) */
-.btn-meus-pedidos {
-    background: transparent;
-    color: #111;
-    border: 2px solid #111; /* Borda preta grossinha */
-    padding: 14px;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: 0.3s;
-    width: 100%;
-    margin-top: 10px; /* Espaço pro botão de cima */
-    margin-bottom: 10px; /* Espaço pro botão de baixo */
-}
-
-.btn-meus-pedidos:hover {
-    background: #111;
-    color: white;
-    transform: translateY(-2px);
+    #toast-container { bottom: 20px; right: 20px; left: 20px; align-items: center; }
+    .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }

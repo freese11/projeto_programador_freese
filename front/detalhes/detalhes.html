@@ -20,7 +20,6 @@
       <img src="/midias/freese2.png" alt="Freese Store">
   </div>
   
-  <!-- 👇 A barra de pesquisa adicionada de volta 👇 -->
   <input type="text" class="search" placeholder="Buscar por modelo ou marca...">
   
   <div class="acoes">
@@ -31,7 +30,7 @@
   </div>
 </header>
 
-<!-- MENU FORA DO HEADER (PERFEITO!) -->
+<!-- MENU -->
 <nav class="menu">
   <a href="/index.html">Início</a>
   <a href="/catalago/catalago.html" class="active">Catálogo</a>
@@ -101,11 +100,21 @@
 
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
           <button onclick="salvarFotoPerfil()" class="btn-primary">SALVAR FOTO</button>
-          <!-- 👇 ADICIONE ESTE NOVO BOTÃO NO MEIO 👇 -->
-<button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
-
+          <button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
           <button onclick="sairConta()" class="btn-sair">SAIR DA CONTA</button>
       </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+<div id="modal-confirmacao-sair" class="modal" style="z-index: 3005;">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px;">
+        <h3 style="margin-bottom: 15px; font-weight: 900; text-transform: uppercase; color: #111;">Sair da Conta?</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Tem certeza que deseja desconectar da sua conta Freese Store?</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="fecharModalSair()" class="btn-cancelar" style="width: 50%;">CANCELAR</button>
+            <button onclick="confirmarSaida()" class="btn-confirmar-sair" style="width: 50%;">SIM, SAIR</button>
+        </div>
     </div>
 </div>
 
@@ -126,7 +135,10 @@
 </div>
 <div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
 
-<!-- 👇 RODAPÉ (FOOTER) ADICIONADO DE VOLTA 👇 -->
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST -->
+<div id="toast-container"></div>
+
+<!-- RODAPÉ (FOOTER) -->
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-col">

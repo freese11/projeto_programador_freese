@@ -1,10 +1,14 @@
 /* =========================================
    1. GERAL (Fundo e Fonte)
    ========================================= */
+:root {
+    --premium-red: #ff4757;
+}
+
 body {
     margin: 0;
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background: #f8f9fa;
+    background: #f4f6f9;
     color: #333;
     overflow-x: hidden;
 }
@@ -38,8 +42,8 @@ body {
 
 .btn-voltar {
     background: transparent;
-    border: 1px solid #ff4757;
-    color: #ff4757;
+    border: 1px solid var(--premium-red);
+    color: var(--premium-red);
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
@@ -48,13 +52,13 @@ body {
 }
 
 .btn-voltar:hover { 
-    background: #ff4757; 
+    background: var(--premium-red); 
     color: white; 
 }
 
 .btn-novo {
-    background: #111;
-    border: 1px solid white;
+    background: var(--premium-red);
+    border: none;
     padding: 10px 18px;
     color: white;
     border-radius: 6px;
@@ -63,11 +67,12 @@ body {
     transition: 0.2s;
     text-transform: uppercase;
     font-size: 13px;
+    box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2);
 }
 
 .btn-novo:hover { 
-    background: white; 
-    color: #111; 
+    background: #ff6b81; 
+    transform: translateY(-1px); 
 }
 
 /* =========================================
@@ -91,9 +96,9 @@ body {
 .card {
     background: white;
     padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-    border-left: 5px solid #111;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    border-left: 5px solid var(--premium-red);
 }
 
 .card h3 {
@@ -102,20 +107,22 @@ body {
     color: #666;
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-weight: 800;
 }
 
 .card p {
     margin: 0;
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 32px;
+    font-weight: 900;
     color: #111;
+    letter-spacing: -1px;
 }
 
 .grafico-container {
     background: white;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     flex: 3;
     min-width: 300px;
     height: 250px;
@@ -133,7 +140,7 @@ body {
 
 .filtros input, .filtros select {
     padding: 12px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
     outline: none;
@@ -164,7 +171,7 @@ th {
     background: #1a1a1a;
     color: white;
     padding: 16px 15px;
-    text-align: center;
+    text-align: left;
     font-size: 13px;
     font-weight: 600;
     text-transform: uppercase;
@@ -173,7 +180,7 @@ th {
 
 td {
     padding: 15px;
-    text-align: center;
+    text-align: left;
     border-bottom: 1px solid #f1f1f1;
     vertical-align: middle;
     font-size: 14px;
@@ -183,7 +190,7 @@ td {
 tr:hover { background: #fcfcfc; }
 
 button.editar { 
-    background: #eab308; 
+    background: #f59e0b; 
     border: none; 
     padding: 8px 14px; 
     color: white; 
@@ -192,56 +199,195 @@ button.editar {
     font-weight: bold; 
     font-size: 12px;
     text-transform: uppercase;
+    transition: 0.2s;
+}
+
+button.editar:hover {
+    background: #d97706;
 }
 
 /* =========================================
    5. ETIQUETAS DE STATUS
    ========================================= */
-.status-concluido { background: #e3fbed; color: #15803d; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; }
-.status-pendente { background: #fef9c3; color: #a16207; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; }
-.status-cancelado { background: #fef2f2; color: #b91c1c; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; }
+.status-concluido { background: #e3fbed; color: #15803d; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px; }
+.status-pendente { background: #fef9c3; color: #a16207; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px;}
+.status-cancelado { background: #fef2f2; color: #b91c1c; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px;}
 
 /* =========================================
-   6. MODAL CENTRALIZADO
+   6. MODAL CENTRALIZADO E DEFINITIVO
    ========================================= */
 .modal {
-    display: none;
+    display: none; 
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.75);
-    z-index: 9999;
-    padding: 20px;
-    overflow-y: auto;
-    box-sizing: border-box;
+    z-index: 1000;
     backdrop-filter: blur(4px);
 }
 
 .modal-content {
-    background: white;
-    width: 100%;
-    max-width: 400px;
-    margin: 15vh auto !important;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    background: #ffffff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%; 
+    max-width: 420px; 
+    padding: 30px 25px;
+    border-radius: 16px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-sizing: border-box;
 }
 
-.modal-content h2 { margin: 0 0 20px 0; font-size: 20px; color: #111; text-align: center; font-weight: 800; text-transform: uppercase; }
-.modal-content label { display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px; }
-.modal-content select { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; margin-bottom: 20px; }
+.modal-content h2 { margin: 0 0 10px 0; font-size: 20px; color: #111; text-align: center; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
+.modal-content label { display: block; font-size: 13px; font-weight: 700; color: #555; margin-bottom: -5px; }
+.modal-content select { 
+    width: 100%; 
+    padding: 14px 15px; 
+    border: 1.5px solid #e0e0e0; 
+    border-radius: 8px; 
+    font-size: 14px; 
+    background: #fcfcfc; 
+    transition: 0.3s;
+    box-sizing: border-box;
+    color: #111;
+}
 
-.modal-buttons { display: flex; gap: 12px; }
-.modal-buttons button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; }
+.modal-content select:focus {
+    border-color: #111;
+    background: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+}
+
+.modal-buttons { display: flex; gap: 10px; margin-top: 10px;}
+.modal-buttons button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
 .salvar { background: #111; color: white; }
-.salvar:hover { background: #333; }
-.cancelar { background: #e5e5e5; color: #333; }
-.cancelar:hover { background: #d4d4d4; }
+.salvar:hover { background: #333; transform: translateY(-2px);}
+.cancelar { background: #e0e0e0; color: #333; }
+.cancelar:hover { background: #d0d0d0; }
 
 /* =========================================
-   7. RESPONSIVIDADE
+   7. NOTIFICAÇÕES TOAST (FREESE STORE)
+   ========================================= */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.toast-freese {
+    min-width: 320px;
+    max-width: 400px;
+    background-color: #111; 
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    
+    transform: translateX(120%) scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-freese.show {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+.toast-icon {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0; 
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.toast-title {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #aaa; 
+    margin-bottom: 4px;
+}
+
+.toast-message {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #fff;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--toast-cor);
+    width: 100%;
+    animation: toastProgress 3.5s linear forwards;
+}
+
+@keyframes toastProgress {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
+/* =========================================
+   8. RESPONSIVIDADE
    ========================================= */
 @media (max-width: 768px) {
-    .dashboard-container { flex-direction: column; }
-    .grafico-container { height: 200px; }
-    .tabela-container table { display: block; overflow-x: auto; white-space: nowrap; }
+    .topbar { flex-wrap: wrap; padding: 20px 15px; gap: 12px; justify-content: space-between;}
+    .topbar .left { display: contents; }
+    .topbar h1 { width: 100%; order: 1; font-size: 22px; text-align: center; margin-bottom: 5px; }
+    .btn-voltar { order: 2; flex: 1; padding: 12px 5px; text-align: center; }
+    .btn-novo { order: 3; flex: 1; padding: 12px 5px; text-align: center; }
+
+    .dashboard-container { flex-direction: column; padding: 20px 15px 0 15px;}
+    .grafico-container { height: 250px; }
+    
+    .filtros { padding: 20px 15px; flex-direction: column; }
+    .filtros input, .filtros select { width: 100%; box-sizing: border-box; }
+
+    .tabela-container { padding: 0 15px 30px 15px; }
+    .tabela-container table { display: block; overflow-x: auto; white-space: nowrap; border: 1px solid #eee; }
+
+    #toast-container {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        align-items: center;
+    }
+    .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }

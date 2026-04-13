@@ -9,6 +9,10 @@ body {
     overflow-x: hidden;
 }
 
+:root {
+    --premium-red: #ff4757; /* Adaptado pro tom de vermelho do Admin */
+}
+
 /* =========================================
    2. TOPBAR (Cabeçalho Escuro)
    ========================================= */
@@ -38,8 +42,8 @@ body {
 
 .btn-voltar {
     background: transparent;
-    border: 1px solid #ff4757;
-    color: #ff4757;
+    border: 1px solid var(--premium-red);
+    color: var(--premium-red);
     padding: 8px 16px;
     border-radius: 6px;
     cursor: pointer;
@@ -48,12 +52,12 @@ body {
 }
 
 .btn-voltar:hover { 
-    background: #ff4757; 
+    background: var(--premium-red); 
     color: white; 
 }
 
 .btn-novo {
-    background: #ff4757;
+    background: var(--premium-red);
     border: none;
     padding: 10px 18px;
     color: white;
@@ -145,7 +149,7 @@ td img {
 
 /* Botões de Ação na Tabela */
 button.editar { 
-    background: #eab308; 
+    background: #f59e0b; 
     border: none; 
     padding: 8px 14px; 
     color: white; 
@@ -155,7 +159,9 @@ button.editar {
     font-weight: bold; 
     font-size: 12px;
     text-transform: uppercase;
+    transition: 0.2s;
 }
+button.editar:hover { background: #d97706; }
 
 button.deletar { 
     background: #ef4444; 
@@ -167,10 +173,12 @@ button.deletar {
     font-weight: bold; 
     font-size: 12px;
     text-transform: uppercase;
+    transition: 0.2s;
 }
+button.deletar:hover { background: #dc2626; }
 
 /* =========================================
-   5. ETIQUETAS DE STATUS (CORRIGIDO)
+   5. ETIQUETAS DE STATUS
    ========================================= */
 .status-ativo {
     background: #e3fbed;
@@ -179,7 +187,7 @@ button.deletar {
     border-radius: 50px;
     font-size: 11px;
     font-weight: 800;
-    display: inline-block; /* O segredo para não esticar! */
+    display: inline-block; 
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
@@ -192,23 +200,23 @@ button.deletar {
     border-radius: 50px;
     font-size: 11px;
     font-weight: 800;
-    display: inline-block; /* O segredo para não esticar! */
+    display: inline-block; 
     text-transform: uppercase;
     letter-spacing: 0.5px;
     white-space: nowrap;
 }
 
 /* =========================================
-   6. MODAL CENTRALIZADO (CORRIGIDO)
+   6. MODAIS (CRIAR E EXCLUIR)
    ========================================= */
 .modal {
-    display: none; /* Seu JS abre mudando isso */
+    display: none; 
     position: fixed;
-    inset: 0; /* Substitui top/left/right/bottom 0 */
+    inset: 0; 
     background: rgba(0, 0, 0, 0.75);
     z-index: 9999;
     padding: 20px;
-    overflow-y: auto; /* Permite rolar a tela se faltar espaço */
+    overflow-y: auto; 
     box-sizing: border-box;
     backdrop-filter: blur(4px);
 }
@@ -217,7 +225,7 @@ button.deletar {
     background: white;
     width: 100%;
     max-width: 450px;
-    margin: 4vh auto !important; /* Força o modal a ficar no meio exato da tela */
+    margin: 4vh auto !important; 
     padding: 30px;
     border-radius: 16px;
     box-shadow: 0 15px 40px rgba(0,0,0,0.3);
@@ -225,7 +233,6 @@ button.deletar {
     box-sizing: border-box;
 }
 
-/* Textos e Labels dentro do Modal */
 .modal-content h2 {
     margin: 0 0 20px 0;
     font-size: 20px;
@@ -244,7 +251,6 @@ button.deletar {
     margin-top: 15px;
 }
 
-/* Inputs do Modal para não vazarem */
 .modal-content input, 
 .modal-content select, 
 .modal-content textarea {
@@ -253,11 +259,12 @@ button.deletar {
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
-    box-sizing: border-box; /* Previne que o input quebre a largura */
+    box-sizing: border-box; 
     background: #fff;
     transition: 0.2s;
     font-family: inherit;
     color: #111;
+    margin-bottom: 10px; /* Adicionado um respiro nos inputs */
 }
 
 .modal-content input:focus, 
@@ -267,35 +274,20 @@ button.deletar {
     box-shadow: 0 0 0 2px rgba(17,17,17,0.1);
 }
 
-/* Imagem de Perfil dentro do Modal (baseado no seu print) */
 .preview-img {
     width: 100px;
     height: 100px;
     object-fit: cover;
-    border-radius: 50%; /* Deixa a foto perfeitamente redonda */
+    border-radius: 50%; 
     border: 3px solid #f1f1f1;
     margin: 0 auto 15px auto;
     display: block;
 }
 
-.escolher-foto-btn {
-    display: block;
-    margin: 0 auto 20px auto;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #555;
-}
-
-/* Botões de Salvar/Cancelar no Modal */
 .modal-buttons {
     display: flex;
     gap: 12px;
-    margin-top: 25px;
+    margin-top: 15px;
 }
 
 .modal-buttons button {
@@ -310,51 +302,132 @@ button.deletar {
     transition: 0.2s;
 }
 
-.salvar { 
-    background: #111; 
-    color: white; 
-}
+.salvar { background: #111; color: white; }
 .salvar:hover { background: #333; }
 
-.cancelar { 
-    background: #e5e5e5; 
-    color: #333; 
-}
+.cancelar { background: #e5e5e5; color: #333; }
 .cancelar:hover { background: #d4d4d4; }
 
+/* Botões do Modal de Excluir */
+.btn-cancelar {
+    flex: 1; padding: 12px; border: 1px solid #ddd; background: #fff; 
+    border-radius: 8px; cursor: pointer; font-weight: bold; color: #333; transition: 0.3s;
+}
+.btn-cancelar:hover { background: #eee; }
+
+.btn-confirmar-sair {
+    flex: 1; padding: 12px; border: none; background: #ef4444; 
+    color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+.btn-confirmar-sair:hover { background: #dc2626; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3); transform: translateY(-2px); }
+
 /* =========================================
-   7. RESPONSIVIDADE (Celular)
+   7. NOTIFICAÇÕES TOAST (FREESE STORE)
+   ========================================= */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.toast-freese {
+    min-width: 320px;
+    max-width: 400px;
+    background-color: #111; 
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    
+    transform: translateX(120%) scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-freese.show {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+}
+
+.toast-icon {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.08);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0; 
+}
+
+.toast-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.toast-title {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #aaa; 
+    margin-bottom: 4px;
+}
+
+.toast-message {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    color: #fff;
+}
+
+.toast-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    background-color: var(--toast-cor);
+    width: 100%;
+    animation: toastProgress 3.5s linear forwards;
+}
+
+@keyframes toastProgress {
+    0% { width: 100%; }
+    100% { width: 0%; }
+}
+
+/* =========================================
+   8. RESPONSIVIDADE (Celular)
    ========================================= */
 @media (max-width: 768px) {
-    .topbar { 
-        flex-wrap: wrap; 
-        padding: 20px 15px; 
-        gap: 15px; 
-    }
-    
+    .topbar { flex-wrap: wrap; padding: 20px 15px; gap: 15px; }
     .topbar .left { display: contents; }
     
-    .topbar h1 { 
-        width: 100%; 
-        order: 1; 
-        text-align: center; 
-        margin-bottom: 5px; 
-    }
-    
+    .topbar h1 { width: 100%; order: 1; text-align: center; margin-bottom: 5px; }
     .btn-voltar { order: 2; flex: 1; text-align: center; }
     .btn-novo { order: 3; flex: 1; text-align: center; }
 
-    .filtros { 
-        padding: 20px 15px; 
-        flex-direction: column; 
-    }
+    .filtros { padding: 20px 15px; flex-direction: column; }
     .filtros input, .filtros select { width: 100%; }
     
-    .tabela-container { 
-        padding: 0 15px 30px 15px; 
-    }
+    .tabela-container { padding: 0 15px 30px 15px; }
     
-    /* Scroll horizontal na tabela para não quebrar a tela */
     .tabela-container table {
         display: block;
         overflow-x: auto;
@@ -362,4 +435,17 @@ button.deletar {
     }
     
     th, td { padding: 12px 15px; }
+
+    #toast-container {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        align-items: center;
+    }
+
+    .toast-freese {
+        width: 100%;
+        max-width: 100%;
+        min-width: unset;
+    }
 }

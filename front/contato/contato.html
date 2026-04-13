@@ -10,13 +10,16 @@
 </head>
 <body>
 
+<div class="top-bar">
+    <span><i class="fas fa-truck"></i> FRETE GRÁTIS EM COMPRAS ACIMA DE R$ 499</span>
+</div>
+
 <!-- CABEÇALHO CORRIGIDO -->
 <header class="header">
   <div class="logo" onclick="window.location.href='/index.html'">
       <img src="/midias/freese2.png" alt="Freese Store">
   </div>
   
-  <!-- Barra de pesquisa de volta ao lugar correto -->
   <input type="text" class="search" placeholder="Buscar por modelo ou marca...">
   
   <div class="acoes">
@@ -27,7 +30,7 @@
   </div>
 </header>
 
-<!-- MENU CORRIGIDO (Fica fora do header) -->
+<!-- MENU -->
 <nav class="menu">
   <a href="/index.html">Início</a>
   <a href="/catalago/catalago.html">Catálogo</a>
@@ -123,11 +126,21 @@
 
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
           <button onclick="salvarFotoPerfil()" class="btn-primary">SALVAR FOTO</button>
-          <!-- 👇 ADICIONE ESTE NOVO BOTÃO NO MEIO 👇 -->
-<button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
-
+          <button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
           <button onclick="sairConta()" class="btn-sair">SAIR DA CONTA</button>
       </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+<div id="modal-confirmacao-sair" class="modal" style="z-index: 3005;">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px;">
+        <h3 style="margin-bottom: 15px; font-weight: 900; text-transform: uppercase; color: #111;">Sair da Conta?</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Tem certeza que deseja desconectar da sua conta Freese Store?</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="fecharModalSair()" class="btn-cancelar" style="width: 50%;">CANCELAR</button>
+            <button onclick="confirmarSaida()" class="btn-confirmar-sair" style="width: 50%;">SIM, SAIR</button>
+        </div>
     </div>
 </div>
 
@@ -148,6 +161,9 @@
 </div>
 <div id="carrinho-overlay" onclick="toggleCarrinho()"></div>
 
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST -->
+<div id="toast-container"></div>
+
 <footer class="footer">
     <div class="footer-grid">
         <div class="footer-col">
@@ -163,9 +179,9 @@
         <div class="footer-col">
             <h3>SOCIAL</h3>
             <div class="social-icons">
-                <i class="fab fa-instagram"></i>
-                <i class="fab fa-facebook"></i>
-                <i class="fab fa-tiktok"></i>
+                <i class="fab fa-instagram" style="font-size: 24px; margin-right: 15px; cursor: pointer;"></i>
+                <i class="fab fa-facebook" style="font-size: 24px; margin-right: 15px; cursor: pointer;"></i>
+                <i class="fab fa-tiktok" style="font-size: 24px; cursor: pointer;"></i>
             </div>
         </div>
     </div>

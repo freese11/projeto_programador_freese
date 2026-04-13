@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarProdutosHome();
     verificarStatusUsuario();
     
-    // 👇 ADICIONADO: Ativando o clique no ícone do carrinho no header
     const btnAbrirCarrinho = document.getElementById("abrir-carrinho");
     if (btnAbrirCarrinho) {
         btnAbrirCarrinho.addEventListener("click", () => toggleCarrinho(true));
@@ -47,7 +46,6 @@ async function carregarProdutosHome() {
         const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
         
-        // Exibindo destaques (no caso os da BMW, ou qualquer regra que preferir)
         const destaques = todosProdutos.filter(p => p.nome.toLowerCase().includes("bmw"));
         
         listaProdutosDestaque.innerHTML = "";
@@ -56,7 +54,6 @@ async function carregarProdutosHome() {
 
             const div = document.createElement("div");
             div.className = "produto";
-            // 👇 ADICIONADO: Redirecionamento para a tela de detalhes!
             div.innerHTML = `
                 <div style="cursor: pointer;" onclick="window.location.href='/detalhes/detalhes.html?id=${produto.codproduto}'">
                     <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -198,11 +195,12 @@ async function efetuarLogin(event) {
         const dados = await response.json();
         if (response.ok && dados.sucesso) {
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
-            location.reload();
+            showToast("Sua conta foi conectada.", "success");
+            setTimeout(() => location.reload(), 1500);
         } else {
-            alert(dados.message || "Erro no login");
+            showToast(dados.message || "E-mail ou senha incorretos.", "error");
         }
-    } catch (erro) { alert("Erro de conexão"); }
+    } catch (erro) { showToast("Não foi possível conectar ao servidor.", "error"); }
 }
 
 function previewImagemRegistro(event) {
@@ -240,13 +238,13 @@ async function registrarCliente(event) {
         });
 
         if (res.ok) {
-            alert("Conta criada com sucesso! Você já pode fazer login.");
+            showToast("Conta criada! Você já pode fazer o login.", "success");
             voltarSelecao(); 
         } else {
             const erro = await res.json();
-            alert("Erro: " + (erro.erro || "Falha ao cadastrar."));
+            showToast("Erro: " + (erro.erro || "Falha ao cadastrar."), "error");
         }
-    } catch (erro) { alert("Erro de conexão com o servidor."); } 
+    } catch (erro) { showToast("Erro de conexão com o servidor.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
@@ -261,14 +259,13 @@ function toggleCarrinho(abrir = false) {
     if (abrir) { side.classList.add("ativo"); overlay.style.display = "block"; renderizarItensCarrinho(); }
     else { side.classList.remove("ativo"); overlay.style.display = "none"; }
 }
-// 👇 1. SUBSTITUA SUA FUNÇÃO RENDERIZAR POR ESTA (agora com o ícone de lixeira) 👇
+
 async function renderizarItensCarrinho() {
     const container = document.getElementById("itens-carrinho");
     if (!container) return;
     container.innerHTML = "";
     let totalGeral = 0;
     
-    // Se o carrinho estiver vazio, mostra uma mensagem amigável
     if (carrinho.length === 0) {
         container.innerHTML = "<p style='text-align:center; padding: 30px 20px; color:#888; font-weight: 600;'>Seu carrinho está vazio.</p>";
         document.getElementById("valor-total-carrinho").innerText = "R$ 0,00";
@@ -279,14 +276,12 @@ async function renderizarItensCarrinho() {
         const resposta = await fetch(API_URL);
         const produtosBD = await resposta.json();
         
-        // Note que adicionei o "index" aqui para saber qual item remover
         carrinho.forEach((item, index) => {
             const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
             if (p) {
                 totalGeral += p.valor * item.qtd;
                 let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
                 
-                // Adicionado 'position: relative' e o ícone de lixeira no final
                 container.innerHTML += `
                     <div class="item-no-carrinho" style="position: relative;">
                         <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -310,21 +305,12 @@ async function renderizarItensCarrinho() {
     } catch (e) { console.error("Erro ao renderizar carrinho:", e); }
 }
 
-// 👇 2. ADICIONE ESTA NOVA FUNÇÃO LOGO ABAIXO 👇
 function removerItemCarrinho(index) {
-    // Remove 1 item a partir da posição (index) que foi clicada
     carrinho.splice(index, 1); 
-    
-    // Atualiza o banco de dados local do navegador
     localStorage.setItem("carrinho", JSON.stringify(carrinho)); 
-    
-    // Atualiza o número vermelho de itens no header
     atualizarContador(); 
-    
-    // Desenha o carrinho novamente sem o item e com o novo preço
     renderizarItensCarrinho(); 
 }
-
 
 function previewImagemPerfil(event) {
     const file = event.target.files[0];
@@ -336,18 +322,28 @@ function previewImagemPerfil(event) {
 }
 
 function sairConta() {
-    if (confirm("Deseja realmente sair da sua conta?")) {
-        localStorage.removeItem("usuarioAtivo");
-        localStorage.removeItem("carrinho");
-        location.reload();
-    }
+    const modalPerfil = document.getElementById("modal-perfil");
+    if(modalPerfil) modalPerfil.style.display = "none";
+    
+    const modalSair = document.getElementById("modal-confirmacao-sair");
+    if(modalSair) modalSair.style.display = "block";
 }
 
+function fecharModalSair() {
+    document.getElementById("modal-confirmacao-sair").style.display = "none";
+    document.getElementById("modal-perfil").style.display = "block";
+}
+
+function confirmarSairConta() {
+    localStorage.removeItem("usuarioAtivo");
+    localStorage.removeItem("carrinho");
+    location.reload();
+}
 
 async function salvarFotoPerfil() {
     const inputFoto = document.getElementById("foto-perfil");
     if (inputFoto.files.length === 0) {
-        alert("Por favor, clique em 'Escolher Nova Foto' primeiro para selecionar uma imagem.");
+        showToast("Selecione uma imagem antes de salvar.", "warning");
         return;
     }
 
@@ -357,7 +353,7 @@ async function salvarFotoPerfil() {
     const userObj = session.usuario ? session.usuario : session;
     const idUser = userObj.codusuario || userObj.id;
 
-    if (!idUser) { alert("Erro de autenticação. Faça login novamente."); return; }
+    if (!idUser) { showToast("Sessão expirada. Faça login novamente.", "error"); return; }
 
     const btnSalvar = document.querySelector("#modal-perfil button.btn-primary");
     const textoOriginal = btnSalvar.innerText;
@@ -383,11 +379,56 @@ async function salvarFotoPerfil() {
         });
 
         if (resPut.ok) {
-            alert("Sua foto de perfil foi atualizada com sucesso!");
-            location.reload(); 
-        } else { alert("Erro ao atualizar foto. Tente novamente."); }
-    } catch(err) { alert("Erro de conexão ao tentar salvar a foto."); } 
+            showToast("Foto de perfil atualizada!", "success");
+            setTimeout(() => location.reload(), 1500); 
+        } else { showToast("Não foi possível salvar a foto.", "error"); }
+    } catch(err) { showToast("Erro no servidor ao salvar a foto.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
 
+    // Dicionário com as cores, ícones e títulos Exclusivos
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        // Verde esmeralda
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: 'var(--premium-red)' }, // Vermelho da loja
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   // Amarelo
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        // Azul
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    // Injeta a cor certa para a barrinha animada no CSS
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    // Estrutura premium do aviso
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    // Animação de entrada
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Some depois de 3.5 segundos exatos (mesmo tempo da barrinha sumir)
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); // Espera o CSS fechar para excluir
+    }, 3500);
+}

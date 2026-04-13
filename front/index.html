@@ -143,15 +143,23 @@
 
       <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 25px;">
           <button onclick="salvarFotoPerfil()" class="btn-primary">SALVAR FOTO</button>
-          <!-- O botão de salvar que você já tem -->
 
-<!-- 👇 ADICIONE ESTE NOVO BOTÃO NO MEIO 👇 -->
-<button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
-
-<!-- O botão de sair que você já tem -->
+          <button class="btn-meus-pedidos" onclick="window.location.href='/meus-pedidos/meus-pedidos.html'">VER MEUS PEDIDOS</button>
 
           <button onclick="sairConta()" class="btn-sair">SAIR DA CONTA</button>
       </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+<div id="modal-confirmacao-sair" class="modal">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px;">
+        <h3 style="margin-bottom: 15px; font-weight: 900; text-transform: uppercase; color: #111;">Sair da conta?</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Tem certeza que deseja desconectar da sua conta?</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="fecharModalSair()" class="btn-cancelar">CANCELAR</button>
+            <button onclick="confirmarSairConta()" class="btn-confirmar-sair">SIM, SAIR</button>
+        </div>
     </div>
 </div>
 
@@ -198,6 +206,9 @@
         © 2026 Freese Store - Urban Style & Premium Comfort
     </div>
 </footer>
+
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST -->
+<div id="toast-container"></div>
 
 <script src="index.js" defer></script>
 </body>

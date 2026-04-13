@@ -14,8 +14,13 @@ function verificarAcesso() {
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     
     if (!usuarioJson || usuarioJson === "undefined") {
-        alert("Você precisa fazer login para ver seus pedidos.");
-        window.location.href = "/index.html"; 
+        // Substituído o alert antigo pelo nosso Toast chique!
+        showToast("Você precisa fazer login para ver seus pedidos.", "warning");
+        
+        // Espera 2 segundos para a pessoa ler o aviso e manda para a Home
+        setTimeout(() => {
+            window.location.href = "/index.html"; 
+        }, 2000);
         return;
     }
 
@@ -54,6 +59,8 @@ async function carregarMeusPedidos(meuId) {
     } catch (erro) {
         console.error("Erro ao buscar pedidos:", erro);
         container.innerHTML = "<h3 style='color: red; text-align: center;'>Erro ao carregar seus pedidos. Tente novamente mais tarde.</h3>";
+        // Avisa também pelo Toast
+        showToast("Erro ao carregar seus pedidos. Tente novamente mais tarde.", "error");
     }
 }
 
@@ -230,3 +237,50 @@ document.getElementById("modal-detalhes").addEventListener('click', function(e) 
         fecharModal();
     }
 });
+
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    // Dicionário com as cores, ícones e títulos Exclusivos
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        // Verde esmeralda
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: 'var(--premium-red)' }, // Vermelho da loja
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   // Amarelo
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        // Azul
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    // Injeta a cor certa para a barrinha animada no CSS
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    // Estrutura premium do aviso
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    // Animação de entrada
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    // Some depois de 3.5 segundos exatos (mesmo tempo da barrinha sumir)
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); // Espera o CSS fechar para excluir
+    }, 3500);
+}

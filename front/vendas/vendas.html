@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Vendas</title>
+    <title>Admin - Vendas | Freese Store</title>
     <link rel="stylesheet" href="vendas.css">
     <!-- Importando a biblioteca de Gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome para os ícones do Toast e Tabela -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -15,7 +17,7 @@
         <button class="btn-voltar" onclick="voltar()">← Voltar</button>
         <h1>Gerenciamento de Vendas</h1>
     </div>
-    <button class="btn-novo" onclick="carregar()">Atualizar Dados</button>
+    <button class="btn-novo" onclick="carregar()"><i class="fas fa-redo-alt"></i> Atualizar Dados</button>
 </header>
 
 <!-- Resumo e Gráfico -->
@@ -52,7 +54,7 @@
     <thead>
         <tr>
             <th>Cód. Venda</th>
-            <th>Cód. Cliente</th>
+            <th>Cliente</th>
             <th>Data</th>
             <th>Total</th>
             <th>Endereço</th>
@@ -84,6 +86,9 @@
         </div>
     </div>
 </div>
+
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST -->
+<div id="toast-container"></div>
 
 <script src="vendas.js"></script>
 </body>

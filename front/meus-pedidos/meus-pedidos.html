@@ -10,8 +10,6 @@
 </head>
 <body>
 
-
-
 <header class="header">
   <div class="logo" onclick="window.location.href='/index.html'">
       <img src="/midias/freese2.png" alt="Freese Store">
@@ -35,31 +33,35 @@
         <h3 style="text-align: center; color: #666; width: 100%; margin-top: 50px;">Buscando seus pedidos...</h3>
     </div>
 </main>
-    <!-- MODAL DE DETALHES DO PEDIDO -->
-    <div id="modal-detalhes" class="modal-overlay" style="display: none;">
-        <div class="modal-conteudo">
-            <div class="modal-header">
-                <h3>Detalhes do <span>Pedido</span></h3>
-                <button class="btn-fechar" onclick="fecharModal()"><i class="fas fa-times"></i></button>
+
+<!-- MODAL DE DETALHES DO PEDIDO -->
+<div id="modal-detalhes" class="modal-overlay" style="display: none;">
+    <div class="modal-conteudo">
+        <div class="modal-header">
+            <h3>Detalhes do <span>Pedido</span></h3>
+            <button class="btn-fechar" onclick="fecharModal()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="info-resumo" id="modal-info-resumo">
+                <!-- Javascript vai preencher o nº do pedido e data aqui -->
             </div>
             
-            <div class="modal-body">
-                <div class="info-resumo" id="modal-info-resumo">
-                    <!-- Javascript vai preencher o nº do pedido e data aqui -->
-                </div>
-                
-                <h4 class="titulo-produtos">Itens Comprados</h4>
-                <div class="lista-produtos-comprados" id="modal-lista-produtos">
-                    <!-- Javascript vai preencher os produtos aqui -->
-                </div>
-                
-                <div class="modal-footer-total">
-                    <span>Total Pago:</span>
-                    <h3 id="modal-valor-total">R$ 0,00</h3>
-                </div>
+            <h4 class="titulo-produtos">Itens Comprados</h4>
+            <div class="lista-produtos-comprados" id="modal-lista-produtos">
+                <!-- Javascript vai preencher os produtos aqui -->
+            </div>
+            
+            <div class="modal-footer-total">
+                <span>Total Pago:</span>
+                <h3 id="modal-valor-total">R$ 0,00</h3>
             </div>
         </div>
     </div>
+</div>
+
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST EXCLUSIVAS -->
+<div id="toast-container"></div>
 
 <script src="meus-pedidos.js"></script>
 </body>

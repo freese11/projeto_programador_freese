@@ -28,9 +28,13 @@ async function buscarCep() {
             document.getElementById('cidade').value = dados.localidade;
             document.getElementById('estado').value = dados.uf;
             document.getElementById('numero').focus(); // Joga o cursor pro número
+            showToast("CEP encontrado com sucesso!", "success");
+        } else {
+            showToast("CEP não encontrado. Verifique se digitou corretamente.", "error");
         }
     } catch (err) {
         console.log("Erro ao buscar CEP:", err);
+        showToast("Erro ao buscar informações do CEP.", "error");
     }
 }
 
@@ -39,8 +43,8 @@ async function carregarResumoPedido() {
     const container = document.getElementById("lista-resumo-itens");
     
     if (carrinhoCheckout.length === 0) {
-        alert("Seu carrinho está vazio! Voltando para a loja...");
-        window.location.href = "../index.html"; 
+        showToast("Seu carrinho está vazio! Voltando para a loja...", "warning");
+        setTimeout(() => { window.location.href = "../index.html"; }, 2000); 
         return;
     }
 
@@ -74,7 +78,7 @@ async function carregarResumoPedido() {
             }
         });
 
-        // Atualiza os valores na tela
+        // Atualiza os valores na tela (MANTIDO COM PONTO COMO SOLICITADO)
         document.getElementById("valor-subtotal").innerText = `R$ ${total.toFixed(2)}`;
         document.getElementById("valor-total-checkout").innerText = `R$ ${total.toFixed(2)}`;
 
@@ -88,8 +92,8 @@ async function processarCompra() {
     // 1. Checa se tá logado
     const usuarioJson = localStorage.getItem("usuarioAtivo");
     if (!usuarioJson || usuarioJson === "undefined") {
-        alert("Para sua segurança, faça login antes de finalizar a compra.");
-        window.location.href = "../index.html";
+        showToast("Para sua segurança, faça login antes de finalizar a compra.", "warning");
+        setTimeout(() => { window.location.href = "../index.html"; }, 2500);
         return;
     }
 
@@ -108,7 +112,7 @@ async function processarCompra() {
     
     // Validação de segurança
     if(!cep || !numero || !rua || !bairro) {
-        alert("Por favor, preencha seu endereço completo (CEP, Rua, Número e Bairro) para a entrega.");
+        showToast("Por favor, preencha seu endereço completo (CEP, Rua, Número e Bairro) para a entrega.", "warning");
         document.getElementById("cep").focus();
         return;
     }
@@ -154,18 +158,60 @@ async function processarCompra() {
         const dados = await resposta.json();
 
         if (resposta.ok || resposta.status === 201) {
-            alert("🎉 SUCESSO! Seu pedido na Freese Store foi confirmado!");
+            showToast("SUCESSO! Seu pedido na Freese Store foi confirmado!", "success");
             localStorage.removeItem("carrinho"); // Esvazia o carrinho
-            window.location.href = "../index.html"; // Volta pra home
+            setTimeout(() => { window.location.href = "../index.html"; }, 3000); // Volta pra home após ler o aviso
         } else {
-            alert("Não foi possível finalizar: " + (dados.erro || dados.mensagem || "Erro desconhecido."));
+            showToast("Não foi possível finalizar: " + (dados.erro || dados.mensagem || "Erro desconhecido."), "error");
             btn.innerHTML = '<i class="fas fa-lock"></i> Tentar Novamente';
             btn.disabled = false;
         }
 
     } catch (erro) {
-        alert("Ops! O servidor parece estar offline. Tente novamente.");
+        showToast("Ops! O servidor parece estar offline. Tente novamente.", "error");
         btn.innerHTML = '<i class="fas fa-lock"></i> Confirmar Pedido';
         btn.disabled = false;
     }
+}
+
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: 'var(--premium-red)' }, 
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 3500);
 }

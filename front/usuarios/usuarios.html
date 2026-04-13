@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Admin - Usuários</title>
+    <title>Admin - Usuários | Freese Store</title>
     <link rel="stylesheet" href="usuarios.css">
+    <!-- FontAwesome para os ícones do Toast e Tabela -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
@@ -14,8 +16,7 @@
         <button class="btn-voltar" onclick="voltar()">← Voltar</button>
         <h1>Gerenciamento de Usuários</h1>
     </div>
-    <!-- Opcional: Se você ainda não tem a rota POST no backend, esse botão pode dar erro ao criar novo -->
-    <button class="btn-novo" onclick="abrirModal()">+ Novo Usuário</button>
+    <button class="btn-novo" onclick="abrirModal(false)">+ Novo Usuário</button>
 </header>
 
 <div class="abas-container">
@@ -46,7 +47,7 @@
     </table>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL DE CRIAR/EDITAR -->
 <div id="modal" class="modal">
     <div class="modal-content">
         <h2 id="modal-titulo">Novo Usuário</h2>
@@ -83,6 +84,22 @@
         </div>
     </div>
 </div>
+
+<!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+<div id="modal-confirmacao-excluir" class="modal">
+    <div class="modal-content" style="max-width: 350px; text-align: center; padding: 30px;">
+        <h3 style="margin-bottom: 15px; font-weight: 900; text-transform: uppercase; color: #111;">Excluir Usuário?</h3>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Esta ação removerá o usuário permanentemente. Tem certeza?</p>
+        <div style="display: flex; gap: 10px;">
+            <button onclick="fecharModalExcluir()" class="btn-cancelar">CANCELAR</button>
+            <button onclick="confirmarExclusao()" class="btn-confirmar-sair">SIM, EXCLUIR</button>
+        </div>
+    </div>
+</div>
+
+<!-- CONTAINER PARA NOTIFICAÇÕES TOAST -->
+<div id="toast-container"></div>
+
 <script src="usuarios.js"></script>
 </body>
 </html>

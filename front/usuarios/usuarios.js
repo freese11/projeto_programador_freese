@@ -2,11 +2,12 @@ const URL_SERVIDOR = "https://projeto-programador-freese-backend.onrender.com";
 const API = `${URL_SERVIDOR}/usuarios`;
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
-// 👇 Imagem de segurança ultra-forte embutida (Impossível de falhar ou ser apagada)
+// Imagem de segurança ultra-forte embutida
 const IMG_FALHA_USUARIO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
 let todosUsuarios = [];
 let abaAtiva = "cliente"; 
+let idUsuarioParaExcluir = null;
 
 function voltar() {
     window.location.href = "/admin/admin.html";
@@ -18,7 +19,7 @@ async function carregar() {
         todosUsuarios = await res.json();
         filtrar(); 
     } catch (erro) {
-        console.error("Erro ao carregar usuários:", erro);
+        showToast("Erro ao carregar usuários.", "error");
     }
 }
 
@@ -63,19 +64,16 @@ function renderizar(lista) {
         const tipoClasse = ehAdm ? 'badge-adm' : 'badge-cliente';
         const tipoTexto = ehAdm ? 'Administrador' : 'Cliente';
         
-        // 👇 MÁGICA DA FOTO COM PROTEÇÃO 👇
-        let urlFoto = IMG_FALHA_USUARIO; // Começa com a foto padrão segura
+        let urlFoto = IMG_FALHA_USUARIO; 
         
         if (u.foto_perfil) {
             if (u.foto_perfil.startsWith('http')) {
                 urlFoto = u.foto_perfil;
             } else {
-                // Garante que a barra (/) não seja duplicada nem esquecida
                 urlFoto = URL_SERVIDOR + (u.foto_perfil.startsWith('/') ? u.foto_perfil : '/' + u.foto_perfil);
             }
         }
 
-        // Note o onerror na tag img: se o Render apagou, ele mostra o SVG padrão!
         tabela.innerHTML += `
             <tr>
                 <td>
@@ -85,14 +83,14 @@ function renderizar(lista) {
                          alt="Foto"
                          style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background-color: #fff; border: 1px solid #ddd;">
                 </td>
-                <td>#${id}</td>
+                <td style="font-weight: bold; color: #555;">#${id}</td>
                 <td><strong>${u.nome}</strong></td>
                 <td>${u.email}</td>
                 <td>${u.numero || '-'}</td>
                 <td><span class="${tipoClasse}">${tipoTexto}</span></td>
                 <td>
-                    <button class="editar" onclick="editar(${id})">Editar</button>
-                    <button class="deletar" onclick="deletar(${id})">Excluir</button>
+                    <button class="editar" onclick="editar(${id})"><i class="fas fa-pen"></i> Editar</button>
+                    <button class="deletar" onclick="abrirModalExcluir(${id})"><i class="fas fa-trash"></i> Excluir</button>
                 </td>
             </tr>
         `;
@@ -112,7 +110,6 @@ function abrirModal(ehEdicao = false) {
         document.getElementById("perfil").value = abaAtiva; 
         document.getElementById("foto").value = "";
         
-        // Aplica o escudo na foto de preview do modal
         const imgPreview = document.getElementById("preview-foto");
         imgPreview.src = IMG_FALHA_USUARIO;
         imgPreview.onerror = function() { this.onerror=null; this.src=IMG_FALHA_USUARIO; };
@@ -137,9 +134,17 @@ function previewImagem(event) {
 async function salvar() {
     const cod = document.getElementById("codusuario").value;
     
+    const nomeInput = document.getElementById("nome").value;
+    const emailInput = document.getElementById("email").value;
+
+    if(!nomeInput || !emailInput) {
+        showToast("Preencha o nome e o e-mail do usuário.", "warning");
+        return;
+    }
+
     const formData = new FormData();
-    formData.append("nome", document.getElementById("nome").value);
-    formData.append("email", document.getElementById("email").value);
+    formData.append("nome", nomeInput);
+    formData.append("email", emailInput);
     formData.append("senha", document.getElementById("senha").value);
     formData.append("numero", document.getElementById("numero").value);
     formData.append("perfil", document.getElementById("perfil").value);
@@ -163,13 +168,14 @@ async function salvar() {
 
         if(res.ok) {
             fecharModal();
+            showToast(cod ? "Usuário atualizado com sucesso!" : "Novo usuário cadastrado!", "success");
             carregar(); 
         } else {
             const erro = await res.json();
-            alert("Erro: " + (erro.erro || "Falha ao salvar."));
+            showToast("Erro: " + (erro.erro || "Falha ao salvar."), "error");
         }
     } catch(erro) {
-        alert("Erro de conexão com o servidor.");
+        showToast("Erro de conexão com o servidor.", "error");
     }
 }
 
@@ -185,7 +191,6 @@ async function editar(id) {
         document.getElementById("numero").value = u.numero || "";
         document.getElementById("perfil").value = u.perfil || "cliente";
         
-        // 👇 ARRUMAMOS O PREVIEW DA FOTO AQUI TAMBÉM 👇
         let urlFotoModal = IMG_FALHA_USUARIO;
         if (u.foto_perfil) {
             if (u.foto_perfil.startsWith('http')) {
@@ -203,28 +208,87 @@ async function editar(id) {
 
         abrirModal(true); 
     } catch(erro) {
-        alert("Erro ao buscar os dados deste usuário.");
+        showToast("Erro ao buscar os dados deste usuário.", "error");
     }
 }
 
-async function deletar(id) {
-    if (!confirm("Tem certeza que deseja excluir este usuário definitivamente?")) return;
+// ==========================================
+// LÓGICA DO NOVO MODAL DE EXCLUIR
+// ==========================================
+function abrirModalExcluir(id) {
+    idUsuarioParaExcluir = id;
+    document.getElementById("modal-confirmacao-excluir").style.display = "block";
+}
+
+function fecharModalExcluir() {
+    idUsuarioParaExcluir = null;
+    document.getElementById("modal-confirmacao-excluir").style.display = "none";
+}
+
+async function confirmarExclusao() {
+    if (!idUsuarioParaExcluir) return;
 
     try {
-        const res = await fetch(`${API}/${id}`, {
+        const res = await fetch(`${API}/${idUsuarioParaExcluir}`, {
             method: "DELETE",
             headers: { "minha-chave": API_KEY }
         });
 
         if (res.ok) {
+            showToast("Usuário excluído com sucesso.", "success");
+            fecharModalExcluir();
             carregar(); 
         } else {
             const dadosErro = await res.json();
-            alert("Erro: " + dadosErro.erro); 
+            showToast("Erro: " + (dadosErro.erro || "Falha ao excluir."), "error");
+            fecharModalExcluir();
         }
     } catch(erro) {
-        alert("Erro ao excluir o usuário.");
+        showToast("Erro ao excluir o usuário.", "error");
+        fecharModalExcluir();
     }
+}
+
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: '#ff4757' }, 
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 3500);
 }
 
 carregar();

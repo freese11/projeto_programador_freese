@@ -1,11 +1,9 @@
 const URL_SERVIDOR = "https://projeto-programador-freese-backend.onrender.com";
-// 👇 VARIÁVEIS ADICIONADAS QUE FALTAVAM 👇
 const API_URL = `${URL_SERVIDOR}/produtos`;
 const USUARIOS_URL = `${URL_SERVIDOR}/usuarios`;
 const LOGIN_URL = `${URL_SERVIDOR}/login`;
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456";
 
-// 👇 IMAGEM PADRÃO DO PRODUTO ADICIONADA 👇
 const IMG_FALHA_PRODUTO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect width='300' height='300' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20' fill='%23999'%3ESem Foto%3C/text%3E%3C/svg%3E";
 const IMG_FALHA_USUARIO = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ccc'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E";
 
@@ -23,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(formContato) {
         formContato.addEventListener("submit", (e) => {
             e.preventDefault();
-            alert("Sua mensagem foi enviada com sucesso! Nossa equipe responderá em breve.");
+            showToast("Sua mensagem foi enviada com sucesso! Nossa equipe responderá em breve.", "success");
             formContato.reset();
         });
     }
@@ -41,7 +39,7 @@ function toggleCarrinho() {
     if(!side.classList.contains("ativo")) { 
         side.classList.add("ativo"); 
         overlay.style.display = "block"; 
-        renderizarItensCarrinho(); // 👇 AQUI ESTAVA O ERRO! Agora ele desenha os itens ao abrir.
+        renderizarItensCarrinho(); 
     } else { 
         side.classList.remove("ativo"); 
         overlay.style.display = "none"; 
@@ -71,11 +69,12 @@ async function efetuarLogin(event) {
         if (resposta.ok) {
             const dados = await resposta.json();
             localStorage.setItem("usuarioAtivo", JSON.stringify(dados));
-            location.reload(); 
+            showToast("Login efetuado com sucesso!", "success");
+            setTimeout(() => { location.reload(); }, 1500); 
         } else {
-            alert("E-mail ou senha incorretos!");
+            showToast("E-mail ou senha incorretos! Verifique seu acesso.", "error");
         }
-    } catch (erro) { alert("Erro ao conectar com o servidor."); }
+    } catch (erro) { showToast("Erro ao conectar com o servidor.", "error"); }
 }
 
 function previewImagemRegistro(event) {
@@ -112,13 +111,13 @@ async function registrarCliente(event) {
         });
 
         if (res.ok) {
-            alert("Conta criada com sucesso! Você já pode fazer login.");
+            showToast("Conta criada com sucesso! Você já pode fazer login.", "success");
             voltarSelecao(); 
         } else {
             const erro = await res.json();
-            alert("Erro: " + (erro.erro || "Falha ao cadastrar."));
+            showToast("Erro: " + (erro.erro || "Falha ao cadastrar."), "error");
         }
-    } catch (erro) { alert("Erro de conexão com o servidor."); } 
+    } catch (erro) { showToast("Erro de conexão com o servidor.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
@@ -189,18 +188,10 @@ function previewImagemPerfil(event) {
     }
 }
 
-function sairConta() {
-    if (confirm("Deseja realmente sair da sua conta?")) {
-        localStorage.removeItem("usuarioAtivo");
-        localStorage.removeItem("carrinho");
-        window.location.href = "/index.html"; 
-    }
-}
-
 async function salvarFotoPerfil() {
     const inputFoto = document.getElementById("foto-perfil");
     if (!inputFoto || inputFoto.files.length === 0) {
-        alert("Por favor, clique em 'Trocar Foto' primeiro para selecionar uma imagem.");
+        showToast("Por favor, clique em 'Trocar Foto' para selecionar uma imagem.", "warning");
         return;
     }
 
@@ -209,7 +200,7 @@ async function salvarFotoPerfil() {
     const userObj = session.usuario ? session.usuario : session;
     const idUser = userObj.codusuario || userObj.id;
 
-    if (!idUser) { alert("Erro de autenticação. Faça login novamente."); return; }
+    if (!idUser) { showToast("Erro de autenticação. Faça login novamente.", "error"); return; }
 
     const btnSalvar = document.querySelector("#modal-perfil button.btn-primary");
     const textoOriginal = btnSalvar.innerText;
@@ -235,24 +226,37 @@ async function salvarFotoPerfil() {
         });
 
         if (resPut.ok) {
-            alert("Sua foto de perfil foi atualizada com sucesso!");
-            location.reload(); 
-        } else { alert("Erro ao atualizar foto. Tente novamente."); }
-    } catch(err) { alert("Erro de conexão ao tentar salvar a foto."); } 
+            showToast("Sua foto de perfil foi atualizada!", "success");
+            setTimeout(() => { location.reload(); }, 1500); 
+        } else { showToast("Erro ao atualizar foto. Tente novamente.", "error"); }
+    } catch(err) { showToast("Erro de conexão ao tentar salvar a foto.", "error"); } 
     finally { btnSalvar.innerText = textoOriginal; btnSalvar.disabled = false; }
 }
 
-// 👇 1. SUBSTITUA SUA FUNÇÃO RENDERIZAR POR ESTA (agora com o ícone de lixeira) 👇
+function sairConta() {
+    document.getElementById("modal-perfil").style.display = "none";
+    document.getElementById("modal-confirmacao-sair").style.display = "block";
+}
+
+function fecharModalSair() {
+    document.getElementById("modal-confirmacao-sair").style.display = "none";
+}
+
+function confirmarSaida() {
+    localStorage.removeItem("usuarioAtivo");
+    localStorage.removeItem("carrinho");
+    window.location.href = "/index.html"; 
+}
+
 async function renderizarItensCarrinho() {
     const container = document.getElementById("itens-carrinho");
     if (!container) return;
     container.innerHTML = "";
     let totalGeral = 0;
     
-    // Se o carrinho estiver vazio, mostra uma mensagem amigável
     if (carrinho.length === 0) {
         container.innerHTML = "<p style='text-align:center; padding: 30px 20px; color:#888; font-weight: 600;'>Seu carrinho está vazio.</p>";
-        document.getElementById("valor-total-carrinho").innerText = "R$ 0,00";
+        document.getElementById("valor-total-carrinho").innerText = "R$ 0.00";
         return;
     }
 
@@ -260,14 +264,12 @@ async function renderizarItensCarrinho() {
         const resposta = await fetch(API_URL);
         const produtosBD = await resposta.json();
         
-        // Note que adicionei o "index" aqui para saber qual item remover
         carrinho.forEach((item, index) => {
             const p = produtosBD.find(prod => prod.codproduto === item.codproduto);
             if (p) {
                 totalGeral += p.valor * item.qtd;
                 let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
                 
-                // Adicionado 'position: relative' e o ícone de lixeira no final
                 container.innerHTML += `
                     <div class="item-no-carrinho" style="position: relative;">
                         <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -291,17 +293,51 @@ async function renderizarItensCarrinho() {
     } catch (e) { console.error("Erro ao renderizar carrinho:", e); }
 }
 
-// 👇 2. ADICIONE ESTA NOVA FUNÇÃO LOGO ABAIXO 👇
 function removerItemCarrinho(index) {
-    // Remove 1 item a partir da posição (index) que foi clicada
     carrinho.splice(index, 1); 
-    
-    // Atualiza o banco de dados local do navegador
     localStorage.setItem("carrinho", JSON.stringify(carrinho)); 
-    
-    // Atualiza o número vermelho de itens no header
     atualizarContador(); 
-    
-    // Desenha o carrinho novamente sem o item e com o novo preço
     renderizarItensCarrinho(); 
+}
+
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: 'var(--premium-red)' }, 
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        
+    };
+
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 3500);
 }

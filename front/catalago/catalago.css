@@ -48,7 +48,7 @@ body {
     top: 0;
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    flex-wrap: wrap; /* Permite que a barra de pesquisa desça no celular */
+    flex-wrap: wrap; 
     gap: 15px;
 }
 
@@ -99,8 +99,8 @@ body {
     font-weight: bold; 
     padding-bottom: 5px; 
     transition: var(--transition);
-    font-size: 16px; /* Volta para o tamanho original */
-    text-transform: none; /* Tira as letras maiúsculas forçadas */
+    font-size: 16px; 
+    text-transform: none; 
 }
 
 .menu a:hover { 
@@ -152,7 +152,7 @@ body {
 }
 
 /* ============================================================
-   4. A MÁGICA DOS CARDS DE PRODUTO (CORRIGIDO)
+   4. A MÁGICA DOS CARDS DE PRODUTO
    ============================================================ */
 .grid-catalago {
     display: grid;
@@ -166,8 +166,8 @@ body {
     border-radius: 12px;
     border: 1px solid #eee;
     display: flex;
-    flex-direction: column; /* Transforma o card numa coluna organizadora */
-    height: 100%; /* Faz todos os cards terem a mesma altura */
+    flex-direction: column; 
+    height: 100%; 
     transition: var(--transition);
     box-shadow: 0 4px 15px rgba(0,0,0,0.02);
 }
@@ -177,9 +177,8 @@ body {
     box-shadow: 0 12px 25px rgba(0,0,0,0.08);
 }
 
-/* AQUI ESTÁ O SEGREDO: Usando "order" para organizar os elementos não importa como o JS mande */
 .produto img {
-    order: 1; /* Imagem sempre em 1º */
+    order: 1; 
     width: 100%;
     height: 200px;
     object-fit: contain;
@@ -187,14 +186,13 @@ body {
 }
 
 .produto h3 {
-    order: 2; /* Título sempre em 2º */
+    order: 2; 
     font-size: 13px;
     font-weight: 700;
     margin: 0 0 10px 0;
     color: #444;
     text-transform: uppercase;
     text-align: center;
-    /* Limita o texto a 2 linhas para não quebrar o layout */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -202,7 +200,7 @@ body {
 }
 
 .preco {
-    order: 3; /* Preço sempre em 3º */
+    order: 3; 
     color: var(--dark);
     font-size: 18px;
     font-weight: 900;
@@ -211,8 +209,8 @@ body {
 }
 
 .produto button {
-    order: 4; /* Botão sempre em 4º (no final) */
-    margin-top: auto; /* Empurra o botão pro rodapé do card */
+    order: 4; 
+    margin-top: auto; 
     width: 100%;
     padding: 12px;
     background: var(--dark);
@@ -231,7 +229,7 @@ body {
 }
 
 /* ============================================================
-   5. MODAIS E CARRINHO (Mantidos intactos e perfeitos)
+   5. MODAIS E CARRINHO 
    ============================================================ */
 .modal {
     display: none; position: fixed; z-index: 3000; inset: 0;
@@ -263,8 +261,21 @@ body {
 .btn-voltar:hover { color: #000; }
 .hidden { display: none !important; }
 
+/* Botões do Modal de Sair da Conta */
+.btn-cancelar {
+    padding: 12px; border: 1px solid #ddd; background: #fff; 
+    border-radius: 8px; cursor: pointer; font-weight: bold; color: #333; transition: 0.3s;
+}
+.btn-cancelar:hover { background: #eee; }
+
+.btn-confirmar-sair {
+    padding: 12px; border: none; background: var(--premium-red); 
+    color: #fff; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+.btn-confirmar-sair:hover { background: #8a0000; box-shadow: 0 4px 10px rgba(167, 1, 1, 0.3); transform: translateY(-2px); }
+
 /* ============================================================
-   CARRINHO LATERAL (IGUAL AO INDEX)
+   CARRINHO LATERAL 
    ============================================================ */
 .carrinho-sidebar {
     position: fixed;
@@ -330,18 +341,78 @@ body {
 }
 
 /* ============================================================
-   6. RESPONSIVIDADE PARA CELULAR 
+   6. FOOTER ADICIONADO PARA O PADRÃO GERAL
+   ============================================================ */
+.footer-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px; padding: 60px 8%; background: #f9f9f9; color: #333;
+}
+.footer-col h3 { font-size: 14px; margin-bottom: 20px; letter-spacing: 1px; }
+.footer-col a { display: block; text-decoration: none; color: #666; margin-bottom: 10px; font-size: 13px; }
+.footer-logo { height: 60px; margin-bottom: 20px; filter: grayscale(1); }
+.footer-bottom { text-align: center; padding: 20px; background: #000; color: #555; font-size: 12px; }
+
+/* ============================================================
+   7. NOTIFICAÇÕES TOAST (FREESE STORE)
+   ============================================================ */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    pointer-events: none;
+}
+
+.toast-freese {
+    min-width: 320px;
+    max-width: 400px;
+    background-color: #111; 
+    color: #fff;
+    padding: 16px 20px;
+    border-radius: 12px; 
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+    pointer-events: auto;
+    
+    transform: translateX(120%) scale(0.9);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-freese.show { transform: translateX(0) scale(1); opacity: 1; }
+
+.toast-icon {
+    font-size: 22px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.08); width: 48px; height: 48px;
+    border-radius: 50%; flex-shrink: 0; 
+}
+
+.toast-content { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; padding-right: 10px; }
+.toast-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
+.toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; color: #fff; }
+.toast-progress { position: absolute; bottom: 0; left: 0; height: 4px; background-color: var(--toast-cor); width: 100%; animation: toastProgress 3.5s linear forwards; }
+
+@keyframes toastProgress { 0% { width: 100%; } 100% { width: 0%; } }
+
+/* ============================================================
+   8. RESPONSIVIDADE PARA CELULAR 
    ============================================================ */
 @media (max-width: 768px) {
-    .top-bar { display: none; } /* Esconde a barra preta superior para poupar espaço */
+    .top-bar { display: none; } 
     
     .header { padding: 15px; }
     .logo img { height: 45px; }
     
-    /* Barra de pesquisa toma a linha inteira no celular */
     .search { width: 100%; order: 3; max-width: 100%; margin-top: 10px; }
     
-    /* Menu de Navegação */
     .menu {
         flex-wrap: wrap;
         gap: 15px;
@@ -356,35 +427,36 @@ body {
     .filtros-container { flex-direction: column; gap: 10px; margin-bottom: 30px; }
     .select-filtro { width: 100%; padding: 14px; text-align: center; font-size: 13px; }
 
-    /* Força exatamente 2 colunas no celular */
     .grid-catalago { 
         grid-template-columns: repeat(2, 1fr); 
-        gap: 12px; /* Espaço menor entre os produtos */
+        gap: 12px; 
     }
     
     .produto { padding: 10px; border-radius: 8px; }
-    .produto img { height: 140px; margin-bottom: 10px; } /* Foto menor no celular */
+    .produto img { height: 140px; margin-bottom: 10px; } 
     .produto h3 { font-size: 11px; margin-bottom: 8px; }
     .preco { font-size: 15px; margin-bottom: 10px; }
     
-    /* O botão se adapta perfeitamente agora */
     .produto button { 
         padding: 10px; 
         font-size: 10px; 
         border-radius: 6px;
     }
 
-    /* Carrinho Lateral (Tela cheia no mobile) */
-    .carrinho-sidebar {
-        width: 100%;
-        right: -100%;
-    }
+    .carrinho-sidebar { width: 100%; right: -100%; }
+
+    .footer-grid { grid-template-columns: 1fr; text-align: center; gap: 30px; padding: 40px 20px; }
+    .footer-logo { margin: 0 auto 15px auto; }
+
+    #toast-container { bottom: 20px; right: 20px; left: 20px; align-items: center; }
+    .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }
+
 /* Botão Ver Meus Pedidos (Modal Perfil) */
 .btn-meus-pedidos {
     background: transparent;
     color: #111;
-    border: 2px solid #111; /* Borda preta grossinha */
+    border: 2px solid #111; 
     padding: 14px;
     border-radius: 8px;
     font-weight: 800;
@@ -393,8 +465,8 @@ body {
     text-transform: uppercase;
     transition: 0.3s;
     width: 100%;
-    margin-top: 10px; /* Espaço pro botão de cima */
-    margin-bottom: 10px; /* Espaço pro botão de baixo */
+    margin-top: 10px; 
+    margin-bottom: 10px; 
 }
 
 .btn-meus-pedidos:hover {

@@ -2,16 +2,15 @@ const API = "https://projeto-programador-freese-backend.onrender.com/vendas";
 const API_KEY = "SUA_CHAVE_SECRETA_MUITO_FORTE_123456"; // Coloque a sua senha real aqui!
 
 let vendas = [];
-let graficoInstancia = null; // Variável para guardar o gráfico
+let graficoInstancia = null; 
 
 function voltar() {
     window.location.href = "/admin/admin.html";
 }
 
-// 1. CARREGAR VENDAS DO BANCO DE DADOS (CORRIGIDO)
+// 1. CARREGAR VENDAS DO BANCO DE DADOS
 async function carregar() {
     try {
-        // Agora estamos enviando a chave secreta no cabeçalho (headers) para o servidor liberar o acesso!
         const res = await fetch(API, {
             method: "GET",
             headers: {
@@ -20,25 +19,23 @@ async function carregar() {
             }
         });
 
-        // Verifica se o servidor barrou a entrada (ex: senha errada)
         if (!res.ok) {
             throw new Error(`Servidor bloqueou o acesso. Status: ${res.status}`);
         }
 
         vendas = await res.json();
 
-        // Garante que o que chegou é realmente uma lista antes de tentar desenhar a tela
         if (Array.isArray(vendas)) {
             atualizarCards(vendas);
             atualizarGrafico(vendas);
             renderizar(vendas);
         } else {
-            console.error("O servidor não retornou uma lista válida:", vendas);
+            showToast("O servidor não retornou uma lista válida de vendas.", "error");
         }
 
     } catch (error) {
         console.error("Erro ao carregar vendas:", error);
-        alert("Erro ao carregar as vendas. Verifique se a sua API_KEY está correta no código!");
+        showToast("Erro ao carregar as vendas. Verifique a conexão ou a API_KEY.", "error");
     }
 }
 
@@ -46,7 +43,6 @@ async function carregar() {
 function atualizarCards(lista) {
     let total = 0;
     lista.forEach(v => {
-        // Soma apenas se não estiver cancelado
         let status = v.status ? v.status.toLowerCase() : '';
         if (status !== 'cancelado') {
             total += Number(v.valortotal);
@@ -61,18 +57,15 @@ function atualizarCards(lista) {
 function atualizarGrafico(lista) {
     const ctx = document.getElementById('graficoVendas').getContext('2d');
 
-    // Agrupa as vendas por data
     const vendasPorData = {};
 
     lista.forEach(v => {
-        // Formata a data para pegar apenas o dia (Ex: 02/04/2026)
         let dataFormatada = new Date(v.data).toLocaleDateString('pt-BR');
 
         if (!vendasPorData[dataFormatada]) {
             vendasPorData[dataFormatada] = 0;
         }
 
-        // Soma o valor total daquele dia (ignorando cancelados se quiser, mas aqui somamos tudo movimentado)
         let status = v.status ? v.status.toLowerCase() : '';
         if (status !== 'cancelado') {
             vendasPorData[dataFormatada] += Number(v.valortotal);
@@ -82,12 +75,10 @@ function atualizarGrafico(lista) {
     const labels = Object.keys(vendasPorData);
     const valores = Object.values(vendasPorData);
 
-    // Se já existe um gráfico na tela, apaga para desenhar o novo atualizado
     if (graficoInstancia) {
         graficoInstancia.destroy();
     }
 
-    // Desenha o gráfico com a identidade visual da Freese Store
     graficoInstancia = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -95,7 +86,7 @@ function atualizarGrafico(lista) {
             datasets: [{
                 label: 'Faturamento por Dia (R$)',
                 data: valores,
-                backgroundColor: '#000', // Cor da barra preta elegante
+                backgroundColor: '#111', 
                 borderRadius: 4
             }]
         },
@@ -103,7 +94,7 @@ function atualizarGrafico(lista) {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false } // Esconde a legenda para ficar mais limpo
+                legend: { display: false } 
             }
         }
     });
@@ -115,10 +106,8 @@ function renderizar(lista) {
     tabela.innerHTML = "";
 
     lista.forEach(v => {
-        // Padroniza o status para letras minúsculas para não dar erro de digitação
         let statusAtual = v.status ? v.status.toLowerCase() : 'pendente';
 
-        // Define a classe CSS baseada no status
         let classeStatus = 'status-pendente';
         let textoStatus = 'Pendente';
 
@@ -130,20 +119,19 @@ function renderizar(lista) {
             textoStatus = 'Cancelado';
         }
 
-        // Formata data e valor
         let dataStr = new Date(v.data).toLocaleDateString('pt-BR');
         let valorStr = Number(v.valortotal).toFixed(2).replace('.', ',');
 
         tabela.innerHTML += `
             <tr>
-                <td><strong>#${v.codvenda}</strong></td>
-<td>${v.nome_cliente ? v.nome_cliente : 'Usuário'} #${v.codusuario}</td>
+                <td style="font-weight: bold; color: #555;">#${v.codvenda}</td>
+                <td><strong>${v.nome_cliente ? v.nome_cliente : 'Usuário'}</strong> <span style="color:#888; font-size:12px;">(#${v.codusuario})</span></td>
                 <td>${dataStr}</td>
-                <td><strong>R$ ${valorStr}</strong></td>
+                <td style="color: #111; font-weight: 900;">R$ ${valorStr}</td>
                 <td>${v.endereco_entrega || 'Não informado'}</td>
                 <td><span class="${classeStatus}">${textoStatus}</span></td>
                 <td>
-                    <button class="editar" onclick="abrirModalStatus(${v.codvenda}, '${statusAtual}')">Mudar Status</button>
+                    <button class="editar" onclick="abrirModalStatus(${v.codvenda}, '${statusAtual}')"><i class="fas fa-sync-alt"></i> Atualizar</button>
                 </td>
             </tr>
         `;
@@ -170,9 +158,7 @@ function abrirModalStatus(id, statusAtual) {
     document.getElementById("codvenda").value = id;
     document.getElementById("venda-id-display").innerText = id;
 
-    // Se o status for nulo ou vazio, define como pendente por padrão
     let statusFormatado = statusAtual ? statusAtual.toLowerCase() : 'pendente';
-    // Remove acento do "concluído" para o select funcionar corretamente
     if (statusFormatado === 'concluído') statusFormatado = 'concluido';
 
     document.getElementById("status-venda").value = statusFormatado;
@@ -182,7 +168,9 @@ function abrirModalStatus(id, statusAtual) {
 
 function fecharModal() {
     document.getElementById("modal").style.display = "none";
-} async function salvarStatus() {
+} 
+
+async function salvarStatus() {
     const id = document.getElementById("codvenda").value;
     const novoStatus = document.getElementById("status-venda").value;
 
@@ -201,15 +189,55 @@ function fecharModal() {
         }
 
         fecharModal();
-        carregar(); // Recarrega a tabela limpinha
+        showToast("Status da venda atualizado com sucesso!", "success");
+        carregar(); 
 
     } catch (error) {
         console.error("Erro ao salvar status:", error);
-        alert("Erro ao salvar o status da venda.");
+        showToast("Erro ao salvar o status da venda.", "error");
     }
 }
 
+/* ============================================================
+   FUNÇÃO DE NOTIFICAÇÃO (TOAST) - ESTILO FREESE STORE
+   ============================================================ */
+function showToast(mensagem, tipo = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
 
+    const config = {
+        'success': { icone: 'fa-check', titulo: 'SUCESSO', cor: '#10b981' },        
+        'error':   { icone: 'fa-times', titulo: 'ERRO', cor: '#ff4757' }, 
+        'warning': { icone: 'fa-exclamation', titulo: 'ATENÇÃO', cor: '#f59e0b' },   
+        'info':    { icone: 'fa-info', titulo: 'INFORMAÇÃO', cor: '#3b82f6' }        
+    };
 
+    const atual = config[tipo] || config['info'];
+
+    const toast = document.createElement('div');
+    toast.className = `toast-freese ${tipo}`;
+    
+    toast.style.setProperty('--toast-cor', atual.cor);
+
+    toast.innerHTML = `
+        <div class="toast-icon" style="color: ${atual.cor}">
+            <i class="fas ${atual.icone}"></i>
+        </div>
+        <div class="toast-content">
+            <span class="toast-title">${atual.titulo}</span>
+            <span class="toast-message">${mensagem}</span>
+        </div>
+        <div class="toast-progress"></div>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => toast.classList.add('show'), 10);
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); 
+    }, 3500);
+}
 
 carregar();
