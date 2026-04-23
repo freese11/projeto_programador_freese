@@ -26,19 +26,8 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-.topbar .left { 
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
-}
-
-.topbar h1 { 
-    margin: 0; 
-    font-size: 20px; 
-    font-weight: 700; 
-    text-transform: uppercase;
-    letter-spacing: 0.5px; 
-}
+.topbar .left { display: flex; align-items: center; gap: 20px; }
+.topbar h1 { margin: 0; font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
 .btn-voltar {
     background: transparent;
@@ -51,10 +40,7 @@ body {
     transition: 0.2s;
 }
 
-.btn-voltar:hover { 
-    background: var(--premium-red); 
-    color: white; 
-}
+.btn-voltar:hover { background: var(--premium-red); color: white; }
 
 .btn-novo {
     background: var(--premium-red);
@@ -70,28 +56,13 @@ body {
     box-shadow: 0 4px 6px rgba(255, 71, 87, 0.2);
 }
 
-.btn-novo:hover { 
-    background: #ff6b81; 
-    transform: translateY(-1px); 
-}
+.btn-novo:hover { background: #ff6b81; transform: translateY(-1px); }
 
 /* =========================================
    3. DASHBOARD (Gráfico e Resumo)
    ========================================= */
-.dashboard-container {
-    padding: 25px 30px 0 30px;
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-}
-
-.dashboard-resumo {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    flex: 1;
-    min-width: 250px;
-}
+.dashboard-container { padding: 25px 30px 0 30px; display: flex; gap: 20px; flex-wrap: wrap; }
+.dashboard-resumo { display: flex; flex-direction: column; gap: 20px; flex: 1; min-width: 250px; }
 
 .card {
     background: white;
@@ -101,110 +72,26 @@ body {
     border-left: 5px solid var(--premium-red);
 }
 
-.card h3 {
-    margin: 0 0 10px 0;
-    font-size: 13px;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 800;
-}
+.card h3 { margin: 0 0 10px 0; font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; font-weight: 800; }
+.card p { margin: 0; font-size: 32px; font-weight: 900; color: #111; letter-spacing: -1px; }
 
-.card p {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 900;
-    color: #111;
-    letter-spacing: -1px;
-}
-
-.grafico-container {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    flex: 3;
-    min-width: 300px;
-    height: 250px;
-    position: relative;
-}
+.grafico-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); flex: 3; min-width: 300px; height: 250px; position: relative; }
 
 /* =========================================
    4. FILTROS E TABELA
    ========================================= */
-.filtros {
-    padding: 25px 30px 15px 30px;
-    display: flex;
-    gap: 15px;
-}
+.filtros { padding: 25px 30px 15px 30px; display: flex; gap: 15px; }
+.filtros input, .filtros select { padding: 12px 15px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; min-width: 200px; background: #fff; transition: 0.3s; }
+.filtros input:focus, .filtros select:focus { border-color: #111; box-shadow: 0 0 0 3px rgba(17,17,17,0.05); }
 
-.filtros input, .filtros select {
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 14px;
-    outline: none;
-    min-width: 200px;
-    background: #fff;
-    transition: 0.3s;
-}
-
-.filtros input:focus, .filtros select:focus { 
-    border-color: #111; 
-    box-shadow: 0 0 0 3px rgba(17,17,17,0.05); 
-}
-
-.tabela-container { 
-    padding: 0 30px 30px 30px; 
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: white;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-}
-
-th {
-    background: #1a1a1a;
-    color: white;
-    padding: 16px 15px;
-    text-align: left;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-td {
-    padding: 15px;
-    text-align: left;
-    border-bottom: 1px solid #f1f1f1;
-    vertical-align: middle;
-    font-size: 14px;
-    color: #444;
-}
-
+.tabela-container { padding: 0 30px 30px 30px; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+th { background: #1a1a1a; color: white; padding: 16px 15px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+td { padding: 15px; text-align: left; border-bottom: 1px solid #f1f1f1; vertical-align: middle; font-size: 14px; color: #444; }
 tr:hover { background: #fcfcfc; }
 
-button.editar { 
-    background: #f59e0b; 
-    border: none; 
-    padding: 8px 14px; 
-    color: white; 
-    cursor: pointer; 
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 12px;
-    text-transform: uppercase;
-    transition: 0.2s;
-}
-
-button.editar:hover {
-    background: #d97706;
-}
+button.editar { background: #f59e0b; border: none; padding: 8px 14px; color: white; cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 12px; text-transform: uppercase; transition: 0.2s; }
+button.editar:hover { background: #d97706; }
 
 /* =========================================
    5. ETIQUETAS DE STATUS
@@ -214,7 +101,7 @@ button.editar:hover {
 .status-cancelado { background: #fef2f2; color: #b91c1c; padding: 6px 14px; border-radius: 50px; font-size: 11px; font-weight: 800; display: inline-block; text-transform: uppercase; letter-spacing: 0.5px;}
 
 /* =========================================
-   6. MODAL CENTRALIZADO E DEFINITIVO
+   6. MODAL CENTRALIZADO (ESTILO PREMIUM FREESE)
    ========================================= */
 .modal {
     display: none; 
@@ -223,9 +110,9 @@ button.editar:hover {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.75);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 1000;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
 }
 
 .modal-content {
@@ -235,134 +122,68 @@ button.editar:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 90%; 
-    max-width: 420px; 
-    padding: 30px 25px;
-    border-radius: 16px; 
-    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    max-width: 450px; 
+    padding: 35px 30px;
+    border-radius: 20px; 
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
     display: flex;
     flex-direction: column;
     gap: 15px;
     box-sizing: border-box;
 }
 
-.modal-content h2 { margin: 0 0 10px 0; font-size: 20px; color: #111; text-align: center; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;}
-.modal-content label { display: block; font-size: 13px; font-weight: 700; color: #555; margin-bottom: -5px; }
+.fechar-modal {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #ccc;
+    cursor: pointer;
+    transition: 0.2s;
+    line-height: 1;
+}
+
+.fechar-modal:hover { color: #111; transform: scale(1.1); }
+
+.modal-content h2 { margin: 0 0 15px 0; font-size: 16px; color: #111; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+.modal-content label { display: block; font-size: 13px; font-weight: 700; color: #777; margin-bottom: -5px; }
+
 .modal-content select { 
-    width: 100%; 
-    padding: 14px 15px; 
-    border: 1.5px solid #e0e0e0; 
-    border-radius: 8px; 
-    font-size: 14px; 
-    background: #fcfcfc; 
-    transition: 0.3s;
-    box-sizing: border-box;
-    color: #111;
+    width: 100%; padding: 14px 15px; border: 1px solid #eaeaea; border-radius: 8px; 
+    font-size: 14px; background: #fafafa; transition: 0.3s; box-sizing: border-box; color: #111;
 }
+.modal-content select:focus { border-color: #111; background: #fff; outline: none; box-shadow: 0 0 0 3px rgba(0,0,0,0.05); }
 
-.modal-content select:focus {
-    border-color: #111;
-    background: #fff;
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
-}
-
-.modal-buttons { display: flex; gap: 10px; margin-top: 10px;}
-.modal-buttons button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+.modal-buttons { display: flex; gap: 10px; margin-top: 15px;}
+.modal-buttons button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.3s; letter-spacing: 0.5px;}
 .salvar { background: #111; color: white; }
-.salvar:hover { background: #333; transform: translateY(-2px);}
-.cancelar { background: #e0e0e0; color: #333; }
-.cancelar:hover { background: #d0d0d0; }
+.salvar:hover { background: #333; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+.cancelar { background: #f0f0f0; color: #555; }
+.cancelar:hover { background: #e4e4e4; color: #111;}
 
 /* =========================================
    7. NOTIFICAÇÕES TOAST (FREESE STORE)
    ========================================= */
-#toast-container {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    pointer-events: none;
-}
+#toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; pointer-events: none; }
 
 .toast-freese {
-    min-width: 320px;
-    max-width: 400px;
-    background-color: #111; 
-    color: #fff;
-    padding: 16px 20px;
-    border-radius: 12px; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    position: relative;
-    overflow: hidden;
-    pointer-events: auto;
-    
-    transform: translateX(120%) scale(0.9);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    min-width: 320px; max-width: 400px; background-color: #111; color: #fff; padding: 16px 20px;
+    border-radius: 12px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
+    display: flex; align-items: center; gap: 15px; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    position: relative; overflow: hidden; pointer-events: auto;
+    transform: translateX(120%) scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.toast-freese.show {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-}
+.toast-freese.show { transform: translateX(0) scale(1); opacity: 1; }
+.toast-icon { font-size: 22px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
+.toast-content { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; padding-right: 10px; }
+.toast-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
+.toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; color: #fff; }
+.toast-progress { position: absolute; bottom: 0; left: 0; height: 4px; background-color: var(--toast-cor); width: 100%; animation: toastProgress 3.5s linear forwards; }
 
-.toast-icon {
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.08);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex-shrink: 0; 
-}
-
-.toast-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
-    padding-right: 10px;
-}
-
-.toast-title {
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #aaa; 
-    margin-bottom: 4px;
-}
-
-.toast-message {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: #fff;
-}
-
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background-color: var(--toast-cor);
-    width: 100%;
-    animation: toastProgress 3.5s linear forwards;
-}
-
-@keyframes toastProgress {
-    0% { width: 100%; }
-    100% { width: 0%; }
-}
+@keyframes toastProgress { 0% { width: 100%; } 100% { width: 0%; } }
 
 /* =========================================
    8. RESPONSIVIDADE
@@ -373,82 +194,36 @@ button.editar:hover {
     .topbar h1 { width: 100%; order: 1; font-size: 22px; text-align: center; margin-bottom: 5px; }
     .btn-voltar { order: 2; flex: 1; padding: 12px 5px; text-align: center; }
     .btn-novo { order: 3; flex: 1; padding: 12px 5px; text-align: center; }
-
     .dashboard-container { flex-direction: column; padding: 20px 15px 0 15px;}
     .grafico-container { height: 250px; }
-    
     .filtros { padding: 20px 15px; flex-direction: column; }
     .filtros input, .filtros select { width: 100%; box-sizing: border-box; }
-
     .tabela-container { padding: 0 15px 30px 15px; }
     .tabela-container table { display: block; overflow-x: auto; white-space: nowrap; border: 1px solid #eee; }
-
-    #toast-container {
-        bottom: 20px;
-        right: 20px;
-        left: 20px;
-        align-items: center;
-    }
+    #toast-container { bottom: 20px; right: 20px; left: 20px; align-items: center; }
     .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }
 
 /* =========================================
-   9. ADIÇÕES: BOTÃO E MODAL DE DETALHES DE PRODUTO
+   9. DETALHES DA VENDA: LISTA DE PRODUTOS
    ========================================= */
 button.btn-ver-detalhes {
-    background: #111; 
-    border: none; 
-    padding: 8px 14px; 
-    color: white; 
-    cursor: pointer; 
-    border-radius: 6px; 
-    font-weight: bold; 
-    font-size: 12px;
-    text-transform: uppercase;
-    transition: 0.2s;
+    background: #f8f8f8; border: 1px solid #eaeaea; padding: 8px 14px; color: #111; cursor: pointer; 
+    border-radius: 6px; font-weight: 700; font-size: 11px; text-transform: uppercase; transition: 0.2s;
 }
 
-button.btn-ver-detalhes:hover {
-    background: #333;
-}
+button.btn-ver-detalhes:hover { background: #111; color: white; border-color: #111; }
 
-.item-detalhe-admin {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 15px 0;
-    border-bottom: 1px dashed #eee;
-}
+.item-detalhe-admin { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f0f0f0; }
+.item-detalhe-admin:last-of-type { border-bottom: none; }
 
-.item-img-admin {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    background: #eee;
-    object-fit: cover;
-    border: 1px solid #f1f1f1;
-}
+.item-img-admin { width: 65px; height: 65px; border-radius: 10px; background: #fcfcfc; object-fit: cover; border: 1px solid #f0f0f0; }
+.item-info-admin { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.item-info-admin strong { font-size: 13px; color: #111; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; line-height: 1.3; }
+.item-info-admin span { font-size: 12px; color: #888; }
 
-.item-info-admin {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
+.item-preco-admin { font-weight: 800; color: #111; font-size: 14px; }
 
-.item-info-admin strong {
-    font-size: 14px;
-    color: #111;
-    text-transform: uppercase;
-}
-
-.item-info-admin span {
-    font-size: 12px;
-    color: #666;
-    margin-top: 4px;
-}
-
-.item-preco-admin {
-    font-weight: 900;
-    color: var(--premium-red);
-    font-size: 15px;
-}
+.modal-total-container { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; margin-top: 10px; border-top: 1px solid #eaeaea; }
+.modal-total-texto { font-size: 12px; font-weight: 800; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+.modal-total-valor { font-size: 24px; font-weight: 900; color: #111; letter-spacing: -0.5px; }
