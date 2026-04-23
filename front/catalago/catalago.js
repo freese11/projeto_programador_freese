@@ -22,6 +22,10 @@ const filtroMarca = document.getElementById("filtro-marca");
 const modal = document.getElementById("modal-login");
 
 let todosProdutos = [];
+let produtosFiltrados = []; 
+let paginaAtual = 1;        
+const itensPorPagina = 8;   // AGORA CONFIGURADO PARA 8 PRODUTOS
+
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || [];
 let tipoLoginEscolhido = "";
 
@@ -41,7 +45,8 @@ async function carregarCatalogo() {
     try {
         const resposta = await fetch(API_URL);
         todosProdutos = await resposta.json();
-        renderizarProdutos(todosProdutos);
+        produtosFiltrados = [...todosProdutos]; 
+        mostrarPagina(1); 
     } catch (err) {
         if(listaProdutosGeral) listaProdutosGeral.innerHTML = "<p>Erro ao carregar produtos.</p>";
     }
@@ -51,13 +56,17 @@ function renderizarProdutos(produtos) {
     if(!listaProdutosGeral) return;
     listaProdutosGeral.innerHTML = "";
     
+    if (produtos.length === 0) {
+        listaProdutosGeral.innerHTML = "<p style='grid-column: 1 / -1; text-align: center; color: #666; font-size: 16px; padding: 40px 0;'>Nenhum produto encontrado.</p>";
+        return;
+    }
+
     produtos.forEach(p => {
         const div = document.createElement("div");
         div.className = "produto";
         
         let srcImg = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
 
-        // Mantido toFixed(2) com ponto como solicitado
         div.innerHTML = `
             <div style="cursor: pointer;" onclick="window.location.href='/detalhes/detalhes.html?id=${p.codproduto}'">
                 <img src="${srcImg}" alt="${p.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -76,13 +85,14 @@ function filtrarProdutos() {
     const categoria = filtroCategoria.value.toLowerCase();
     const marca = filtroMarca.value.toLowerCase();
 
-    const filtrados = todosProdutos.filter(p => {
+    produtosFiltrados = todosProdutos.filter(p => {
         const nome = p.nome.toLowerCase();
         return nome.includes(termo) &&
                (categoria === "todos" || nome.includes(categoria)) &&
                (marca === "todos" || nome.includes(marca));
     });
-    renderizarProdutos(filtrados);
+    
+    mostrarPagina(1);
 }
 
 if(inputBusca) inputBusca.addEventListener("input", filtrarProdutos);
@@ -124,7 +134,6 @@ async function renderizarItensCarrinho() {
                 totalGeral += p.valor * item.qtd;
                 let srcImgCarrinho = montarUrlSegura(p.img) || IMG_FALHA_PRODUTO;
                 
-                // Mantido toFixed(2) com ponto como solicitado
                 container.innerHTML += `
                     <div class="item-no-carrinho" style="position: relative;">
                         <img src="${srcImgCarrinho}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -424,4 +433,82 @@ function showToast(mensagem, tipo = 'success') {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400); 
     }, 3500);
+}
+
+// ==========================================
+// FUNÇÕES DE PAGINAÇÃO DA FREESE STORE
+// ==========================================
+
+function mostrarPagina(pagina) {
+    const totalPaginas = Math.ceil(produtosFiltrados.length / itensPorPagina);
+    
+    // Evita bugar caso a página não exista
+    if (pagina < 1) pagina = 1;
+    if (pagina > totalPaginas && totalPaginas > 0) pagina = totalPaginas;
+    
+    paginaAtual = pagina;
+    
+    // Calcula o corte no array de produtos: ex: do índice 0 ao 8
+    const inicio = (paginaAtual - 1) * itensPorPagina;
+    const fim = inicio + itensPorPagina;
+    const produtosDaPagina = produtosFiltrados.slice(inicio, fim);
+    
+    // Renderiza apenas os 8 daquela página e atualiza os botões
+    renderizarProdutos(produtosDaPagina);
+    renderizarControlesPaginacao(totalPaginas);
+}
+
+function renderizarControlesPaginacao(totalPaginas) {
+    const container = document.getElementById("paginacao-container");
+    if (!container) return;
+    
+    container.innerHTML = "";
+    
+    // Se tiver apenas 1 página de produtos (ou zero), não precisamos mostrar botões
+    if (totalPaginas <= 1) return;
+    
+    // Botão "Anterior"
+    const btnAnterior = document.createElement("button");
+    btnAnterior.className = "btn-pagina";
+    btnAnterior.innerHTML = '<i class="fas fa-chevron-left"></i>';
+    btnAnterior.disabled = paginaAtual === 1;
+    btnAnterior.onclick = () => {
+        mostrarPagina(paginaAtual - 1);
+        rolarParaTopoCatalogo();
+    };
+    container.appendChild(btnAnterior);
+    
+    // Números das Páginas (1, 2, 3...)
+    for (let i = 1; i <= totalPaginas; i++) {
+        const btnNumero = document.createElement("button");
+        btnNumero.className = `btn-pagina ${i === paginaAtual ? 'ativo' : ''}`;
+        btnNumero.innerText = i;
+        btnNumero.onclick = () => {
+            mostrarPagina(i);
+            rolarParaTopoCatalogo();
+        };
+        container.appendChild(btnNumero);
+    }
+    
+    // Botão "Próximo"
+    const btnProximo = document.createElement("button");
+    btnProximo.className = "btn-pagina";
+    btnProximo.innerHTML = '<i class="fas fa-chevron-right"></i>';
+    btnProximo.disabled = paginaAtual === totalPaginas;
+    btnProximo.onclick = () => {
+        mostrarPagina(paginaAtual + 1);
+        rolarParaTopoCatalogo();
+    };
+    container.appendChild(btnProximo);
+}
+
+// Suavidade: quando o cliente trocar de página, a tela sobe de volta para os produtos
+function rolarParaTopoCatalogo() {
+    const headerPagina = document.querySelector('.header-pagina');
+    if (headerPagina) {
+        window.scrollTo({
+            top: headerPagina.offsetTop - 80, 
+            behavior: 'smooth'
+        });
+    }
 }

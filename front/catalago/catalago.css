@@ -297,6 +297,61 @@ body {
 .btn-confirmar-sair:hover { background: #8a0000; box-shadow: 0 4px 10px rgba(167, 1, 1, 0.3); transform: translateY(-2px); }
 
 /* ============================================================
+   PAGINAÇÃO (NOVO)
+   ============================================================ */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.btn-pagina {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: var(--dark);
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+.btn-pagina:hover:not(:disabled) {
+    border-color: var(--dark);
+    background: var(--light-gray);
+}
+
+.btn-pagina.ativo {
+    background: var(--dark);
+    color: #fff;
+    border-color: var(--dark);
+}
+
+.btn-pagina:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f9f9f9;
+}
+
+/* Responsivo para os botõezinhos no celular */
+@media (max-width: 768px) {
+    .btn-pagina {
+        width: 35px;
+        height: 35px;
+        font-size: 13px;
+    }
+}
+
+
+/* ============================================================
    CARRINHO LATERAL 
    ============================================================ */
 .carrinho-sidebar {
