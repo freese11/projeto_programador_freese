@@ -131,7 +131,10 @@ function renderizar(lista) {
                 <td>${v.endereco_entrega || 'Não informado'}</td>
                 <td><span class="${classeStatus}">${textoStatus}</span></td>
                 <td>
-                    <button class="editar" onclick="abrirModalStatus(${v.codvenda}, '${statusAtual}')"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn-ver-detalhes" onclick="abrirModalDetalhes(${v.codvenda})" title="Ver Itens do Pedido"><i class="fas fa-box-open"></i> Itens</button>
+                        <button class="editar" onclick="abrirModalStatus(${v.codvenda}, '${statusAtual}')" title="Mudar Status"><i class="fas fa-sync-alt"></i> Status</button>
+                    </div>
                 </td>
             </tr>
         `;
@@ -195,6 +198,73 @@ async function salvarStatus() {
     } catch (error) {
         console.error("Erro ao salvar status:", error);
         showToast("Erro ao salvar o status da venda.", "error");
+    }
+}
+
+// ============================================================
+// NOVO: FUNÇÕES DO MODAL DE DETALHES (ITENS DA VENDA)
+// ============================================================
+function abrirModalDetalhes(idVenda) {
+    const venda = vendas.find(v => v.codvenda === idVenda);
+    if (!venda) return;
+
+    document.getElementById("detalhes-id").innerText = idVenda;
+    document.getElementById("detalhes-total").innerText = `R$ ${Number(venda.valortotal).toFixed(2).replace('.', ',')}`;
+
+    const containerProdutos = document.getElementById("lista-produtos-comprados");
+    containerProdutos.innerHTML = "";
+
+    if (venda.itens && venda.itens.length > 0) {
+        venda.itens.forEach(item => {
+            
+            // VERIFICAÇÃO ROBUSTA DE TAMANHO (Tenta várias possibilidades do banco de dados)
+            let tamanhoDoItem = item.tamanho || item.Tamanho || item.tamanhos || item.tam || item.Tamanhos;
+            
+            // Se o banco de dados mandou nulo ou vazio, coloca 'Único'
+            if (!tamanhoDoItem || tamanhoDoItem === "null" || tamanhoDoItem === "undefined" || String(tamanhoDoItem).trim() === "") {
+                tamanhoDoItem = 'Único';
+            }
+
+            let qtdDoItem = item.quantidade || item.qtd || 1;
+            let precoDoItem = item.preco_unitario || item.preco || item.valor || 0;
+            let imgDoItem = item.imagem || item.img || '/midias/placeholder-roupa.png';
+
+            containerProdutos.innerHTML += `
+                <div class="item-detalhe-admin">
+                    <img src="${imgDoItem}" class="item-img-admin" alt="Produto">
+                    <div class="item-info-admin">
+                        <strong>${item.nome || 'Produto Freese'}</strong>
+                        <span>Qtd: ${qtdDoItem} | Tam: <b style="color: #111; font-size: 14px;">${tamanhoDoItem}</b></span>
+                    </div>
+                    <span class="item-preco-admin">R$ ${Number(precoDoItem).toFixed(2).replace('.', ',')}</span>
+                </div>
+            `;
+        });
+    } else {
+        containerProdutos.innerHTML = `
+            <div style="text-align: center; padding: 30px; color: #888;">
+                <i class="fas fa-box-open" style="font-size: 40px; color: #ddd; margin-bottom: 10px;"></i>
+                <p>Nenhum detalhe de item encontrado para esta venda.</p>
+            </div>
+        `;
+    }
+
+    document.getElementById("modal-detalhes").style.display = "block";
+}
+
+function fecharModalDetalhes() {
+    document.getElementById("modal-detalhes").style.display = "none";
+}
+
+// Fechar os modais clicando fora deles
+window.onclick = function(event) {
+    const modalStatus = document.getElementById("modal");
+    const modalDetalhes = document.getElementById("modal-detalhes");
+    if (event.target === modalStatus) {
+        fecharModal();
+    }
+    if (event.target === modalDetalhes) {
+        fecharModalDetalhes();
     }
 }
 

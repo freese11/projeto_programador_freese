@@ -3,7 +3,7 @@ const pool = require('../db');
 
 const router = express.Router();
 
-// 1. BUSCAR TODAS AS VENDAS (COM AS ROUPAS COMPRADAS E AS FOTOS!)
+// 1. BUSCAR TODAS AS VENDAS (COM AS ROUPAS COMPRADAS, FOTOS E TAMANHO!)
 router.get('/', async (req, res) => {
     try {
         const sqlVendas = `
@@ -16,9 +16,9 @@ router.get('/', async (req, res) => {
         const vendas = resultVendas.rows;
 
         for (let venda of vendas) {
-            // 👇 SOLUÇÃO FINAL: Adicionamos p.img AS imagem 👇
+            // 👇 AQUI: Adicionamos o iv.tamanho na busca 👇
             const sqlItens = `
-                SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome, p.img AS imagem
+                SELECT iv.quantidade, iv.precounitario AS preco_unitario, iv.tamanho, p.nome, p.img AS imagem
                 FROM itens_venda iv
                 LEFT JOIN produtos p ON iv.codproduto = p.codproduto
                 WHERE iv.codvenda = $1
@@ -54,9 +54,9 @@ router.get('/:codvenda', async (req, res) => {
 
         const venda = resultVenda.rows[0];
 
-        // 👇 SOLUÇÃO FINAL AQUI TAMBÉM: Adicionamos p.img AS imagem 👇
+        // 👇 AQUI TAMBÉM: Adicionamos o iv.tamanho na busca 👇
         const sqlItens = `
-            SELECT iv.quantidade, iv.precounitario AS preco_unitario, p.nome, p.img AS imagem
+            SELECT iv.quantidade, iv.precounitario AS preco_unitario, iv.tamanho, p.nome, p.img AS imagem
             FROM itens_venda iv
             LEFT JOIN produtos p ON iv.codproduto = p.codproduto
             WHERE iv.codvenda = $1
@@ -72,7 +72,7 @@ router.get('/:codvenda', async (req, res) => {
 });
 
 // =======================================================
-// ROTAS DE CRIAR, DELETAR E ATUALIZAR VENDA (INTACTAS)
+// ROTA DE CRIAR VENDA (AGORA SALVANDO O TAMANHO!)
 // =======================================================
 router.post('/', async (req, res) => {
     const { codusuario, carrinho, endereco_entrega } = req.body;
@@ -97,13 +97,21 @@ router.post('/', async (req, res) => {
         const resultVenda = await pool.query(sqlVenda, valoresVenda);
         const codVendaGerado = resultVenda.rows[0].codvenda;
 
+        // 👇 AQUI ESTÁ A MÁGICA: Adicionamos a coluna "tamanho" e o "$5" 👇
         const sqlItem = `
-            INSERT INTO itens_venda (codvenda, codproduto, quantidade, precounitario) 
-            VALUES ($1, $2, $3, $4);
+            INSERT INTO itens_venda (codvenda, codproduto, quantidade, precounitario, tamanho) 
+            VALUES ($1, $2, $3, $4, $5);
         `;
 
         for (let item of carrinho) {
-            await pool.query(sqlItem, [codVendaGerado, item.id, item.quantidade, item.preco]);
+            // 👇 E aqui passamos o item.tamanho para o banco (se não tiver, vai como 'Único') 👇
+            await pool.query(sqlItem, [
+                codVendaGerado, 
+                item.id, 
+                item.quantidade, 
+                item.preco, 
+                item.tamanho || 'Único'
+            ]);
         }
 
         res.status(201).json({ 
@@ -117,6 +125,9 @@ router.post('/', async (req, res) => {
     }
 });
 
+// =======================================================
+// ROTAS DE DELETAR E ATUALIZAR VENDA (INTACTAS)
+// =======================================================
 router.delete("/:codvenda", async (req, res) => {
     try {
         const { codvenda } = req.params;

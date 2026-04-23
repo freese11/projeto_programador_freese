@@ -391,3 +391,64 @@ button.editar:hover {
     }
     .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }
+
+/* =========================================
+   9. ADIÇÕES: BOTÃO E MODAL DE DETALHES DE PRODUTO
+   ========================================= */
+button.btn-ver-detalhes {
+    background: #111; 
+    border: none; 
+    padding: 8px 14px; 
+    color: white; 
+    cursor: pointer; 
+    border-radius: 6px; 
+    font-weight: bold; 
+    font-size: 12px;
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+
+button.btn-ver-detalhes:hover {
+    background: #333;
+}
+
+.item-detalhe-admin {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.item-img-admin {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    background: #eee;
+    object-fit: cover;
+    border: 1px solid #f1f1f1;
+}
+
+.item-info-admin {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.item-info-admin strong {
+    font-size: 14px;
+    color: #111;
+    text-transform: uppercase;
+}
+
+.item-info-admin span {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.item-preco-admin {
+    font-weight: 900;
+    color: var(--premium-red);
+    font-size: 15px;
+}

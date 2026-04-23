@@ -125,13 +125,14 @@ async function processarCompra() {
     let userObj = session.usuario ? session.usuario : session;
     let codusuario = userObj.codusuario || userObj.id;
 
-    // 4. FORMATA O CARRINHO PARA O PADRÃO QUE O SERVIDOR ESPERA (id, quantidade, preco)
+    // 4. FORMATA O CARRINHO PARA O PADRÃO QUE O SERVIDOR ESPERA (AGORA COM O TAMANHO!)
     const carrinhoFormatado = carrinhoCheckout.map(item => {
         const produto = produtosBD.find(p => p.codproduto === item.codproduto);
         return {
             id: item.codproduto,
             quantidade: item.qtd,
-            preco: produto ? produto.valor : 0 // Pega o preço atualizado do banco
+            preco: produto ? produto.valor : 0, // Pega o preço atualizado do banco
+            tamanho: item.tamanho || 'Único' // << AQUI ESTÁ A GRANDE CORREÇÃO! AGORA ELE ENVIA O TAMANHO.
         };
     });
 
@@ -141,7 +142,7 @@ async function processarCompra() {
     btn.disabled = true;
 
     try {
-        // Envia pro backend novo que fizemos! (Agora com o endereço)
+        // Envia pro backend novo que fizemos!
         const resposta = await fetch(VENDAS_URL, {
             method: "POST",
             headers: { 
@@ -151,7 +152,7 @@ async function processarCompra() {
             body: JSON.stringify({
                 codusuario: codusuario,
                 carrinho: carrinhoFormatado,
-                endereco_entrega: enderecoCompleto // << Aqui está o pulo do gato!
+                endereco_entrega: enderecoCompleto
             })
         });
 
