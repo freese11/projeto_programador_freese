@@ -1,233 +1,148 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-/* ============================================================
-   CONFIGURAÇÕES GERAIS (Inspirado no seu CSS Principal)
-   ============================================================ */
 :root {
     --premium-red: #a70101;
-    --dark: #111;
-    --light-gray: #f9f9f9;
+    --dark: #000000;
+    --gray-bg: #f5f5f7;
     --white: #ffffff;
+    --border: #e5e5e5;
+    --text-muted: #666666;
     --transition: 0.3s ease;
-    --borda: #e0e0e0;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
-body { background: #f5f5f5; color: var(--dark); }
+body { background: var(--gray-bg); color: var(--dark); -webkit-font-smoothing: antialiased; }
 
-/* Header Minimalista para o Checkout (Evita distrações) */
+/* ============================================================
+   HEADER PREMIUM E CENTRALIZADO
+   ============================================================ */
 .checkout-header {
     background: var(--white);
-    padding: 20px 8%;
-    display: flex;
-    justify-content: space-between;
+    padding: 20px 5%;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr; /* Divide em 3 partes exatas */
     align-items: center;
-    border-bottom: 1px solid var(--borda);
+    border-bottom: 1px solid var(--border);
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
-.checkout-header h1 { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
-.checkout-header h1 span { color: var(--premium-red); }
-.voltar-loja { text-decoration: none; color: #666; font-size: 14px; font-weight: 600; transition: var(--transition); }
-.voltar-loja:hover { color: var(--premium-red); }
+.voltar-loja { 
+    text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 600; 
+    display: flex; align-items: center; gap: 8px; transition: var(--transition);
+}
+.voltar-loja:hover { color: var(--dark); }
+
+.logo { display: flex; justify-content: center; cursor: pointer; }
+.logo img { height: 65px; object-fit: contain; }
+
+.header-seguro { 
+    text-align: right; font-size: 12px; font-weight: 800; color: #27ae60; 
+    text-transform: uppercase; letter-spacing: 0.5px; display: flex; 
+    align-items: center; justify-content: flex-end; gap: 6px;
+}
 
 /* ============================================================
-   GRID DO CHECKOUT
+   GRID E CAIXAS
    ============================================================ */
 .checkout-container {
-    max-width: 1100px;
-    margin: 40px auto;
-    padding: 0 20px;
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    gap: 30px;
+    max-width: 1200px; margin: 40px auto; padding: 0 20px;
+    display: grid; grid-template-columns: 1.6fr 1fr; gap: 40px;
 }
 
 .box {
-    background: var(--white);
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    background: var(--white); padding: 40px; border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;
 }
 
+/* Títulos minimalistas (Linha preta embaixo) */
 .titulo-sessao {
-    font-size: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--light-gray);
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 15px; font-weight: 900; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 30px; padding-bottom: 15px;
+    border-bottom: 2px solid var(--dark); color: var(--dark);
 }
-.titulo-sessao i { color: var(--premium-red); }
 
-/* Formulários */
-.linha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+/* ============================================================
+   FORMULÁRIOS ESTILO "NIKE / ZARA"
+   ============================================================ */
+.linha-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-.form-group { margin-bottom: 18px; }
-.form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #555; text-transform: uppercase; }
+.form-group { margin-bottom: 20px; }
+.form-group label { 
+    display: block; font-size: 12px; font-weight: 700; margin-bottom: 8px; 
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+}
 
 input, select {
-    width: 100%;
-    padding: 14px 18px;
-    border: 1px solid var(--borda);
-    border-radius: 10px;
-    background: var(--light-gray);
-    outline: none;
-    transition: var(--transition);
-    font-size: 14px;
+    width: 100%; padding: 16px 18px; border: 1px solid var(--border);
+    border-radius: 8px; background: var(--white); outline: none;
+    transition: var(--transition); font-size: 15px; font-weight: 500; color: var(--dark);
 }
-input:focus, select:focus {
-    border-color: var(--premium-red);
-    background: var(--white);
-    box-shadow: 0 0 0 4px rgba(167, 1, 1, 0.08);
-}
+input::placeholder { color: #aaa; font-weight: 400; }
+input:focus, select:focus { border-color: var(--dark); box-shadow: 0 0 0 1px var(--dark); }
+
+.input-readonly { background: #f9f9f9; color: #888; border-color: #eee; cursor: not-allowed; }
+.input-readonly:focus { border-color: #eee; box-shadow: none; }
 
 /* ============================================================
    RESUMO DO PEDIDO
    ============================================================ */
-.lista-itens-resumo { max-height: 350px; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
-.lista-itens-resumo::-webkit-scrollbar { width: 5px; }
-.lista-itens-resumo::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
+.checkout-resumo { position: sticky; top: 20px; } /* O resumo acompanha o scroll */
 
-.item-resumo { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid var(--light-gray); }
-.item-resumo img { width: 65px; height: 65px; border-radius: 8px; object-fit: contain; background: var(--light-gray); border: 1px solid #eee; }
+.lista-itens-resumo { max-height: 350px; overflow-y: auto; padding-right: 10px; margin-bottom: 25px; }
+.lista-itens-resumo::-webkit-scrollbar { width: 4px; }
+.lista-itens-resumo::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+.item-resumo { display: flex; align-items: center; gap: 15px; padding: 15px 0; border-bottom: 1px solid #f5f5f5; }
+.item-resumo img { width: 75px; height: 75px; border-radius: 8px; object-fit: contain; background: #f9f9f9; padding: 5px; border: 1px solid #eee; }
 .item-info { flex-grow: 1; }
-.item-info h4 { font-size: 14px; font-weight: 700; margin-bottom: 3px; text-transform: uppercase; }
-.item-info p { font-size: 12px; color: #777; }
-.item-preco { font-weight: 900; color: var(--dark); font-size: 15px; }
+.item-info h4 { font-size: 13px; font-weight: 800; margin-bottom: 4px; text-transform: uppercase; line-height: 1.3; }
+.item-info p { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.item-preco { font-weight: 800; color: var(--dark); font-size: 15px; }
 
-.totais { padding-top: 15px; border-top: 2px solid var(--dark); margin-top: 10px; }
-.linha-total { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px; color: #555; }
-.linha-total.destaque { font-size: 22px; font-weight: 900; color: var(--dark); margin-top: 15px; }
-.linha-total.destaque span:last-child { color: var(--premium-red); }
-
-/* Botão Verde de Finalizar */
-.btn-finalizar {
-    width: 100%;
-    padding: 18px;
-    background: #27ae60;
-    color: var(--white);
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 900;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: var(--transition);
-    margin-top: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-.btn-finalizar:hover { background: #219150; transform: translateY(-2px); box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3); }
-.btn-finalizar:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.seguranca-msg { text-align: center; font-size: 12px; color: #888; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 5px; }
+.totais { padding-top: 20px; border-top: 1px solid var(--border); }
+.linha-total { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 15px; color: var(--text-muted); font-weight: 500; }
+.frete-gratis { color: #27ae60; font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; }
+.linha-total.destaque { font-size: 20px; font-weight: 900; color: var(--dark); margin-top: 20px; align-items: center; }
 
 /* ============================================================
-   NOTIFICAÇÕES TOAST (FREESE STORE)
+   BOTÃO DE FINALIZAR PREMIUM (PRETO -> VERMELHO)
    ============================================================ */
-#toast-container {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    pointer-events: none;
+.btn-finalizar {
+    width: 100%; padding: 22px; background: var(--dark); color: var(--white);
+    border: none; border-radius: 8px; font-size: 16px; font-weight: 800;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+    transition: var(--transition); margin-top: 30px; display: flex;
+    justify-content: center; align-items: center; gap: 12px;
 }
+.btn-finalizar:hover { background: var(--premium-red); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(167, 1, 1, 0.2); }
+.btn-finalizar:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
-.toast-freese {
-    min-width: 320px;
-    max-width: 400px;
-    background-color: #111; 
-    color: #fff;
-    padding: 16px 20px;
-    border-radius: 12px; 
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); 
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-    overflow: hidden;
-    pointer-events: auto;
-    
-    transform: translateX(120%) scale(0.9);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+.seguranca-msg { text-align: center; font-size: 12px; color: #888; margin-top: 20px; display: flex; justify-content: center; align-items: center; gap: 6px; font-weight: 500; }
 
-.toast-freese.show {
-    transform: translateX(0) scale(1);
-    opacity: 1;
-}
-
-.toast-icon {
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255,255,255,0.08);
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    flex-shrink: 0; 
-}
-
-.toast-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
-    padding-right: 10px;
-}
-
-.toast-title {
-    font-size: 11px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #aaa; 
-    margin-bottom: 4px;
-}
-
-.toast-message {
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 1.4;
-    color: #fff;
-}
-
-.toast-progress {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 4px;
-    background-color: var(--toast-cor);
-    width: 100%;
-    animation: toastProgress 3.5s linear forwards;
-}
-
-@keyframes toastProgress {
-    0% { width: 100%; }
-    100% { width: 0%; }
-}
+/* ============================================================
+   NOTIFICAÇÕES TOAST (MANTIDO)
+   ============================================================ */
+#toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 15px; pointer-events: none; }
+.toast-freese { min-width: 320px; max-width: 400px; background-color: #111; color: #fff; padding: 16px 20px; border-radius: 12px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05); display: flex; align-items: center; gap: 15px; font-family: 'Inter', sans-serif; position: relative; overflow: hidden; pointer-events: auto; transform: translateX(120%) scale(0.9); opacity: 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.toast-freese.show { transform: translateX(0) scale(1); opacity: 1; }
+.toast-icon { font-size: 22px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.08); width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
+.toast-content { display: flex; flex-direction: column; justify-content: center; flex-grow: 1; padding-right: 10px; }
+.toast-title { font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin-bottom: 4px; }
+.toast-message { font-size: 14px; font-weight: 500; line-height: 1.4; color: #fff; }
+.toast-progress { position: absolute; bottom: 0; left: 0; height: 4px; background-color: var(--toast-cor); width: 100%; animation: toastProgress 3.5s linear forwards; }
+@keyframes toastProgress { 0% { width: 100%; } 100% { width: 0%; } }
 
 /* ============================================================
    MOBILE
    ============================================================ */
 @media (max-width: 768px) {
+    .checkout-header { grid-template-columns: 1fr; gap: 15px; text-align: center; padding: 15px; }
+    .voltar-loja { justify-content: center; }
+    .header-seguro { justify-content: center; }
     .checkout-container { grid-template-columns: 1fr; margin: 20px auto; gap: 20px; }
     .linha-inputs { grid-template-columns: 1fr; gap: 0; }
-    .checkout-header { flex-direction: column; gap: 10px; padding: 15px; }
-
+    .box { padding: 25px; }
     #toast-container { bottom: 20px; right: 20px; left: 20px; align-items: center; }
     .toast-freese { width: 100%; max-width: 100%; min-width: unset; }
 }

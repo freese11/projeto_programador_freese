@@ -52,19 +52,25 @@ async function carregarProduto() {
         document.getElementById("produto-wrapper").innerHTML = "<h2>Erro ao carregar o servidor.</h2>";
     }
 }
-
 function renderizarDetalhes(produto) {
     const wrapper = document.getElementById("produto-wrapper");
     let srcImg = montarUrlSegura(produto.img) || IMG_FALHA_PRODUTO;
 
     let nomeProduto = produto.nome.toLowerCase();
+    
+    // Verificações de categoria pelo nome
     let ehCalcado = nomeProduto.includes("tênis") || 
                     nomeProduto.includes("tenis") || 
                     nomeProduto.includes("sneaker") || 
                     nomeProduto.includes("chinelo");
+                    
+    let ehTamanhoUnico = nomeProduto.includes("boné") || 
+                         nomeProduto.includes("bone") ||
+                         nomeProduto.includes("touca"); // Adicionei touca também como dica!
 
     let opcoesTamanho = "";
     
+    // Lógica para montar o select correto
     if (ehCalcado) {
         opcoesTamanho = `
             <option value="36">Tamanho 36</option>
@@ -77,6 +83,10 @@ function renderizarDetalhes(produto) {
             <option value="43">Tamanho 43</option>
             <option value="44">Tamanho 44</option>
         `;
+    } else if (ehTamanhoUnico) {
+        opcoesTamanho = `
+            <option value="U">Tamanho Único</option>
+        `;
     } else {
         opcoesTamanho = `
             <option value="P">Tamanho P</option>
@@ -87,6 +97,7 @@ function renderizarDetalhes(produto) {
         `;
     }
 
+    // Injeção do HTML na tela
     wrapper.innerHTML = `
         <div class="produto-imagem">
             <img src="${srcImg}" alt="${produto.nome}" onerror="this.onerror=null; this.src='${IMG_FALHA_PRODUTO}';">
@@ -95,11 +106,14 @@ function renderizarDetalhes(produto) {
             <span class="selo-marca">FREESE STORE</span>
             <h1>${produto.nome}</h1>
             <p class="preco-detalhe">R$ ${Number(produto.valor).toFixed(2).replace('.', ',')}</p>
-            <p class="descricao">Produto original de alta qualidade. Adicione estilo e conforto ao seu guarda-roupa com as melhores peças do mercado.</p>
+            
+            <!-- Melhoria: Usa a descrição do produto se existir, senão usa a padrão -->
+            <p class="descricao">${produto.descricao ? produto.descricao : 'Produto original de alta qualidade. Adicione estilo e conforto ao seu guarda-roupa com as melhores peças do mercado.'}</p>
             
             <div class="seletor-tamanho">
-                <label>Selecione o Tamanho:</label>
+                <label for="tamanho-escolhido">Selecione o Tamanho:</label>
                 <select id="tamanho-escolhido">
+                    <!-- Opções vazias para forçar o cliente a escolher seria bom no futuro, ex: <option value="" disabled selected>Escolha...</option> -->
                     ${opcoesTamanho}
                 </select>
             </div>
@@ -108,6 +122,7 @@ function renderizarDetalhes(produto) {
         </div>
     `;
 }
+
 
 
 function adicionarAoCarrinhoDetalhes() {
